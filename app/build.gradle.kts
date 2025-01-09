@@ -1,11 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-parcelize")
 }
 
 android {
     namespace = "com.nemodream.bangkkujaengi"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nemodream.bangkkujaengi"
@@ -26,6 +29,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -36,6 +42,32 @@ android {
 }
 
 dependencies {
+    // Splash
+    implementation(libs.androidx.core.splashscreen)
+
+    // Hilt
+    implementation (libs.hilt.android)
+    ksp (libs.hilt.compiler)
+
+    // Retrofit2
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // OkHttp3
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    // Glide
+    implementation(libs.glide)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
