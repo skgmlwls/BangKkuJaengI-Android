@@ -2,10 +2,10 @@ package com.nemodream.bangkkujaengi
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.nemodream.bangkkujaengi.databinding.ActivityMainBinding
+import com.nemodream.bangkkujaengi.databinding.ActivityCustomerBinding
 
-class MainActivity : AppCompatActivity() {
-    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+class CustomerActivity : AppCompatActivity() {
+    private val binding: ActivityCustomerBinding by lazy { ActivityCustomerBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
