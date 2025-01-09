@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nemodream.bangkkujaengi.databinding.FragmentCustomerBinding
 
+
 class CustomerFragment: Fragment() {
     private var _binding: FragmentCustomerBinding? = null
     private val binding get() = _binding!!
