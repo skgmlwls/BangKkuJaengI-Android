@@ -14,13 +14,11 @@ class FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance()
-    }
+    fun provideFirestore(): FirebaseFirestore =
+        FirebaseFirestore.getInstance()
 
     @Provides
     @Singleton
-    fun provideStorage(): FirebaseStorage {
-        return FirebaseStorage.getInstance()
-    }
+    fun provideStorage(): FirebaseStorage =
+        FirebaseStorage.getInstance()
 }
