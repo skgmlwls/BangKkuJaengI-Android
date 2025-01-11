@@ -38,17 +38,16 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_category"
+        style="@style/AppTabLayoutStyle"
         android:layout_width="0dp"
+        app:tabInlineLabel="true"
+        app:tabGravity="start"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_home"
-        app:tabBackground="@android:color/transparent"
-        app:tabGravity="start"
         app:tabIndicatorColor="@color/black"
         app:tabMode="scrollable"
-        app:tabRippleColor="@android:color/transparent"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray_400" />
 

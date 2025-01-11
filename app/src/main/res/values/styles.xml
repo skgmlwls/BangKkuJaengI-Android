@@ -8,7 +8,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!--  탭 인디케이터 스타일  -->
+    <!--  뷰페이저 탭 인디케이터 스타일  -->
     <style name="AppTabIndicatorStyle" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:background">@android:color/transparent</item>
         <item name="tabBackground">@drawable/selector_tab_indicator</item>
@@ -17,6 +17,14 @@
         <item name="tabIndicatorHeight">0dp</item>
         <item name="tabPaddingEnd">4dp</item>
         <item name="tabRippleColor">@null</item>
+    </style>
+
+    <!--  카테고리 탭 인디케이터 스타일  -->
+    <style name="AppTabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="android:background">@null</item>
+        <item name="tabRippleColor">@android:color/transparent</item>
+        <item name="tabBackground">@android:color/transparent</item>
+        <item name="tabIndicatorFullWidth">true</item>
     </style>
 
     <!--  바텀 네비게이션 스타일  -->

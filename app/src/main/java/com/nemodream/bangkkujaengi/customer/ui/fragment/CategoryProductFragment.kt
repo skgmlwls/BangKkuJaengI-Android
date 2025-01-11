@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentCategoryProductBinding
 import com.nemodream.bangkkujaengi.utils.popBackStack
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CategoryProductFragment: Fragment() {
     private var _binding: FragmentCategoryProductBinding? = null
@@ -63,13 +66,17 @@ class CategoryProductFragment: Fragment() {
             binding.tabCategory.addTab(binding.tabCategory.newTab().setText(type.getTabTitle()))
         }
 
-        // 전달받은 categoryType에 해당하는 탭 선택
         val initialPosition = categoryType?.ordinal ?: 0
-        binding.tabCategory.getTabAt(initialPosition)?.select()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
+            binding.tabCategory.selectTab(binding.tabCategory.getTabAt(initialPosition), true)
+        }
     }
 
     companion object {
         private const val KEY_CATEGORY_TYPE = "category_type"
+        private const val DELAY_TIME = 100L
 
         fun newInstance(type: CategoryType): CategoryProductFragment {
             return CategoryProductFragment().apply {
