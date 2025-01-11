@@ -28,6 +28,13 @@ fun Fragment.replaceParentFragment(fragment: Fragment, tag: String) {
 }
 
 /*
+* 현재 Fragment 스택을 제거한다.
+* */
+fun Fragment.popBackStack() {
+    parentFragmentManager.popBackStack()
+}
+
+/*
 * 이미지 로드 확장 함수
 * 이미지를 불러오고 있는 중에는 gray_300
 * 이미지를 불러오지 못했을 경우에는 gray_500
