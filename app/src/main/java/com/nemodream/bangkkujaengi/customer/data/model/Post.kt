@@ -16,11 +16,14 @@ data class Post(
     // 게시 사진들
     val imageList: List<String>,
 
+    // 게시글 썸네일
+    // val thumbnailImage: imageList[0]
+
     // 사진 위 태그들
     // val productTagPinList : List<Tag>,
 
-    // 좋아요 수
-    val likeCount: Int = 0,
+    // 저장됨 수
+    val savedCount: Int = 0,
 
     // 댓글 수
     val commentCount: Int = 0,
