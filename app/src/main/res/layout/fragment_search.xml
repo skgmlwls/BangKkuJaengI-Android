@@ -22,6 +22,7 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/background_gray_50"
+        app:cursorColor="@color/gray_300"
         app:endIconMode="clear_text"
         app:hintAnimationEnabled="false"
         app:hintEnabled="false"
