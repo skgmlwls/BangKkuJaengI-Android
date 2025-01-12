@@ -9,4 +9,5 @@ data class Product(
     val price: Int,
     val productCount: Int,
     val saledPrice: Int,
+    val searchKeywords: List<String> = productName.split(" "),
 )

@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import com.nemodream.bangkkujaengi.customer.data.model.SearchHistory
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SearchHistoryAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SearchResultAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SearchViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSearchBinding
 import com.nemodream.bangkkujaengi.utils.hideKeyboard
@@ -27,6 +28,12 @@ class SearchFragment : Fragment(), OnItemClickListener {
     private lateinit var appContext: Context
     private val viewModel: SearchViewModel by viewModels()
     private val searchAdapter: SearchHistoryAdapter by lazy { SearchHistoryAdapter(this) }
+    private val searchResultAdapter: SearchResultAdapter by lazy { SearchResultAdapter() }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +53,7 @@ class SearchFragment : Fragment(), OnItemClickListener {
 
     private fun setupUI() {
         binding.rvSearchHistoryList.adapter = searchAdapter
+        binding.rvSearchResultList.adapter = searchResultAdapter
     }
 
     override fun onDestroyView() {
@@ -54,18 +62,37 @@ class SearchFragment : Fragment(), OnItemClickListener {
     }
 
     private fun observeViewModel() {
-        viewModel.searchHistory.observe(viewLifecycleOwner) { searchHistory ->
-            when(searchHistory.isEmpty()) {
-                true -> { // 최근 검색이 없을 때
-                    binding.tvSearchHistoryLabel.visibility = View.GONE
-                    binding.tvClearAll.visibility = View.GONE
-                    binding.groupRecentSearches.visibility = View.GONE
+        with(binding) {
+            viewModel.searchHistory.observe(viewLifecycleOwner) { searchHistory ->
+                when(searchHistory.isEmpty()) {
+                    true -> { // 최근 검색이 없을 때
+                        tvSearchHistoryLabel.visibility = View.GONE
+                        tvClearAll.visibility = View.GONE
+                        groupRecentSearches.visibility = View.GONE
+                    }
+                    false -> {
+                        groupRecentSearches.visibility = View.VISIBLE
+                    }
                 }
-                false -> {
-                    binding.groupRecentSearches.visibility = View.VISIBLE
+                searchAdapter.submitList(searchHistory)
+            }
+
+            viewModel.searchResults.observe(viewLifecycleOwner) { searchResults ->
+                groupRecentSearches.visibility = View.GONE
+                rvSearchHistoryList.visibility = View.GONE
+
+                when(searchResults.isEmpty()) {
+                    true -> {
+                        rvSearchResultList.visibility = View.GONE
+                        layoutResultEmpty.root.visibility = View.VISIBLE
+                    }
+                    false -> {
+                        rvSearchResultList.visibility = View.VISIBLE
+                        layoutResultEmpty.root.visibility = View.GONE
+                        searchResultAdapter.submitList(searchResults)
+                    }
                 }
             }
-            searchAdapter.submitList(searchHistory)
         }
     }
 
@@ -106,6 +133,7 @@ class SearchFragment : Fragment(), OnItemClickListener {
             return
         }
         viewModel.addSearch(query)
+        viewModel.getProductsByProductName(binding.etSearchTrack.editText?.text.toString())
     }
 
     override fun onItemClick(item: SearchHistory) {

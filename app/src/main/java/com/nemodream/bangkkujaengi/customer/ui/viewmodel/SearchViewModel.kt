@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.SearchHistory
 import com.nemodream.bangkkujaengi.customer.data.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,10 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: SearchRepository,
-): ViewModel() {
+) : ViewModel() {
     // 검색 기록 프로퍼티
     private var _searchHistory = MutableLiveData<List<SearchHistory>>()
     val searchHistory: LiveData<List<SearchHistory>> get() = _searchHistory
+
+    private val _searchResults = MutableLiveData<List<Product>>()
+    val searchResults: LiveData<List<Product>> get() = _searchResults
 
     init {
         loadSearchHistory()
@@ -61,6 +65,18 @@ class SearchViewModel @Inject constructor(
             repository.deleteAllSearches()
         }.onSuccess {
             loadSearchHistory()
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
+
+
+    // 검색 결과 가져오기
+    fun getProductsByProductName(productName: String) = viewModelScope.launch {
+        runCatching {
+            repository.getProductsByKeyword(productName)
+        }.onSuccess {
+            _searchResults.value = it
         }.onFailure {
             it.printStackTrace()
         }
