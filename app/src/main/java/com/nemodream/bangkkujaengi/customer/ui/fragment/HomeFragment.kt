@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.ui.adapter.HomeBannerAdapter
@@ -91,23 +92,54 @@ class HomeFragment : Fragment(), OnBannerItemClickListener {
     private fun setupListeners() {
         with(binding) {
             categoryFurniture.root.setOnClickListener {
-                replaceParentFragment(CategoryProductFragment.newInstance(CategoryType.FURNITURE), CategoryType.FURNITURE.name)
+                replaceParentFragment(
+                    CategoryProductFragment.newInstance(CategoryType.FURNITURE),
+                    CategoryType.FURNITURE.name
+                )
             }
 
             categoryLighting.root.setOnClickListener {
-                replaceParentFragment(CategoryProductFragment.newInstance(CategoryType.LIGHTING), CategoryType.LIGHTING.name)
+                replaceParentFragment(
+                    CategoryProductFragment.newInstance(CategoryType.LIGHTING),
+                    CategoryType.LIGHTING.name
+                )
             }
 
             categoryFabric.root.setOnClickListener {
-                replaceParentFragment(CategoryProductFragment.newInstance(CategoryType.FABRIC), CategoryType.FABRIC.name)
+                replaceParentFragment(
+                    CategoryProductFragment.newInstance(CategoryType.FABRIC),
+                    CategoryType.FABRIC.name
+                )
             }
 
             categoryDeco.root.setOnClickListener {
-                replaceParentFragment(CategoryProductFragment.newInstance(CategoryType.DECO), CategoryType.DECO.name)
+                replaceParentFragment(
+                    CategoryProductFragment.newInstance(CategoryType.DECO),
+                    CategoryType.DECO.name
+                )
             }
 
             categoryBroadcast.root.setOnClickListener {
-                replaceParentFragment(CategoryProductFragment.newInstance(CategoryType.BROADCAST), CategoryType.BROADCAST.name)
+                replaceParentFragment(
+                    CategoryProductFragment.newInstance(CategoryType.BROADCAST),
+                    CategoryType.BROADCAST.name
+                )
+            }
+
+            // 각 메뉴 버튼에 따라서 화면 이동하기
+            toolbarHome.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_search -> {
+                        replaceParentFragment(SearchFragment(), "HomeFragment")
+                        true
+                    }
+
+//                    R.id.menu_cart -> {
+//                        replaceParentFragment(CartFragment(), "HomeFragment")
+//                        true
+//                    }
+                    else -> false
+                }
             }
         }
     }
