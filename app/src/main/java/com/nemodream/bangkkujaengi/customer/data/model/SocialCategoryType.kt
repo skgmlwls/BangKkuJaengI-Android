@@ -6,7 +6,7 @@ enum class SocialCategoryType {
     FOLLOWING,
     MY;
 
-    fun getTabTitle(): String = when(this) {
+    fun getSocialTabTitle(): String = when(this) {
         DISCOVERY -> "발견"
         RANK -> "랭킹"
         FOLLOWING -> "팔로잉"
