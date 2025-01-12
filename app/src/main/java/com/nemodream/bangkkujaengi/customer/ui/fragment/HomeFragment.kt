@@ -7,21 +7,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.ui.adapter.HomeBannerAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.OnBannerItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
 import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), OnBannerItemClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
 
-    private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter() }
+    private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +46,13 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+
+    /*
+    * 배너 클릭 리스너
+    * */
+    override fun onItemClick(banner: Banner) {
+        replaceParentFragment(ProductDetailFragment.newInstance(banner.productId), "HomeFragment")
+    }
 
     /*
     * HomeViewModel에서 데이터 불러와
