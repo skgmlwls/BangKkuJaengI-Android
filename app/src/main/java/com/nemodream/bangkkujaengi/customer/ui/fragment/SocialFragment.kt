@@ -62,8 +62,8 @@ class SocialFragment: Fragment() {
     * 전달 받은 categoryType에 해당하는 탭을 선택한다.
     * */
     private fun setupTabs() {
-        CategoryType.entries.forEach { type ->
-            binding.tabSocialCategory.addTab(binding.tabSocialCategory.newTab().setText(type.getTabTitle()))
+        SocialCategoryType.entries.forEach { type ->
+            binding.tabSocialCategory.addTab(binding.tabSocialCategory.newTab().setText(type.getSocialTabTitle()))
         }
 
         val initialPosition = socialCategoryType?.ordinal ?: 0
