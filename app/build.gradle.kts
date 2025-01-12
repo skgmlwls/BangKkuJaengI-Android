@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
+
     // Splash
     implementation(libs.androidx.core.splashscreen)
 
