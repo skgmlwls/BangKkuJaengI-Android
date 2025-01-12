@@ -13,11 +13,12 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_social_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedCornerImage" />
 
         <TextView
             android:id="@+id/tv_social_title"
