@@ -64,4 +64,11 @@
         <item name="dividerColor">@color/gray_200</item>
         <item name="dividerThickness">0.7dp</item>
     </style>
+
+    <!-- 둥근 모서리 -->
+    <style name="RoundedCornerImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>
