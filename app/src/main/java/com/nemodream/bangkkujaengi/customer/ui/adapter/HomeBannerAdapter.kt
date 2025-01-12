@@ -7,16 +7,19 @@ import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.databinding.ItemHomeBannerBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
-class HomeBannerAdapter: RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
+class HomeBannerAdapter(
+    private val listener: OnBannerItemClickListener,
+) : RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
     private val items = mutableListOf<Banner>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeBannerViewHolder {
-        val binding = ItemHomeBannerBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return HomeBannerViewHolder(binding)
+        return HomeBannerViewHolder(
+            ItemHomeBannerBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        ) { listener.onItemClick(items[it]) }
     }
 
     override fun onBindViewHolder(holder: HomeBannerViewHolder, position: Int) {
@@ -31,10 +34,22 @@ class HomeBannerAdapter: RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHo
         notifyDataSetChanged()
     }
 
-    class HomeBannerViewHolder(private val binding: ItemHomeBannerBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class HomeBannerViewHolder(
+        private val binding: ItemHomeBannerBinding,
+        onItemClick: (Int) -> Unit,
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                onItemClick(adapterPosition)
+            }
+        }
+
         fun bind(banner: Banner) {
             binding.ivHomeBannerImage.loadImage(banner.thumbnailImageRef)
         }
     }
+}
+
+interface OnBannerItemClickListener {
+    fun onItemClick(banner: Banner)
 }
