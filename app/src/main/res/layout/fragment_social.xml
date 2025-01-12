@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_social"
+        android:id="@+id/tab_social_category"
         style="@style/AppTabLayoutStyle"
         android:layout_width="0dp"
         app:tabInlineLabel="true"
