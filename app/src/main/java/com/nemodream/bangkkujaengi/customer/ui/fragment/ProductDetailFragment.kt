@@ -93,6 +93,12 @@ class ProductDetailFragment: Fragment() {
             toolbar.setNavigationOnClickListener {
                 popBackStack()
             }
+
+            btnProductOrder.setOnClickListener {
+                // BottomSheet 표시
+                val bottomSheet = ProductOrderBottomSheetFragment.newInstance(unitPrice = 10000)
+                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+            }
         }
     }
 
