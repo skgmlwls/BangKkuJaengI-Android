@@ -72,7 +72,139 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.core.widget.NestedScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_product_detail_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="상품명상품명상품명상품명상품명상품명상품명상품명상품명" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/blue_300"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                app:layout_constraintEnd_toStartOf="@id/tv_product_detail_is_best"
+                app:layout_constraintStart_toStartOf="@id/tv_product_detail_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_title"
+                tools:text="조명" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_is_best"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/gray_300"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="BEST"
+                app:layout_constraintBottom_toBottomOf="@id/tv_product_detail_category"
+                app:layout_constraintStart_toEndOf="@id/tv_product_detail_category"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_title"
+                app:layout_goneMarginStart="0dp" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tv_product_detail_category"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_category"
+                tools:text="10,000원" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_discount_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tv_product_detail_price"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_price"
+                tools:text="00%" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_discount_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_product_detail_discount_rate"
+                app:layout_constraintStart_toEndOf="@id/tv_product_detail_discount_rate"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_price"
+                app:layout_goneMarginStart="0dp"
+                tools:text="0,000원" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                app:dividerColor="@color/gray_300"
+                app:dividerInsetEnd="42dp"
+                app:dividerInsetStart="42dp"
+                app:dividerThickness="0.5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_product_detail_discount_price" />
+
+            <ImageView
+                android:id="@+id/iv_product_detail_content_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_content_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="24dp"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@id/iv_product_detail_content_image"
+                app:layout_constraintStart_toStartOf="@id/iv_product_detail_content_image"
+                app:layout_constraintTop_toBottomOf="@id/iv_product_detail_content_image" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_product_detail_content_image_list"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="140dp"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_content_description"
+                tools:listitem="@layout/item_product_detail_image_list" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -34,78 +34,108 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager_carousel"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
-        android:layout_height="336dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_indicator"
-        style="@style/AppTabIndicatorStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="22dp"
-        app:layout_constraintBottom_toBottomOf="@id/viewPager_carousel"
-        app:layout_constraintEnd_toEndOf="@id/viewPager_carousel" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewPager_carousel">
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager_carousel"
+                android:layout_width="0dp"
+                android:layout_height="336dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/category_furniture"
-            layout="@layout/view_category_furniture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/category_lighting"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_indicator"
+                style="@style/AppTabIndicatorStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="22dp"
+                app:layout_constraintBottom_toBottomOf="@id/viewPager_carousel"
+                app:layout_constraintEnd_toEndOf="@id/viewPager_carousel" />
 
-        <include
-            android:id="@+id/category_lighting"
-            layout="@layout/view_category_lighting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/category_fabric"
-            app:layout_constraintStart_toEndOf="@id/category_furniture"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/category_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="28dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewPager_carousel">
 
-        <include
-            android:id="@+id/category_fabric"
-            layout="@layout/view_category_fabric"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/category_deco"
-            app:layout_constraintStart_toEndOf="@id/category_lighting"
-            app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/category_furniture"
+                    layout="@layout/view_category_furniture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/category_lighting"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/category_deco"
-            layout="@layout/view_category_deco"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/category_broadcast"
-            app:layout_constraintStart_toEndOf="@id/category_fabric"
-            app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/category_lighting"
+                    layout="@layout/view_category_lighting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/category_fabric"
+                    app:layout_constraintStart_toEndOf="@id/category_furniture"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/category_broadcast"
-            layout="@layout/view_category_broadcast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/category_deco"
-            app:layout_constraintTop_toTopOf="parent" />
+                <include
+                    android:id="@+id/category_fabric"
+                    layout="@layout/view_category_fabric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/category_deco"
+                    app:layout_constraintStart_toEndOf="@id/category_lighting"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <include
+                    android:id="@+id/category_deco"
+                    layout="@layout/view_category_deco"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/category_broadcast"
+                    app:layout_constraintStart_toEndOf="@id/category_fabric"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/category_broadcast"
+                    layout="@layout/view_category_broadcast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/category_deco"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_promotion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category_container" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

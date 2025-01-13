@@ -100,6 +100,17 @@
         app:layout_constraintEnd_toEndOf="@id/view_product_order_color_area"
         app:layout_constraintTop_toTopOf="@id/view_product_order_color_area" />
 
+    <TextView
+        android:id="@+id/tv_product_order_color_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="색상을 선택하세요"
+        android:visibility="gone"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintTop_toBottomOf="@id/view_product_order_color_area"
+        app:layout_constraintStart_toStartOf="@id/view_product_order_color_area"
+        android:layout_marginTop="4dp"
+        />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_cart"
         android:layout_width="0dp"
@@ -119,7 +130,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="42dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/background_button_brown_800"
         android:text="주문하기"
