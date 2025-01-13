@@ -3,11 +3,13 @@ package com.nemodream.bangkkujaengi.customer.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialDiscoveryFragment
 import com.nemodream.bangkkujaengi.databinding.ItemSocialPostBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
-class SocialDiscoveryAdapter: RecyclerView.Adapter<SocialDiscoveryAdapter.SocialDiscoveryViewHolder>() {
+class SocialDiscoveryAdapter(private val listener: SocialDiscoveryFragment): RecyclerView.Adapter<SocialDiscoveryAdapter.SocialDiscoveryViewHolder>() {
     private val items = mutableListOf<Post>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SocialDiscoveryViewHolder {
@@ -23,6 +25,12 @@ class SocialDiscoveryAdapter: RecyclerView.Adapter<SocialDiscoveryAdapter.Social
         holder.bind(items[position])
     }
 
+    fun submitList(socialDiscoveryItems: List<Post>) {
+        items.clear()
+        items.addAll(socialDiscoveryItems)
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return items.size
     }
@@ -33,8 +41,13 @@ class SocialDiscoveryAdapter: RecyclerView.Adapter<SocialDiscoveryAdapter.Social
             binding.ivSocialPostItemThumbnail.loadImage(post.imageList[0])
             binding.tvSocialPostItemTitle.text = post.title
             // binding.ivSocialPostItemProfilePicture.loadImage(작성자 프사)
+            // 닉네임은 유저 데이터 모델 작성 후 변경 예정
             binding.tvSocialPostItemNickname.text = post.nickname
             binding.tvSocialPostItemSavedCount.text = post.savedCount.toString()
         }
     }
+}
+
+interface OnPostItemClickListener {
+    fun onPostItemClick(post: Post)
 }

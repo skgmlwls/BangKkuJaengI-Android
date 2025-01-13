@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.customer.data.model.SocialCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialBinding
 import com.nemodream.bangkkujaengi.utils.popBackStack
@@ -39,6 +40,7 @@ class SocialFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
         setupTabs()
+        setupViewPager()
     }
 
     override fun onDestroyView() {
@@ -48,7 +50,7 @@ class SocialFragment: Fragment() {
 
     /*
     * 리스너 모음 함수
-    * */
+    */
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
@@ -58,10 +60,10 @@ class SocialFragment: Fragment() {
     }
 
     /*
-    * 카테고리별로 탭을 구성하고
-    * 전달 받은 categoryType에 해당하는 탭을 선택한다.
-    * */
+    * 탭 설정
+    */
     private fun setupTabs() {
+        // SocialCategoryType의 항목을 탭으로 추가
         SocialCategoryType.entries.forEach { type ->
             binding.tabSocialCategory.addTab(binding.tabSocialCategory.newTab().setText(type.getSocialTabTitle()))
         }
@@ -74,6 +76,20 @@ class SocialFragment: Fragment() {
         }
     }
 
+    /*
+    * 뷰 페이저 설정
+    */
+    private fun setupViewPager() {
+        val adapter = SocialPagerAdapter(this)
+        binding.viewPagerSocialCategory.adapter = adapter
+
+        // TabLayout과 ViewPager2 연결
+        TabLayoutMediator(binding.tabSocialCategory, binding.viewPagerSocialCategory) { tab, position ->
+            tab.text = SocialCategoryType.values()[position].getSocialTabTitle()
+        }.attach()
+    }
+
+
     companion object {
         private const val KEY_SOCIAL_CATEGORY_TYPE = "social_category_type"
         private const val DELAY_TIME = 100L
@@ -84,6 +100,19 @@ class SocialFragment: Fragment() {
                     putString(KEY_SOCIAL_CATEGORY_TYPE, type.name)
                 }
             }
+        }
+    }
+}
+
+// ViewPager2의 어댑터
+class SocialPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
+    override fun getItemCount(): Int = SocialCategoryType.values().size
+
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            SocialCategoryType.DISCOVERY.ordinal -> SocialDiscoveryFragment.newInstance()
+            else -> SocialDiscoveryFragment.newInstance() // 임시로 동일한 fragment를 리턴
         }
     }
 }
