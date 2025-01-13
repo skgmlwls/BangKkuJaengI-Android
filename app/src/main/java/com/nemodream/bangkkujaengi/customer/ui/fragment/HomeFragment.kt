@@ -10,21 +10,24 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.HomeBannerAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnBannerItemClickListener
+import com.nemodream.bangkkujaengi.customer.ui.adapter.PromotionAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
 import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnBannerItemClickListener {
+class HomeFragment : Fragment(), OnBannerItemClickListener, (Product) -> Unit {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
 
     private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter(this) }
+    private val promotionAdapter: PromotionAdapter by lazy { PromotionAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,6 +66,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener {
         viewModel.bannerItems.observe(viewLifecycleOwner) { bannerList ->
             bannerAdapter.submitList(bannerList)
         }
+
+        viewModel.promotionItems.observe(viewLifecycleOwner) { items ->
+            promotionAdapter.submitList(items)
+        }
     }
 
     /*
@@ -70,7 +77,9 @@ class HomeFragment : Fragment(), OnBannerItemClickListener {
     * */
     private fun setupLayout() {
         viewModel.loadBannerItems()
+        viewModel.loadPromotions()
         setupHomeBannerUI()
+        binding.rvPromotion.adapter = promotionAdapter
     }
 
     /*
@@ -135,12 +144,16 @@ class HomeFragment : Fragment(), OnBannerItemClickListener {
                     }
 
 //                    R.id.menu_cart -> {
-//                        replaceParentFragment(CartFragment(), "HomeFragment")
+//                        replaceParentFragment(ShoppingCartFragment(), "HomeFragment")
 //                        true
 //                    }
                     else -> false
                 }
             }
         }
+    }
+
+    override fun invoke(p1: Product) {
+        TODO("Not yet implemented")
     }
 }
