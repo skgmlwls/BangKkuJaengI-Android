@@ -69,3 +69,10 @@ fun View.hideKeyboard() {
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
+
+/*
+* Number의 확장함수로 숫자를 천 단위에서 ,구분하는 함수
+* */
+fun Number.toCommaString(): String {
+    return String.format("%,d", this)
+}
