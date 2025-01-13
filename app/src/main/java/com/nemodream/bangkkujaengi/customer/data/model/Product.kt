@@ -6,8 +6,9 @@ data class Product(
     val description: String,
     val images: List<String>,
     val isBest: Boolean,
+    val category: CategoryType,
     val price: Int,
     val productCount: Int,
     val saledPrice: Int,
-    val searchKeywords: List<String> = productName.split(" "),
+    val searchKeywords: List<String> = productName.split(" ")
 )
