@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.local.dao.SearchHistoryDao
+import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.SearchHistory
 import kotlinx.coroutines.tasks.await
@@ -73,6 +74,7 @@ class SearchRepository @Inject constructor(
             description = getString("description") ?: "",
             images = imageUrls,
             isBest = getBoolean("isBest") ?: false,
+            category = CategoryType.fromString(getString("category") ?: ""),
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,

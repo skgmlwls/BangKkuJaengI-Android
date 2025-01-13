@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Product
-import com.nemodream.bangkkujaengi.databinding.ItemSearchHistoryListBinding
-import com.nemodream.bangkkujaengi.databinding.ItemSearchResultListBinding
+import com.nemodream.bangkkujaengi.databinding.ItemProductBinding
+import com.nemodream.bangkkujaengi.utils.loadImage
+import com.nemodream.bangkkujaengi.utils.toCommaString
 
 class SearchResultAdapter(
 ) : ListAdapter<Product, SearchResultAdapter.SearchResultViewHolder>(
@@ -16,7 +17,7 @@ class SearchResultAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
         val binding =
-            ItemSearchResultListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SearchResultViewHolder(
             binding,
         )
@@ -27,11 +28,15 @@ class SearchResultAdapter(
     }
 
     class SearchResultViewHolder(
-        private val binding: ItemSearchResultListBinding,
+        private val binding: ItemProductBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
-            binding.tvSearchResultProductTitle.text = product.productName
+            with(binding) {
+                ivProduct.loadImage(product.images.first())
+                tvProductName.text = product.productName
+                tvProductPrice.text = "${product.price.toCommaString()} 원"
+            }
         }
     }
 }
