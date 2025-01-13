@@ -2,7 +2,7 @@ package com.nemodream.bangkkujaengi.customer.data.model
 
 data class Post(
     // 게시글 고유 아이디
-    val id: Int,
+    val id: String,
 
     // 작성자 아이디
     val nickname: String,
