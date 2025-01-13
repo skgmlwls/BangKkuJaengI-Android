@@ -24,6 +24,7 @@ class SocialDiscoveryViewModel @Inject constructor(
      */
     fun loadPosts() {
         viewModelScope.launch {
+            // 게시글 목록을 Firebase에서 가져온다
             val postList = repository.getPosts()
             _posts.value = postList
         }
