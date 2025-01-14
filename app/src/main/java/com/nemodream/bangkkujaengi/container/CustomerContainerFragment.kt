@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.ui.fragment.HomeFragment
+import com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment
+import com.nemodream.bangkkujaengi.customer.ui.fragment.ShoppingCartFragment
 import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFragment
 import com.nemodream.bangkkujaengi.databinding.FragmentCustomerContainerBinding
 import com.nemodream.bangkkujaengi.utils.navigateToChildFragment
@@ -31,7 +33,7 @@ class CustomerContainerFragment : Fragment() {
 
         // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
-            navigateToChildFragment(HomeFragment())
+            navigateToChildFragment(ShoppingCartFragment())
         }
     }
 

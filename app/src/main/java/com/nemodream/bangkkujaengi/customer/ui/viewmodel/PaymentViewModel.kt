@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 class PaymentViewModel() : ViewModel() {
 
     // 배송지 이름
-    val til_payment_name_text = MutableLiveData<String>("홍길동")
+    val til_payment_name_text = MutableLiveData<String>()
     // 배송지 전화번호
-    val til_payment_phone_number_text = MutableLiveData<String>("01012341234")
+    val til_payment_phone_number_text = MutableLiveData<String>()
     // 배송지 주소
-    val til_payment_address_text = MutableLiveData<String>("서울 강남구 역삼동")
+    val til_payment_address_text = MutableLiveData<String>()
 
 }
