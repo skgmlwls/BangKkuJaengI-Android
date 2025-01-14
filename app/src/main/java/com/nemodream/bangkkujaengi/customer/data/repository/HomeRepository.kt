@@ -44,7 +44,7 @@ class HomeRepository @Inject constructor(
     /*
     * productId를 통해 Firebase의 Product Collection에서 해당 상품 데이터 가져오기
     * */
-    suspend fun getProducts(productId: String): Product? =
+    suspend fun getProducts(productId: String): Product =
         firestore.collection("Product")
             .document(productId)
             .get()
@@ -78,6 +78,7 @@ class HomeRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
+            saledRate = getLong("saledRate")?.toInt() ?: 0
         )
     }
 

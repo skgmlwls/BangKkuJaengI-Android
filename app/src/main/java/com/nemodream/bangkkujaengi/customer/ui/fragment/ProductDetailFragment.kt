@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailBannerAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
@@ -90,13 +92,14 @@ class ProductDetailFragment: Fragment() {
     private fun setupUI() {
         val product = viewModel.product.value ?: return
         setupProductBannerUI()
+        setupDiscountViews(product)
         with(binding) {
+
             tvProductDetailTitle.text = product.productName
             tvProductDetailPrice.text = "${product.price.toCommaString()}원"
             tvProductDetailDiscountPrice.text = "${product.saledPrice.toCommaString()}원"
             ivProductDetailContentImage.loadImage(product.images.first())
             tvProductDetailContentDescription.text = product.description
-
             tvProductDetailIsBest.visibility = if (product.isBest) View.VISIBLE else View.GONE
             tvProductDetailCategory.text = CategoryType.fromString(product.category.name).getTabTitle()
 
@@ -113,6 +116,25 @@ class ProductDetailFragment: Fragment() {
             // TabLayout과 ViewPager2 연동
             TabLayoutMediator(viewpagerDetailIndicator, viewPagerProductImage) { _, _ -> }
                 .attach()
+        }
+    }
+
+    private fun setupDiscountViews(product: Product) {
+        with(binding) {
+            when(product.saledRate > 0) {
+                true -> {
+                    tvProductDetailDiscountRate.visibility = View.VISIBLE
+                    tvProductDetailDiscountPrice.visibility = View.VISIBLE
+                    tvProductDetailDiscountPrice.text = "${product.saledPrice.toCommaString()}원"
+                    tvProductDetailDiscountRate.text = "${product.saledRate}%"
+                    tvProductDetailPrice.paintFlags = tvProductDetailPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+                false -> {
+                    tvProductDetailDiscountRate.visibility = View.GONE
+                    tvProductDetailDiscountPrice.visibility = View.GONE
+                    tvProductDetailPrice.paintFlags = tvProductDetailPrice.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                }
+            }
         }
     }
 
