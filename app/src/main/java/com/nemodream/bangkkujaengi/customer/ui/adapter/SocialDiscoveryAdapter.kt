@@ -3,13 +3,14 @@ package com.nemodream.bangkkujaengi.customer.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialDiscoveryFragment
+import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFollowingFragment
 import com.nemodream.bangkkujaengi.databinding.ItemSocialPostBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
-class SocialDiscoveryAdapter(private val listener: SocialDiscoveryFragment): RecyclerView.Adapter<SocialDiscoveryAdapter.SocialDiscoveryViewHolder>() {
+class SocialDiscoveryAdapter(
+    private val listener: OnPostItemClickListener
+): RecyclerView.Adapter<SocialDiscoveryAdapter.SocialDiscoveryViewHolder>() {
     private val items = mutableListOf<Post>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SocialDiscoveryViewHolder {
