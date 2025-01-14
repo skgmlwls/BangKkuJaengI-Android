@@ -112,6 +112,8 @@ class SocialPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             SocialCategoryType.DISCOVERY.ordinal -> SocialDiscoveryFragment.newInstance()
+            SocialCategoryType.RANK.ordinal -> SocialRankFragment.newInstance()
+            SocialCategoryType.FOLLOWING.ordinal -> SocialFollowingFragment.newInstance()
             else -> SocialDiscoveryFragment.newInstance() // 임시로 동일한 fragment를 리턴
         }
     }
