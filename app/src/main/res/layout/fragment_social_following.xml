@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.fragment.SocialFollowingFragment">
 
-
+    <!-- 프로필 리스트 (수평 스크롤) -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_social_following_profile_list"
-        android:layout_width="match_parent"
+        android:id="@+id/rv_following_profiles"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:orientation="horizontal"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_following_profile" />
 
-
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider_example"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/AppDivider"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
-</LinearLayout>
+    <!-- 게시글 리스트 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_following_posts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        app:layout_constraintTop_toBottomOf="@id/rv_following_profiles"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_social_post" />
+</androidx.constraintlayout.widget.ConstraintLayout>
