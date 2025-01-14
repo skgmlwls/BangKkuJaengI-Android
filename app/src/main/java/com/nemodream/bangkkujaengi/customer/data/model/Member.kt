@@ -19,7 +19,7 @@ data class Member(
     val memberPhoneNumber: String,
 
     // 프로필 사진
-    val memberProfileImage: String? = null,
+    val memberProfileImage: String?,
 
     // 적립금(임시 적립금 3000)
     val point: Int = 3000,
