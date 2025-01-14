@@ -12,22 +12,27 @@ import com.nemodream.bangkkujaengi.customer.data.model.Banner
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.HomeBannerAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.MoreProductsClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnBannerItemClickListener
+import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PromotionAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
+import com.nemodream.bangkkujaengi.utils.navigateToChildFragment
+import com.nemodream.bangkkujaengi.utils.navigateToParentFragment
 import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnBannerItemClickListener, (Product) -> Unit {
+class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener,
+    MoreProductsClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
 
     private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter(this) }
-    private val promotionAdapter: PromotionAdapter by lazy { PromotionAdapter(this) }
+    private val promotionAdapter: PromotionAdapter by lazy { PromotionAdapter(this, this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -153,7 +158,11 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, (Product) -> Unit {
         }
     }
 
-    override fun invoke(p1: Product) {
-        TODO("Not yet implemented")
+    override fun onProductClick(product: Product) {
+        replaceParentFragment(ProductDetailFragment.newInstance(product.productId), "HomeFragment")
+    }
+
+    override fun onMoreProductsClick(title: String) {
+        navigateToParentFragment(PromotionFragment.newInstance(title))
     }
 }

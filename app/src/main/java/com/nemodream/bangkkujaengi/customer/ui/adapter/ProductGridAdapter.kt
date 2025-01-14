@@ -10,26 +10,26 @@ import com.nemodream.bangkkujaengi.databinding.ItemProductBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.toCommaString
 
-class ProductAdapter(
+class ProductGridAdapter(
     private val productClickListener: ProductClickListener,
-) : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback()) {
+) : ListAdapter<Product, ProductGridAdapter.ProductGridViewHolder>(ProductGridDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-            return ProductViewHolder(
-                ItemProductBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                productClickListener = { position -> productClickListener.onProductClick(getItem(position)) }
-            )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductGridViewHolder {
+        return ProductGridViewHolder(
+            ItemProductBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            productClickListener = { position -> productClickListener.onProductClick(getItem(position)) }
+        )
     }
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductGridViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ProductViewHolder(
+    class ProductGridViewHolder(
         private val binding: ItemProductBinding,
         productClickListener: (position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -49,7 +49,7 @@ class ProductAdapter(
     }
 }
 
-class ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
+class ProductGridDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem.productId == newItem.productId
     }
@@ -57,8 +57,4 @@ class ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem == newItem
     }
-}
-
-interface ProductClickListener {
-    fun onProductClick(product: Product)
 }

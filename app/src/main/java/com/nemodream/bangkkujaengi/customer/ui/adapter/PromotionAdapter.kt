@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionHeader
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionItem
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
@@ -17,29 +16,30 @@ private const val VIEW_TYPE_HEADER = 0
 private const val VIEW_TYPE_PRODUCTS = 1
 
 class PromotionAdapter(
-    private val onProductClick: (Product) -> Unit,
-) : ListAdapter<PromotionItem, RecyclerView.ViewHolder>(PromotionDiffCallback()) {
+    private val productClickListener: ProductClickListener,
+    private val moreProductsClickListener: MoreProductsClickListener,
+    ) : ListAdapter<PromotionItem, RecyclerView.ViewHolder>(PromotionDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> {
-                return PromotionHeaderViewHolder(
+                PromotionHeaderViewHolder(
                     ItemPromotionHeaderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    moreProductsClickListener,
                 )
             }
-
             else -> {
-                return PromotionProductsViewHolder(
+                PromotionProductsViewHolder(
                     ItemPromotionProductsBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
                     ),
-                    onProductClick
+                    productClickListener
                 )
             }
         }
@@ -68,7 +68,13 @@ class PromotionAdapter(
 
     class PromotionHeaderViewHolder(
         private val binding: ItemPromotionHeaderBinding,
+        moreProductsClickListener: MoreProductsClickListener,
     ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.tvMoreProducts.setOnClickListener {
+                moreProductsClickListener.onMoreProductsClick(binding.tvTitle.text.toString())
+            }
+        }
 
         fun bind(item: PromotionHeader) {
             binding.tvMoreProducts.paintFlags =
@@ -79,9 +85,9 @@ class PromotionAdapter(
 
     class PromotionProductsViewHolder(
         binding: ItemPromotionProductsBinding,
-        private val onProductClick: (Product) -> Unit
+        productClickListener: ProductClickListener,
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val productAdapter = ProductAdapter(onProductClick)
+        private val productAdapter = ProductAdapter(productClickListener)
 
         init {
             binding.rvProducts.adapter = productAdapter
@@ -109,4 +115,8 @@ class PromotionDiffCallback : DiffUtil.ItemCallback<PromotionItem>() {
     override fun areContentsTheSame(oldItem: PromotionItem, newItem: PromotionItem): Boolean {
         return oldItem == newItem
     }
+}
+
+interface MoreProductsClickListener {
+    fun onMoreProductsClick(title: String)
 }

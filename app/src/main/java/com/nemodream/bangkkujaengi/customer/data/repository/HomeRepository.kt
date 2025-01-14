@@ -12,6 +12,7 @@ import com.nemodream.bangkkujaengi.customer.data.model.Promotion
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionHeader
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionItem
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
+import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -75,6 +76,7 @@ class HomeRepository @Inject constructor(
             images = imageUrls,
             isBest = getBoolean("isBest") ?: false,
             category = CategoryType.fromString(getString("category") ?: ""),
+            subCategory = SubCategoryType.fromString(getString("subCategory") ?: ""),
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
