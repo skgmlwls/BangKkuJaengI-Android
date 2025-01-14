@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_home"
+        android:id="@+id/toolbar_category_product"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,15 +41,47 @@
         android:id="@+id/tab_category"
         style="@style/AppTabLayoutStyle"
         android:layout_width="0dp"
-        app:tabInlineLabel="true"
-        app:tabGravity="start"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_home"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_category_product"
+        app:tabGravity="start"
         app:tabIndicatorColor="@color/black"
+        app:tabInlineLabel="true"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray_400" />
 
+    <HorizontalScrollView
+        android:id="@+id/scroll_sub_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_category">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_sub_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingEnd="40dp"
+            app:chipSpacingHorizontal="8dp"
+            app:singleSelection="true" />
+
+    </HorizontalScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_category_product_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_sub_category"
+        app:spanCount="2"
+        tools:listitem="@layout/item_product" />
 </androidx.constraintlayout.widget.ConstraintLayout>
