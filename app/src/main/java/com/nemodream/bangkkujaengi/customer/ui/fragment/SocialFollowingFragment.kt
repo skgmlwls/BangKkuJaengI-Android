@@ -104,7 +104,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 binding.ivSelectedProfileImage.loadImage(selectedMember.memberProfileImage.toString())
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
-                    "팔로잉 ${selectedMember.followingCount}명 | 팔로워 ${selectedMember.followerCount}명"
+                    "팔로잉 ${selectedMember.followingCount}명     팔로워 ${selectedMember.followerCount}명"
                 // 이미지 로드 방법 2
                 // Glide 라이브러리를 사용하여 이미지를 로드
 //                Glide.with(this)
