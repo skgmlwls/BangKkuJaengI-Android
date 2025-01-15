@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.SortType
 import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.customer.data.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +24,21 @@ class CategoryProductViewModel @Inject constructor(
     // 선택된 서브카테고리를 저장하는 LiveData
     private val _selectedSubCategory = MutableLiveData<SubCategoryType>()
 
+    // 현재 정렬 타입
+    private var _currentSortType = MutableLiveData(SortType.PURCHASE)
+
     // 상품 목록을 저장하는 LiveData
     private val _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> = _products
+
+    // 정렬 텍스트를 위한 LiveData
+    private val _sortText = MutableLiveData<String>()
+    val sortText: LiveData<String> = _sortText
+
+    init {
+        updateSortText(SortType.LATEST)
+        fetchProducts()
+    }
 
     /*
     * 선택된 상위 카테고리를 업데이트하고 해당 카테고리의 첫 번째 서브카테고리를 자동으로 선택
@@ -54,13 +67,13 @@ class CategoryProductViewModel @Inject constructor(
         runCatching {
             _categoryType.value?.let { category ->
                 _selectedSubCategory.value?.let { subCategory ->
-                    Log.d("CategoryProductViewModel", "Fetching products - Category: ${category.name}, SubCategory: ${subCategory.title}")
-                    repository.getProducts(category, subCategory)
+                    _currentSortType.value?.let { sortType ->
+                        repository.getProducts(category, subCategory, sortType)
+                    }
                 }
             }
         }.onSuccess { products ->
             products?.let {
-                Log.d("CategoryProductViewModel", "Products fetched successfully: ${it.size} items")
                 _products.value = it
             }
         }.onFailure { throwable ->
@@ -69,4 +82,21 @@ class CategoryProductViewModel @Inject constructor(
         }
     }
 
+    fun updateSort(sortType: SortType) {
+        _currentSortType.value = sortType
+        updateSortText(sortType)
+        fetchProducts()
+    }
+
+    private fun updateSortText(sortType: SortType) {
+        _sortText.value = when (sortType) {
+            SortType.PURCHASE -> "구매 많은 순"
+            SortType.REVIEW -> "리뷰 많은 순"
+            SortType.PRICE_HIGH -> "가격 높은 순"
+            SortType.PRICE_LOW -> "가격 낮은 순"
+            SortType.VIEWS -> "조회 많은 순"
+            SortType.LATEST -> "최신순"
+            SortType.DISCOUNT -> "할인율 높은 순"
+        }
+    }
 }

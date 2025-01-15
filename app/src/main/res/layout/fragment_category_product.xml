@@ -73,6 +73,19 @@
 
     </HorizontalScrollView>
 
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_promotion_sort"
+        style="@style/AppChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="정렬"
+        app:closeIcon="@drawable/ic_arrow_drop_up"
+        app:closeIconEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_sub_category" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_category_product_list"
         android:layout_width="0dp"
@@ -81,7 +94,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scroll_sub_category"
+        app:layout_constraintTop_toBottomOf="@id/chip_promotion_sort"
         app:spanCount="2"
         tools:listitem="@layout/item_product" />
 </androidx.constraintlayout.widget.ConstraintLayout>

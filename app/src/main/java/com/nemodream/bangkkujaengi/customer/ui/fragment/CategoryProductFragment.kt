@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.SortType
 import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
@@ -66,6 +68,13 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
         _binding = null
     }
 
+    override fun onProductClick(product: Product) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.parent_container, ProductDetailFragment.newInstance(product.productId))
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun setupUI() {
         binding.rvCategoryProductList.adapter = adapter
     }
@@ -109,6 +118,10 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
                 }
                 else -> false
             }
+        }
+
+        binding.chipPromotionSort.setOnClickListener {
+            showSortPopup(it)
         }
     }
 
@@ -178,11 +191,39 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
 
     }
 
-    override fun onProductClick(product: Product) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_container, ProductDetailFragment.newInstance(product.productId))
-            .addToBackStack(null)
-            .commit()
+    private fun showSortPopup(view: View) {
+        PopupMenu(requireContext(), view).apply {
+            menuInflater.inflate(R.menu.product_sort_menu, menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.sort_purchase -> {
+                        viewModel.updateSort(SortType.PURCHASE)
+                        true
+                    }
+                    R.id.sort_review -> {
+                        viewModel.updateSort(SortType.REVIEW)
+                        true
+                    }
+                    R.id.sort_price_high -> {
+                        viewModel.updateSort(SortType.PRICE_HIGH)
+                        true
+                    }
+                    R.id.sort_price_low -> {
+                        viewModel.updateSort(SortType.PRICE_LOW)
+                        true
+                    }
+                    R.id.sort_discount -> {
+                        viewModel.updateSort(SortType.DISCOUNT)
+                        true
+                    }
+                    R.id.sort_views -> {
+                        viewModel.updateSort(SortType.VIEWS)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }.show()
     }
 
     companion object {
