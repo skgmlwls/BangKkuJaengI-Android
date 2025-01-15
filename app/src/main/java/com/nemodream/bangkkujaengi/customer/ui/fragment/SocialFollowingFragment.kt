@@ -90,6 +90,12 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
             profileAdapter.updateList(members) // 어댑터 업데이트
         }
 
+        viewModel.selectedMember.observe(viewLifecycleOwner) { selectedMember ->
+            selectedMember?.let {
+                profileAdapter.setSelectedMember(it.id)
+            }
+        }
+
         // 선택한 프로필의 게시글 데이터 관찰
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
             postAdapter.submitList(posts) // 게시글 리스트 설정

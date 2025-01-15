@@ -13,6 +13,8 @@ class SocialFollowingProfilesAdapter(
     private val onProfileClick: (Member) -> Unit
 ) : RecyclerView.Adapter<SocialFollowingProfilesAdapter.FollowingProfileViewHolder>() {
 
+    private var selectedMemberId: String? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowingProfileViewHolder {
         val binding = ItemFollowingProfileBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -23,7 +25,7 @@ class SocialFollowingProfilesAdapter(
     }
 
     override fun onBindViewHolder(holder: FollowingProfileViewHolder, position: Int) {
-        holder.bind(followingMembers[position])
+        holder.bind(followingMembers[position], followingMembers[position].id == selectedMemberId)
     }
 
     override fun getItemCount(): Int = followingMembers.size
@@ -37,24 +39,30 @@ class SocialFollowingProfilesAdapter(
         notifyDataSetChanged()
     }
 
+    fun setSelectedMember(memberId: String) {
+        selectedMemberId = memberId
+        notifyDataSetChanged()
+    }
 
     inner class FollowingProfileViewHolder(
         private val binding: ItemFollowingProfileBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(member: Member) {
+        fun bind(member: Member, isSelected: Boolean) {
             // 프로필 이미지 로드
-            member.memberProfileImage?.let {
-                binding.ivFollowingProfileImage.loadImage(it)
-            }
+            member.memberProfileImage?.let { binding.ivFollowingProfileImage.loadImage(it) }
 
             // 닉네임 설정
             binding.tvFollowingProfileNickname.text = member.memberNickName
+
 
             // 프로필 클릭 이벤트 처리
             binding.root.setOnClickListener {
                 onProfileClick(member)
             }
+
+            // 프로필 선택 상태에 따른 스타일
+            binding.root.isSelected = isSelected
         }
     }
 }
