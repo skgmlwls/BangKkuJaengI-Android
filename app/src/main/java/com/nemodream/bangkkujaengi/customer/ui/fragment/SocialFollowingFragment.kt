@@ -24,16 +24,19 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
     private val viewModel: SocialFollowingViewModel by viewModels()
 
+    // 팔로잉 프로필 RecyclerView의 어댑터
     private val profileAdapter: SocialFollowingProfilesAdapter by lazy {
         SocialFollowingProfilesAdapter(mutableListOf()) { member ->
-            viewModel.selectMember(member)
+            viewModel.selectMember(member) // 클릭된 멤버를 ViewModel에 알림
         }
     }
 
+    // 게시글 RecyclerView의 어댑터
     private val postAdapter: SocialDiscoveryAdapter by lazy {
-        SocialDiscoveryAdapter(this)
+        SocialDiscoveryAdapter(this) // Fragment 자체가 OnPostItemClickListener를 구현
     }
 
+    // 프래그먼트의 뷰를 생성하는 메서드
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,57 +46,66 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         return binding.root
     }
 
+    // 뷰가 생성된 후 초기화 작업을 수행하는 메서드
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerViews()
-        observeViewModel()
-        viewModel.loadFollowingMembers()
+        setupRecyclerViews() // RecyclerView 초기화
+        observeViewModel() // ViewModel 데이터 관찰 설정
+        viewModel.loadFollowingMembers() // 팔로잉 멤버 데이터를 로드
     }
 
+    // 프래그먼트가 파괴될 때 Binding 해제
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    // 뷰페이저 설정을 위해 newInstance() 메서드 추가
+    // 뷰페이저 사용 시 인스턴스를 생성하기 위한 메서드
     companion object {
         fun newInstance(): SocialFollowingFragment {
             return SocialFollowingFragment()
         }
     }
 
+    // RecyclerView를 초기화하는 메서드
     private fun setupRecyclerViews() {
+        // 팔로잉 프로필 RecyclerView 초기화
         binding.rvFollowingProfiles.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) // 수평 스크롤 설정
             adapter = profileAdapter
         }
 
+        // 게시글 RecyclerView 초기화
         binding.rvFollowingPosts.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = GridLayoutManager(context, 2) // 2열 그리드 레이아웃 설정
             adapter = postAdapter
         }
     }
 
+    // ViewModel 데이터를 관찰하고 UI를 업데이트하는 메서드
     private fun observeViewModel() {
+        // 팔로잉 멤버 리스트 관찰
         viewModel.followingMembers.observe(viewLifecycleOwner) { members ->
-            profileAdapter.updateList(members)
+            profileAdapter.updateList(members) // 멤버 리스트를 어댑터에 업데이트
         }
 
+        // 선택된 멤버 관찰
         viewModel.selectedMember.observe(viewLifecycleOwner) { selectedMember ->
             selectedMember?.let {
-                profileAdapter.setSelectedMemberId(it.id)
+                profileAdapter.setSelectedMemberId(it.id) // 어댑터에 선택된 멤버 ID 설정
             }
         }
 
+        // 선택된 멤버의 게시글 리스트 관찰
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
-            postAdapter.submitList(posts)
+            postAdapter.submitList(posts) // 게시글 리스트를 어댑터에 업데이트
         }
     }
 
     /**
-     * 게시글 클릭 이벤트 처리
+     * 게시글 클릭 이벤트를 처리하는 메서드
      */
     override fun onPostItemClick(post: Post) {
-        // 클릭된 게시글 처리 (예: 상세 페이지로 이동)
+        // 게시글 클릭 시 처리할 로직 (예: 상세 화면으로 이동)
     }
 }
