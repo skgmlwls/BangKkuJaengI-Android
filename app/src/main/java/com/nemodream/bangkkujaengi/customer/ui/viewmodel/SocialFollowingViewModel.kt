@@ -23,15 +23,13 @@ class SocialFollowingViewModel @Inject constructor(
     private val _selectedMember = MutableLiveData<Member?>()
     val selectedMember: LiveData<Member?> get() = _selectedMember
 
-
     fun loadFollowingMembers() {
         val members = repository.getFollowingMembers()
         _followingMembers.value = members
 
         // 첫 번째 멤버 선택
         if (members.isNotEmpty()) {
-            _selectedMember.value = members.first()
-            loadMemberPosts(members.first())
+            selectMember(members.first())
         }
     }
 
@@ -40,7 +38,7 @@ class SocialFollowingViewModel @Inject constructor(
         loadMemberPosts(member)
     }
 
-    fun loadMemberPosts(member: Member) {
+    private fun loadMemberPosts(member: Member) {
         _memberPosts.value = repository.getPostsByMember(member)
     }
 }

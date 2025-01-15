@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.databinding.ItemFollowingProfileBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
@@ -25,21 +26,24 @@ class SocialFollowingProfilesAdapter(
     }
 
     override fun onBindViewHolder(holder: FollowingProfileViewHolder, position: Int) {
-        holder.bind(followingMembers[position], followingMembers[position].id == selectedMemberId)
+        val member = followingMembers[position]
+        val isSelected = member.id == selectedMemberId
+        holder.bind(member, isSelected)
+
+        holder.itemView.setOnClickListener {
+            onProfileClick(member) // 클릭 이벤트 처리
+        }
     }
 
     override fun getItemCount(): Int = followingMembers.size
 
-    /**
-     * 프로필 목록 업데이트
-     */
     fun updateList(newList: List<Member>) {
         followingMembers.clear()
         followingMembers.addAll(newList)
         notifyDataSetChanged()
     }
 
-    fun setSelectedMember(memberId: String) {
+    fun setSelectedMemberId(memberId: String) {
         selectedMemberId = memberId
         notifyDataSetChanged()
     }
@@ -52,17 +56,16 @@ class SocialFollowingProfilesAdapter(
             // 프로필 이미지 로드
             member.memberProfileImage?.let { binding.ivFollowingProfileImage.loadImage(it) }
 
-            // 닉네임 설정
+            // 닉네임 설정 및 표시 여부
             binding.tvFollowingProfileNickname.text = member.memberNickName
+            binding.tvFollowingProfileNickname.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
 
-
-            // 프로필 클릭 이벤트 처리
-            binding.root.setOnClickListener {
-                onProfileClick(member)
+            // 선택 상태에 따른 스타일 적용
+            if (isSelected) {
+                binding.ivFollowingProfileImage.setBackgroundResource(R.drawable.background_selected_profile)
+            } else {
+                binding.ivFollowingProfileImage.setBackgroundResource(android.R.color.transparent)
             }
-
-            // 프로필 선택 상태에 따른 스타일
-            binding.root.isSelected = isSelected
         }
     }
 }
