@@ -133,13 +133,6 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
                 )
             }
 
-            categoryBroadcast.root.setOnClickListener {
-                replaceParentFragment(
-                    CategoryProductFragment.newInstance(CategoryType.BROADCAST),
-                    CategoryType.BROADCAST.name
-                )
-            }
-
             // 각 메뉴 버튼에 따라서 화면 이동하기
             toolbarHome.setOnMenuItemClickListener {
                 when (it.itemId) {
