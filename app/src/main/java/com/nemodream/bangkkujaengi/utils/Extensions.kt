@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.utils
 
+import android.os.Bundle
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.View
@@ -26,6 +27,17 @@ fun Fragment.navigateToChildFragment(fragment: Fragment) {
 * 새로운 화면을 BottomNavigation을 공유하지 않고, 가리는 목적으로 활용
 * */
 fun Fragment.replaceParentFragment(fragment: Fragment, tag: String) {
+    requireParentFragment().parentFragment?.parentFragmentManager?.commit {
+        replace(R.id.parent_container, fragment)
+        addToBackStack(tag)
+    }
+}
+
+// 데이터 전달이 가능한 ParentFragment 화면을 변경하는 함수
+fun Fragment.replaceParentFragment2(fragment: Fragment, tag: String, data: Bundle? = null) {
+    data?.let {
+        fragment.arguments = it // 전달받은 데이터를 Fragment의 arguments에 설정
+    }
     requireParentFragment().parentFragment?.parentFragmentManager?.commit {
         replace(R.id.parent_container, fragment)
         addToBackStack(tag)

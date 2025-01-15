@@ -54,6 +54,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.firebase.common.ktx)
     ksp(libs.hilt.compiler)
 
     // Retrofit2
