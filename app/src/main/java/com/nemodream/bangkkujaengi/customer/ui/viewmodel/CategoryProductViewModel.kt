@@ -36,8 +36,23 @@ class CategoryProductViewModel @Inject constructor(
     val sortText: LiveData<String> = _sortText
 
     init {
-        updateSortText(SortType.PRICE_HIGH)
+        updateSortText(SortType.PURCHASE) // 기본으로 구매 많은 순
+    }
+
+    /*
+    * 정렬 타입 업데이트
+    * */
+    fun updateSort(sortType: SortType) {
+        _currentSortType.value = sortType
+        updateSortText(sortType)
         fetchProducts()
+    }
+
+    /*
+    * 정렬 선택된 메뉴로 칩 택스트 변경
+    * */
+    private fun updateSortText(sortType: SortType) {
+        _sortText.value = sortType.toDisplayString()
     }
 
     /*
@@ -45,8 +60,14 @@ class CategoryProductViewModel @Inject constructor(
     * */
     fun updateCategory(type: CategoryType) {
         _categoryType.value = type
+        if (type == CategoryType.ALL) {
+            _selectedSubCategory.value = SubCategoryType.ALL
+            fetchProducts()  // 여기서 한 번만 호출
+            return
+        }
         SubCategoryType.getSubCategories(type).firstOrNull()?.let {
-            updateSubCategory(it)
+            _selectedSubCategory.value = it  // updateSubCategory() 대신 직접 값만 변경
+            fetchProducts()  // 여기서 한 번만 호출
         }
     }
 
@@ -82,13 +103,4 @@ class CategoryProductViewModel @Inject constructor(
         }
     }
 
-    fun updateSort(sortType: SortType) {
-        _currentSortType.value = sortType
-        updateSortText(sortType)
-        fetchProducts()
-    }
-
-    private fun updateSortText(sortType: SortType) {
-        _sortText.value = sortType.toDisplayString()
-    }
 }
