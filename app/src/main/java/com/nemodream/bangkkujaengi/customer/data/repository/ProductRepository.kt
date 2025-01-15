@@ -27,49 +27,55 @@ class ProductRepository @Inject constructor(
         category: CategoryType,
         subCategory: SubCategoryType,
         sortType: SortType
-    ): List<Product> = try {
+    ): List<Product> {
+        return try {
+            Log.d("ProductRepository", "Fetching products with category: $category, subCategory: ${subCategory.title}")
 
-        // 기본 쿼리 생성
-        var query = when (category) {
-            CategoryType.ALL -> {
-                firestore.collection(COLLECTION_PRODUCTS)
-            }
-
-            else -> {
-                firestore.collection(COLLECTION_PRODUCTS)
-                    .whereEqualTo("category", category.name)
-                    .let { baseQuery ->
-                        when(subCategory.title == "전체") {
-                            true -> baseQuery.whereEqualTo("subCategory", subCategory.name)
-                            false -> baseQuery
+            // 기본 쿼리 생성
+            var query = when (category) {
+                CategoryType.ALL -> {
+                    Log.d("ProductRepository", "Getting ALL products without filtering")
+                    firestore.collection(COLLECTION_PRODUCTS)
+                }
+                else -> {
+                    Log.d("ProductRepository", "Filtering by category: ${category.name}")
+                    firestore.collection(COLLECTION_PRODUCTS)
+                        .whereEqualTo("category", category.name)
+                        .let { baseQuery ->
+                            if (subCategory.title != "전체") {
+                                baseQuery.whereEqualTo("subCategory", subCategory.name)
+                            } else {
+                                baseQuery
+                            }
                         }
-                    }
+                }
             }
-        }
 
-        // 정렬 조건 추가
-        query = when (sortType) {
-            SortType.PURCHASE -> query.orderBy("purchaseCount", Query.Direction.DESCENDING)
-            SortType.REVIEW -> query.orderBy("reviewCount", Query.Direction.DESCENDING)
-            SortType.PRICE_HIGH -> query.orderBy("price", Query.Direction.DESCENDING)
-            SortType.PRICE_LOW -> query.orderBy("price", Query.Direction.ASCENDING)
-            SortType.VIEWS -> query.orderBy("viewCount", Query.Direction.DESCENDING)
-            SortType.LATEST -> query.orderBy("createdAt", Query.Direction.DESCENDING)
-            SortType.DISCOUNT -> query.orderBy("saleRate", Query.Direction.DESCENDING)
-        }
-
-        val documents = query.get().await().documents
-
-        documents.mapNotNull { document ->
-            try {
-                document.toProduct()
-            } catch (e: Exception) {
-                null
+            // 정렬 조건 추가
+            query = when (sortType) {
+                SortType.PURCHASE -> query.orderBy("purchaseCount", Query.Direction.DESCENDING)
+                SortType.REVIEW -> query.orderBy("reviewCount", Query.Direction.DESCENDING)
+                SortType.PRICE_HIGH -> query.orderBy("price", Query.Direction.DESCENDING)
+                SortType.PRICE_LOW -> query.orderBy("price", Query.Direction.ASCENDING)
+                SortType.VIEWS -> query.orderBy("viewCount", Query.Direction.DESCENDING)
+                SortType.LATEST -> query.orderBy("createdAt", Query.Direction.DESCENDING)
+                SortType.DISCOUNT -> query.orderBy("saleRate", Query.Direction.DESCENDING)
             }
+
+            val documents = query.get().await().documents
+            Log.d("ProductRepository", "Query returned ${documents.size} documents")
+
+            documents.mapNotNull { document ->
+                try {
+                    document.toProduct()
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Query failed", e)
+            emptyList()
         }
-    } catch (e: Exception) {
-        Log.e("ProductRepository", "Query failed", e)
-        emptyList()
     }
 
     private suspend fun DocumentSnapshot.toProduct(): Product {
