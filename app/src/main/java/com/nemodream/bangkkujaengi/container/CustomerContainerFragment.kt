@@ -34,7 +34,7 @@ class CustomerContainerFragment : Fragment() {
 
         // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
-            navigateToChildFragment(HomeFragment())
+            navigateToChildFragment(ShoppingCartFragment())
         }
     }
 
