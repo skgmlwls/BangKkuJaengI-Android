@@ -26,7 +26,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 5,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 6
             ),
             Member(
                 id = "2",
@@ -40,7 +41,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 3,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 7
             ),
             Member(
                 id = "3",
@@ -54,7 +56,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 6,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 8
             )
         )
     }
