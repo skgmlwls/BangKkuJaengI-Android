@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
@@ -15,6 +16,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import com.nemodream.bangkkujaengi.R
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -92,7 +94,21 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         // 선택된 멤버 관찰
         viewModel.selectedMember.observe(viewLifecycleOwner) { selectedMember ->
             selectedMember?.let {
+                // 선택된 팔로잉의 프로필 아이콘 테두리, 닉네임 표시
                 profileAdapter.setSelectedMemberId(it.id) // 어댑터에 선택된 멤버 ID 설정
+
+                // 선택된 팔로잉의 프로필 정보바 표시
+                binding.clSelectedProfileInfo.visibility = View.VISIBLE
+                binding.tvSelectedProfileNickname.text = it.memberNickName
+                binding.tvSelectedProfileFollowInfo.text =
+                    "팔로잉 ${selectedMember.followingCount}명 | 팔로워 ${selectedMember.followerCount}명"
+                Glide.with(this)
+                    .load(selectedMember.memberProfileImage)
+                    .placeholder(R.drawable.tmp_profile_pricture_24px)
+                    .into(binding.ivSelectedProfileImage)
+            } ?: run {
+                // 선택된 멤버가 없을 경우 프로필 정보를 숨김
+                binding.clSelectedProfileInfo.visibility = View.GONE
             }
         }
 
