@@ -35,4 +35,7 @@ data class Member(
 
     // 팔로잉 목록
     val followingList: List<Member>,
+
+    // 팔로워 수
+    val followerCount:Int,
 )
