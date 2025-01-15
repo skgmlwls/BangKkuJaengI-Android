@@ -12,5 +12,9 @@ data class Product(
     val saleRate: Int = 0,        // ShoppingCart2 브랜치에서 추가된 필드
     val saledPrice: Int = 0,
     val searchKeywords: List<String> = productName.split(" "),
-
+    val purchaseCount: Int = 0,
+    val reviewCount: Int = 0,
+    val viewCount: Int = 0,
+    val subCategory: SubCategoryType = SubCategoryType.ALL,
+    val createdAt: Long = System.currentTimeMillis(),
 )

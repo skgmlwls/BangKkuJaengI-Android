@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.ui.fragment.HomeFragment
 import com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment
@@ -41,14 +42,15 @@ class CustomerContainerFragment : Fragment() {
         binding.customerBottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    navigateToChildFragment(HomeFragment())
+                    childFragmentManager.commit {
+                        replace(R.id.customer_container, HomeFragment())
+                    }
                     true
                 }
                 R.id.navigation_social -> {
                     navigateToChildFragment(SocialFragment())
                     true
                 }
-                // 다른 메뉴 아이템들 추가 예정
                 else -> false
             }
         }
@@ -58,4 +60,5 @@ class CustomerContainerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

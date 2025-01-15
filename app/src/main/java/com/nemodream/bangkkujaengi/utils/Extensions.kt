@@ -22,6 +22,12 @@ fun Fragment.navigateToChildFragment(fragment: Fragment) {
     }
 }
 
+fun Fragment.navigateToParentFragment(fragment: Fragment) {
+    parentFragmentManager.commit {
+        replace(R.id.customer_container, fragment)
+    }
+}
+
 /*
 * ParentFragment 화면을 변경하는 함수
 * 새로운 화면을 BottomNavigation을 공유하지 않고, 가리는 목적으로 활용
