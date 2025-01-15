@@ -143,10 +143,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, (Product) -> Unit {
                         true
                     }
 
-//                    R.id.menu_cart -> {
-//                        replaceParentFragment(ShoppingCartFragment(), "HomeFragment")
-//                        true
-//                    }
+                    R.id.menu_cart -> {
+                        replaceParentFragment(ShoppingCartFragment(), "HomeFragment")
+                        true
+                    }
                     else -> false
                 }
             }

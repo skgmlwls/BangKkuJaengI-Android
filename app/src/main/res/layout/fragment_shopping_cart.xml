@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".customer.ui.fragment.ShoppingCartFragment" >
+    tools:context=".customer.ui.fragment.ShoppingCartFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tb_shopping_cart"
@@ -13,11 +14,11 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" >
+        android:theme="?attr/actionBarTheme">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/iv_shopping_cart_toolbar_icon"
@@ -44,8 +45,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,8 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/shopping_cart_24px"
-                    />
+                    android:src="@drawable/shopping_cart_24px" />
 
                 <TextView
                     android:id="@+id/tv_shopping_cart_title"
@@ -73,8 +72,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:text="@string/label_shopping_cart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
             <LinearLayout
@@ -101,40 +99,39 @@
                 android:id="@+id/pd_shopping_cart_product_list_loading"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 android:layout_gravity="center"
-                android:indeterminate="true" />
+                android:indeterminate="true"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_shopping_cart_empty_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:visibility="gone"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_shopping_cart_product_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tv_shopping_cart_expected_price_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/label_shopping_cart_expected_price"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                app:cardElevation="5dp"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -144,8 +141,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -163,9 +159,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -183,9 +178,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -203,9 +197,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -221,27 +214,26 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
             <Button
                 android:id="@+id/btn_shopping_cart_buy"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
-                style="@style/Widget.MaterialComponents.Button"
                 android:backgroundTint="#332828"
-                android:text="구매하기 (1)"
-                />
+                android:text="구매하기 (1)" />
 
             <Button
                 android:id="@+id/btn_shopping_cart_item_add"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
-                style="@style/Widget.MaterialComponents.Button"
                 android:backgroundTint="#332828"
-                android:text="데이터 추가"
-                />
+                android:text="데이터 추가" />
         </LinearLayout>
 
 
