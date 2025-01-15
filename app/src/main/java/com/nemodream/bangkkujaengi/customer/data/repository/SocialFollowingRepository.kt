@@ -1,4 +1,4 @@
-[package com.nemodream.bangkkujaengi.customer.data.repository
+package com.nemodream.bangkkujaengi.customer.data.repository
 
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
