@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFollowingFragment
 import com.nemodream.bangkkujaengi.databinding.ItemSocialPostBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
