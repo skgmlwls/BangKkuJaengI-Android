@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminHomeBinding
 
 class AdminHomeFragment: Fragment() {
@@ -22,10 +23,27 @@ class AdminHomeFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupListeners()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupListeners() {
+        with(binding) {
+            btnManageProduct.root.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.admin_container, AdminProductFragment())
+                    .addToBackStack("AdminHomeFragment")
+                    .commit()
+            }
+
+            btnManageBroadcastProduct.root.setOnClickListener {}
+            btnManageBanner.root.setOnClickListener {}
+            btnManageCoupon.root.setOnClickListener {}
+            btnManageOrder.root.setOnClickListener {}
+        }
     }
 }
