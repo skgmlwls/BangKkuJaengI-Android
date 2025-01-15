@@ -26,6 +26,7 @@ enum class CategoryType {
 
 enum class SubCategoryType(val categoryType: CategoryType, val title: String) {
     // 전체 카테고리 옵션들
+    ALL(CategoryType.ALL, "전체"),
     ALL_FURNITURE(CategoryType.FURNITURE, "전체"),
     ALL_LIGHTING(CategoryType.LIGHTING, "전체"),
     ALL_FABRIC(CategoryType.FABRIC, "전체"),
