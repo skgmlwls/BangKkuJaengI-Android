@@ -1,4 +1,4 @@
-package com.nemodream.bangkkujaengi.customer.data.repository
+[package com.nemodream.bangkkujaengi.customer.data.repository
 
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
@@ -64,7 +64,7 @@ class SocialFollowingRepository @Inject constructor(){
      */
     fun getPostsByMember(member: Member): List<Post> {
         // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
-        return listOf(
+        val allPosts = listOf(
             Post(
                 id = "post11",
                 nickname = "닉네임1",
@@ -96,5 +96,7 @@ class SocialFollowingRepository @Inject constructor(){
                 commentCount = 8
             )
         )
+        // 특정 회원의 닉네임으로 필터링
+        return allPosts.filter { it.nickname == member.memberNickName }
     }
 }
