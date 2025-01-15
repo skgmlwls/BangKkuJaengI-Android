@@ -2,6 +2,7 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +41,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
         super.onCreate(savedInstanceState)
         // 전달받은 categoryType을 초기화
         categoryType = CategoryType.valueOf(
-            arguments?.getString(KEY_CATEGORY_TYPE) ?: CategoryType.FURNITURE.name
+            arguments?.getString(KEY_CATEGORY_TYPE) ?: CategoryType.ALL.name
         )
     }
 
@@ -56,13 +57,10 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
-        setupListeners()
-        setupTabs()
         observeViewModel()
-
-
+        setupTabs()
+        setupListeners()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -82,6 +80,10 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     private fun observeViewModel() {
         viewModel.products.observe(viewLifecycleOwner) { products ->
             adapter.submitList(products)
+        }
+
+        viewModel.sortText.observe(viewLifecycleOwner) { sortText ->
+            binding.chipPromotionSort.text = sortText
         }
     }
 
@@ -130,44 +132,52 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     * 전달 받은 categoryType에 해당하는 탭을 선택한다.
     * */
     private fun setupTabs() {
+        // 탭 추가
         CategoryType.entries.forEach { type ->
             binding.tabCategory.addTab(binding.tabCategory.newTab().setText(type.getTabTitle()))
         }
 
-        val initialPosition = categoryType?.ordinal ?: 0
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
-            binding.tabCategory.selectTab(binding.tabCategory.getTabAt(initialPosition), true)
+        // 초기 데이터 로드와 탭 선택
+        categoryType?.let { initialType ->
+            val position = initialType.ordinal
+            setupSubCategoryChips(initialType)
+            binding.tabCategory.getTabAt(position)?.select()
         }
+
     }
 
     fun setupSubCategoryChips(categoryType: CategoryType) {
         binding.chipGroupSubCategory.removeAllViews()
-        viewModel.updateCategory(categoryType)  // 카테고리 업데이트
+        val subCategories = SubCategoryType.getSubCategories(categoryType)
 
-        SubCategoryType.getSubCategories(categoryType).forEach { subCategory ->
-            val chip = Chip(requireContext()).apply {
-                text = subCategory.title
-                tag = subCategory  // SubCategoryType을 tag로 저장
+        // 하위 카테고리가 있을 때만 칩을 생성
+        if (subCategories.isNotEmpty()) {
+            subCategories.forEach { subCategory ->
+                val chip = Chip(requireContext()).apply {
+                    text = subCategory.title
+                    tag = subCategory  // SubCategoryType을 tag로 저장
 
-                chipCornerRadius = resources.getDimension(R.dimen.chip_corner_radius)
-                setChipBackgroundColorResource(R.color.white)
-                chipStrokeWidth = resources.getDimension(R.dimen.chip_stroke_width)
-                setChipStrokeColorResource(R.color.black)
-                typeface = Typeface.DEFAULT_BOLD
+                    chipCornerRadius = resources.getDimension(R.dimen.chip_corner_radius)
+                    setChipBackgroundColorResource(R.color.white)
+                    chipStrokeWidth = resources.getDimension(R.dimen.chip_stroke_width)
+                    setChipStrokeColorResource(R.color.black)
+                    typeface = Typeface.DEFAULT_BOLD
 
-                setOnClickListener {
-                    updateChipSelection(this)
-                    viewModel.updateSubCategory(tag as SubCategoryType)  // 선택된 서브카테고리 업데이트
+                    setOnClickListener {
+                        updateChipSelection(this)
+                        viewModel.updateSubCategory(tag as SubCategoryType)
+                    }
                 }
+                binding.chipGroupSubCategory.addView(chip)
             }
-            binding.chipGroupSubCategory.addView(chip)
+
+            // 첫 번째 칩 선택 상태로 만들기만 하고 updateSubCategory는 호출하지 않음
+            binding.chipGroupSubCategory.getChildAt(0)?.let { firstChip ->
+                updateChipSelection(firstChip as Chip)
+            }
         }
 
-        if (binding.chipGroupSubCategory.childCount > 0) {
-            updateChipSelection(binding.chipGroupSubCategory.getChildAt(0) as Chip)
-        }
+        viewModel.updateCategory(categoryType)  // 한 번만 호출
     }
 
     private fun updateChipSelection(selectedChip: Chip) {
@@ -184,6 +194,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
                         // 선택되지 않은 Chip 스타일
                         chip.setChipBackgroundColorResource(R.color.white)
                         chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                        chip.typeface = Typeface.DEFAULT
                     }
                 }
             }

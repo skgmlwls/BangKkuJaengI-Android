@@ -5,8 +5,7 @@ enum class CategoryType {
     FURNITURE,
     LIGHTING,
     FABRIC,
-    DECO,
-    BROADCAST;
+    DECO;
 
     fun getTabTitle(): String = when(this) {
         ALL -> "전체"
@@ -14,7 +13,6 @@ enum class CategoryType {
         LIGHTING -> "조명"
         FABRIC -> "패브릭"
         DECO -> "데코/식물"
-        BROADCAST -> "방송상품"
     }
 
     companion object {
@@ -31,7 +29,6 @@ enum class SubCategoryType(val categoryType: CategoryType, val title: String) {
     ALL_LIGHTING(CategoryType.LIGHTING, "전체"),
     ALL_FABRIC(CategoryType.FABRIC, "전체"),
     ALL_DECO(CategoryType.DECO, "전체"),
-    ALL_BROADCAST(CategoryType.BROADCAST, "전체"),
 
     // 가구 서브카테고리
     CHAIR(CategoryType.FURNITURE, "의자"),

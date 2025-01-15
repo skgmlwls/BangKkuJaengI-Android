@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -26,39 +27,49 @@ class ProductRepository @Inject constructor(
         category: CategoryType,
         subCategory: SubCategoryType,
         sortType: SortType
-    ): List<Product> {
-        return try {
-            var query = when {
-                category == CategoryType.ALL -> firestore.collection(COLLECTION_PRODUCTS)
-                subCategory.title == "전체" -> firestore.collection(COLLECTION_PRODUCTS)
-                    .whereEqualTo("category", category.name)
-                else -> firestore.collection(COLLECTION_PRODUCTS)
-                    .whereEqualTo("category", category.name)
-                    .whereEqualTo("subCategory", subCategory.name)
+    ): List<Product> = try {
+
+        // 기본 쿼리 생성
+        var query = when (category) {
+            CategoryType.ALL -> {
+                firestore.collection(COLLECTION_PRODUCTS)
             }
 
-            // SortType에 따라 정렬 조건 추가
-            query = when (sortType) {
-                SortType.PURCHASE -> query.orderBy("purchaseCount", Query.Direction.DESCENDING)
-                SortType.REVIEW -> query.orderBy("reviewCount", Query.Direction.DESCENDING)
-                SortType.PRICE_HIGH -> query.orderBy("price", Query.Direction.DESCENDING)
-                SortType.PRICE_LOW -> query.orderBy("price", Query.Direction.ASCENDING)
-                SortType.VIEWS -> query.orderBy("viewCount", Query.Direction.DESCENDING)
-                SortType.LATEST -> query.orderBy("createdAt", Query.Direction.DESCENDING)
-                SortType.DISCOUNT -> query.orderBy("saledRate", Query.Direction.DESCENDING)
-            }
-
-            query.get().await().documents
-                .mapNotNull { document ->
-                    try {
-                        document.toProduct()
-                    } catch (e: Exception) {
-                        null
+            else -> {
+                firestore.collection(COLLECTION_PRODUCTS)
+                    .whereEqualTo("category", category.name)
+                    .let { baseQuery ->
+                        when(subCategory.title == "전체") {
+                            true -> baseQuery.whereEqualTo("subCategory", subCategory.name)
+                            false -> baseQuery
+                        }
                     }
-                }
-        } catch (e: Exception) {
-            emptyList()
+            }
         }
+
+        // 정렬 조건 추가
+        query = when (sortType) {
+            SortType.PURCHASE -> query.orderBy("purchaseCount", Query.Direction.DESCENDING)
+            SortType.REVIEW -> query.orderBy("reviewCount", Query.Direction.DESCENDING)
+            SortType.PRICE_HIGH -> query.orderBy("price", Query.Direction.DESCENDING)
+            SortType.PRICE_LOW -> query.orderBy("price", Query.Direction.ASCENDING)
+            SortType.VIEWS -> query.orderBy("viewCount", Query.Direction.DESCENDING)
+            SortType.LATEST -> query.orderBy("createdAt", Query.Direction.DESCENDING)
+            SortType.DISCOUNT -> query.orderBy("saleRate", Query.Direction.DESCENDING)
+        }
+
+        val documents = query.get().await().documents
+
+        documents.mapNotNull { document ->
+            try {
+                document.toProduct()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    } catch (e: Exception) {
+        Log.e("ProductRepository", "Query failed", e)
+        emptyList()
     }
 
     private suspend fun DocumentSnapshot.toProduct(): Product {
@@ -77,7 +88,7 @@ class ProductRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saleRate = getLong("saledRate")?.toInt() ?: 0
+            saleRate = getLong("saleRate")?.toInt() ?: 0
         )
     }
 

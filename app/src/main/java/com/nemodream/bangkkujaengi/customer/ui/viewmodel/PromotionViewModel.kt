@@ -45,15 +45,7 @@ class PromotionViewModel @Inject constructor(
     }
 
     private fun updateSortText(sortType: SortType) {
-        _sortText.value = when (sortType) {
-            SortType.PURCHASE -> "구매 많은 순"
-            SortType.REVIEW -> "리뷰 많은 순"
-            SortType.PRICE_HIGH -> "가격 높은 순"
-            SortType.PRICE_LOW -> "가격 낮은 순"
-            SortType.VIEWS -> "조회 많은 순"
-            SortType.LATEST -> "최신순"
-            SortType.DISCOUNT -> "할인율 높은 순"
-        }
+        _sortText.value = sortType.toDisplayString()
     }
 
     private fun getPromotionProducts(title: String, sortType: SortType) = viewModelScope.launch {
