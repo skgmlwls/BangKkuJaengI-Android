@@ -100,7 +100,7 @@ class PromotionRepository @Inject constructor(
             "reviewCount" -> reviewCount
             "price" -> price
             "viewCount" -> viewCount
-            "saledRate" -> saledRate
+            "saledRate" -> saleRate
             else -> 0
         }
     }
@@ -133,7 +133,7 @@ class PromotionRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saledRate = getLong("saledRate")?.toInt() ?: 0,
+            saleRate = getLong("saledRate")?.toInt() ?: 0,
             purchaseCount = getLong("purchaseCount")?.toInt() ?: 0,
             reviewCount = getLong("reviewCount")?.toInt() ?: 0,
             viewCount = getLong("viewCount")?.toInt() ?: 0,

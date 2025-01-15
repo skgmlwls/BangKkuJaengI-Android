@@ -80,7 +80,7 @@ class SearchRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saledRate = getLong("saledRate")?.toInt() ?: 0,
+            saleRate = getLong("saledRate")?.toInt() ?: 0,
         )
     }
 }

@@ -121,12 +121,12 @@ class ProductDetailFragment: Fragment() {
 
     private fun setupDiscountViews(product: Product) {
         with(binding) {
-            when(product.saledRate > 0) {
+            when(product.saleRate > 0) {
                 true -> {
                     tvProductDetailDiscountRate.visibility = View.VISIBLE
                     tvProductDetailDiscountPrice.visibility = View.VISIBLE
                     tvProductDetailDiscountPrice.text = "${product.saledPrice.toCommaString()}원"
-                    tvProductDetailDiscountRate.text = "${product.saledRate}%"
+                    tvProductDetailDiscountRate.text = "${product.saleRate}%"
                     tvProductDetailPrice.paintFlags = tvProductDetailPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
                 false -> {
