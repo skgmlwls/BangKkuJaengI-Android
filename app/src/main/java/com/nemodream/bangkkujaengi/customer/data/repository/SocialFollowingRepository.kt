@@ -26,7 +26,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 5,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 6
             ),
             Member(
                 id = "2",
@@ -40,7 +41,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 3,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 7
             ),
             Member(
                 id = "3",
@@ -54,7 +56,8 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 6,
-                followingList = emptyList()
+                followingList = emptyList(),
+                followerCount = 8
             )
         )
     }
@@ -64,10 +67,11 @@ class SocialFollowingRepository @Inject constructor(){
      */
     fun getPostsByMember(member: Member): List<Post> {
         // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
-        return listOf(
+        val allPosts = listOf(
             Post(
                 id = "post11",
                 nickname = "닉네임1",
+                authorProfilePicture = "https://example.com/image1.jpg",
                 title = "게시글 제목 11",
                 content = "게시글 내용 11",
                 imageList = listOf("https://example.com/post1_img11.jpg"),
@@ -77,12 +81,25 @@ class SocialFollowingRepository @Inject constructor(){
             Post(
                 id = "post22",
                 nickname = "닉네임1",
+                authorProfilePicture = "https://example.com/image1.jpg",
                 title = "게시글 제목 22",
                 content = "게시글 내용 22",
                 imageList = listOf("https://example.com/post2_img11.jpg"),
                 savedCount = 15,
                 commentCount = 8
+            ),
+            Post(
+                id = "post32",
+                nickname = "닉네임2",
+                authorProfilePicture = "https://example.com/image1.jpg",
+                title = "게시글 제목 33",
+                content = "게시글 내용 33",
+                imageList = listOf("https://example.com/post2_img11.jpg"),
+                savedCount = 15,
+                commentCount = 8
             )
         )
+        // 특정 회원의 닉네임으로 필터링
+        return allPosts.filter { it.nickname == member.memberNickName }
     }
 }

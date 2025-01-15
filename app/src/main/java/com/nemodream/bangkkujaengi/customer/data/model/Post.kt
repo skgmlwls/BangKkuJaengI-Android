@@ -7,6 +7,9 @@ data class Post(
     // 작성자 아이디
     val nickname: String,
 
+    // 작성자 프사
+    val authorProfilePicture: String,
+
     // 게시글 제목
     val title: String,
 

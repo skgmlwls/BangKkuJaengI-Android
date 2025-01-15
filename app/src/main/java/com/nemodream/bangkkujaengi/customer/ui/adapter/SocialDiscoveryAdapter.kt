@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFollowingFragment
 import com.nemodream.bangkkujaengi.databinding.ItemSocialPostBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
@@ -41,7 +40,7 @@ class SocialDiscoveryAdapter(
         fun bind(post: Post,) {
             binding.ivSocialPostItemThumbnail.loadImage(post.imageList[0])
             binding.tvSocialPostItemTitle.text = post.title
-            // binding.ivSocialPostItemProfilePicture.loadImage(작성자 프사)
+            binding.ivSocialPostItemProfilePicture.loadImage(post.authorProfilePicture)
             // 닉네임은 유저 데이터 모델 작성 후 변경 예정
             binding.tvSocialPostItemNickname.text = post.nickname
             binding.tvSocialPostItemSavedCount.text = post.savedCount.toString()
