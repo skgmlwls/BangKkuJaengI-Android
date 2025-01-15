@@ -17,6 +17,7 @@ import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewMode
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.utils.loadImage
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -99,13 +100,17 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
                 // 선택된 팔로잉의 프로필 정보바 표시
                 binding.clSelectedProfileInfo.visibility = View.VISIBLE
+                // 이미지 로드 방법 1
+                binding.ivSelectedProfileImage.loadImage(selectedMember.memberProfileImage.toString())
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
                     "팔로잉 ${selectedMember.followingCount}명 | 팔로워 ${selectedMember.followerCount}명"
-                Glide.with(this)
-                    .load(selectedMember.memberProfileImage)
-                    .placeholder(R.drawable.tmp_profile_pricture_24px)
-                    .into(binding.ivSelectedProfileImage)
+                // 이미지 로드 방법 2
+                // Glide 라이브러리를 사용하여 이미지를 로드
+//                Glide.with(this)
+//                    .load(selectedMember.memberProfileImage)
+//                    .placeholder(R.drawable.tmp_profile_pricture_24px)
+//                    .into(binding.ivSelectedProfileImage)
             } ?: run {
                 // 선택된 멤버가 없을 경우 프로필 정보를 숨김
                 binding.clSelectedProfileInfo.visibility = View.GONE
