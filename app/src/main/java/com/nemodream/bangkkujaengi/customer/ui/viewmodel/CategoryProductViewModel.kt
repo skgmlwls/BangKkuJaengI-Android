@@ -22,10 +22,10 @@ class CategoryProductViewModel @Inject constructor(
     private val _categoryType = MutableLiveData<CategoryType>()
 
     // 선택된 서브카테고리를 저장하는 LiveData
-    private val _selectedSubCategory = MutableLiveData<SubCategoryType>()
+    private val _selectedSubCategory = MutableLiveData(SubCategoryType.ALL)  // 초기값 설정
 
-    // 현재 정렬 타입
-    private var _currentSortType = MutableLiveData(SortType.PURCHASE)
+    // 현재 정렬 타입 - 초기값을 PRICE_HIGH로 변경
+    private var _currentSortType = MutableLiveData(SortType.PRICE_HIGH)
 
     // 상품 목록을 저장하는 LiveData
     private val _products = MutableLiveData<List<Product>>()
@@ -36,7 +36,7 @@ class CategoryProductViewModel @Inject constructor(
     val sortText: LiveData<String> = _sortText
 
     init {
-        updateSortText(SortType.LATEST)
+        updateSortText(SortType.PRICE_HIGH)
         fetchProducts()
     }
 
@@ -77,7 +77,7 @@ class CategoryProductViewModel @Inject constructor(
                 _products.value = it
             }
         }.onFailure { throwable ->
-            Log.e("CategoryProductViewModel", "Failed to fetch products: ${throwable.message}")
+            Log.e("CategoryProductViewModel", "상품 정보를 가져오지 못했습니다", throwable)
             _products.value = emptyList()
         }
     }
@@ -89,14 +89,6 @@ class CategoryProductViewModel @Inject constructor(
     }
 
     private fun updateSortText(sortType: SortType) {
-        _sortText.value = when (sortType) {
-            SortType.PURCHASE -> "구매 많은 순"
-            SortType.REVIEW -> "리뷰 많은 순"
-            SortType.PRICE_HIGH -> "가격 높은 순"
-            SortType.PRICE_LOW -> "가격 낮은 순"
-            SortType.VIEWS -> "조회 많은 순"
-            SortType.LATEST -> "최신순"
-            SortType.DISCOUNT -> "할인율 높은 순"
-        }
+        _sortText.value = sortType.toDisplayString()
     }
 }
