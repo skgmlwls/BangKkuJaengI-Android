@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.data.repository.SocialDiscoveryRepository
 import com.nemodream.bangkkujaengi.customer.data.repository.SocialRankRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

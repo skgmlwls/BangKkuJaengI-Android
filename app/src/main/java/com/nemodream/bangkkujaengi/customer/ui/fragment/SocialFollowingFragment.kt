@@ -16,7 +16,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.utils.loadImage
 
 @AndroidEntryPoint
