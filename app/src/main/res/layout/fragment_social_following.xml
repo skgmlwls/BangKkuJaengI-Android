@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_selected_profile_image"
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -54,7 +54,8 @@
             android:src="@drawable/tmp_profile_pricture_24px"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"/>
 
         <TextView
             android:id="@+id/tv_selected_profile_nickname"
@@ -72,7 +73,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="8dp"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@id/iv_selected_profile_image"
             app:layout_constraintTop_toBottomOf="@id/tv_selected_profile_nickname"
