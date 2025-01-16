@@ -6,10 +6,10 @@ data class Product(
     val description: String = "",
     val images: List<String> = emptyList(),
     val isBest: Boolean = false,
-    val category: CategoryType = CategoryType.ALL,  // develop 브랜치에서 추가된 필드
+    val category: CategoryType = CategoryType.ALL,
     val price: Int = 0,
     val productCount: Int = 0,
-    val saleRate: Int = 0,        // ShoppingCart2 브랜치에서 추가된 필드
+    val saleRate: Int = 0,
     val saledPrice: Int = 0,
     val searchKeywords: List<String> = productName.split(" "),
     val purchaseCount: Int = 0,
@@ -17,4 +17,5 @@ data class Product(
     val viewCount: Int = 0,
     val subCategory: SubCategoryType = SubCategoryType.ALL,
     val createdAt: Long = System.currentTimeMillis(),
+    val colors: List<String> = emptyList(),
 )
