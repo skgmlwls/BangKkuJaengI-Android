@@ -3,7 +3,6 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,9 +147,10 @@ class ProductDetailFragment: Fragment() {
             }
 
             btnProductOrder.setOnClickListener {
-                // BottomSheet 표시
-                val bottomSheet = ProductOrderBottomSheetFragment.newInstance(productId)
-                bottomSheet.show(childFragmentManager, bottomSheet.tag)
+                viewModel.product.value?.let { product ->
+                    val bottomSheet = ProductOrderBottomSheetFragment.newInstance(product)
+                    bottomSheet.show(childFragmentManager, bottomSheet.tag)
+                }
             }
         }
     }

@@ -20,6 +20,16 @@ class CustomerContainerFragment : Fragment() {
 
     private var backPressedTime: Long = 0L
 
+    // 프래그먼트 프로퍼티
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var socialFragment: SocialFragment
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        homeFragment = HomeFragment()
+        socialFragment = SocialFragment()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,7 +45,7 @@ class CustomerContainerFragment : Fragment() {
 
         // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
-            navigateToChildFragment(HomeFragment())
+            navigateToChildFragment(homeFragment)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
@@ -65,19 +75,20 @@ class CustomerContainerFragment : Fragment() {
 
     private fun navigateToHomeFragment() {
         // 다른 프래그먼트일 경우 HomeFragment로 이동
-        navigateToChildFragment(HomeFragment())
+        binding.customerBottomNavigation.selectedItemId = R.id.navigation_home
+        navigateToChildFragment(homeFragment)
     }
 
     private fun setupBottomNavigation() {
         binding.customerBottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    navigateToChildFragment(HomeFragment())
+                    navigateToChildFragment(homeFragment)
                     true
                 }
 
                 R.id.navigation_social -> {
-                    navigateToChildFragment(SocialFragment())
+                    navigateToChildFragment(socialFragment)
                     true
                 }
 
