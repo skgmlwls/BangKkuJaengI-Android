@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,4 +43,25 @@ class AdminProductRepository @Inject constructor(
         imageRef.putFile(uri)
         return fileName
     }
+
+    /*
+    * Firebase Firestore에서 데이터를 가져혼다.
+    * */
+    private suspend fun getImageUrl(imagePath: String) = storage.reference
+        .child(imagePath)
+        .downloadUrl
+        .await()
+        .toString()
+
+    /**
+     * Firebase Firestore에서 상품 데이터를 모두 가져온다.
+     */
+    suspend fun getProducts(): List<Product> = firestore.collection("Product")
+        .get()
+        .await()
+        .map { document ->
+            val product = document.toObject(Product::class.java)
+            val imageUrls = product.images.map { path -> getImageUrl(path) }
+            product.copy(images = imageUrls)
+        }
 }

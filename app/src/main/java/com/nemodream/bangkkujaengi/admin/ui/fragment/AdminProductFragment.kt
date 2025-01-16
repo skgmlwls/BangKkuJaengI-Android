@@ -5,15 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductAdapter
-import com.nemodream.bangkkujaengi.container.AdminFragment
+import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminProductViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminProductBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AdminProductFragment : Fragment() {
     private var _binding: FragmentAdminProductBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: AdminProductViewModel by viewModels()
     private val productAdapter by lazy { AdminProductAdapter() }
 
     override fun onCreateView(
@@ -29,7 +33,10 @@ class AdminProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         setupListeners()
+        observeViewModel()
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -56,6 +63,12 @@ class AdminProductFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun observeViewModel() {
+        viewModel.products.observe(viewLifecycleOwner) { products ->
+            productAdapter.submitList(products)
+        }
     }
 
 }

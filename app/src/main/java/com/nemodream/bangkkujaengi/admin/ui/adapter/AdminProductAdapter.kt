@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.databinding.ItemAdminProductListBinding
+import com.nemodream.bangkkujaengi.utils.loadImage
 
 class AdminProductAdapter: ListAdapter<Product, AdminProductAdapter.AdminProductViewHolder>(ProductDiffCallback()) {
 
@@ -29,7 +30,11 @@ class AdminProductAdapter: ListAdapter<Product, AdminProductAdapter.AdminProduct
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
-
+            with(binding) {
+                ivAdminProductImage.loadImage(product.images.first())
+                tvAdminProductTitle.text = product.productName
+                tvAdminProductCount.text = "재고 ${product.productCount}"
+            }
         }
     }
 }
