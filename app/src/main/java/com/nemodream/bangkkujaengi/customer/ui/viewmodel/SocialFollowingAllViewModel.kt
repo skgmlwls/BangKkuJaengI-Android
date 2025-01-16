@@ -20,7 +20,7 @@ class SocialFollowingAllViewModel @Inject constructor(
 
     // 팔로잉 멤버 목록 로드
     fun loadFollowingAllMembers() {
-        val members = repository.getFollowingMembers() // 데이터베이스나 API에서 데이터 가져옴
+        val members = repository.getFollowingAllMembers() // 데이터베이스나 API에서 데이터 가져옴
         _followingMembers.value = members
     }
 }

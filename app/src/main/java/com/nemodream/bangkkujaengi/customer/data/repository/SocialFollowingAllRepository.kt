@@ -1,7 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import com.nemodream.bangkkujaengi.customer.data.model.Member
-import com.nemodream.bangkkujaengi.customer.data.model.Post
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,7 +10,7 @@ class SocialFollowingAllRepository @Inject constructor(){
     /**
      * 사용자가 팔로잉 중인 회원 목록을 가져온다
      */
-    fun getFollowingMembers(): List<Member> {
+    fun getFollowingAllMembers(): List<Member> {
         // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
         return listOf(
             Member(
