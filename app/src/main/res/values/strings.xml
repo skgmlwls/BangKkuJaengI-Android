@@ -9,7 +9,7 @@
     <string name="underlined_text_select_delete"><u>선택 삭제</u></string>
     <string name="underlined_text_delete"><u>삭제</u></string>
 
- 
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
