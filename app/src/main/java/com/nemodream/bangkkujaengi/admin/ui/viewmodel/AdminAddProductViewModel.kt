@@ -4,14 +4,20 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nemodream.bangkkujaengi.admin.data.repository.AdminProductRepository
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AdminAddProductViewModel @Inject constructor() : ViewModel() {
+class AdminAddProductViewModel @Inject constructor(
+    private val adminProductRepository: AdminProductRepository,
+) : ViewModel() {
     /*
     * 이미지 URI 목록 상태
     * */
@@ -38,6 +44,10 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     val category: LiveData<CategoryType?> = _category
 
     private val _subCategory = MutableLiveData<SubCategoryType?>(null)
+
+    // 저장 성공 여부
+    private val _isSuccess = MutableLiveData<Boolean>()
+    val isSuccess: LiveData<Boolean> = _isSuccess
 
     /*
     * 색상 리스트
@@ -123,6 +133,8 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     * - 검증 결과에 따라 등록 버튼 활성화 상태 변경
     * */
     fun validateFields(
+        title: String,
+        description: String,
         price: String,
         discountRate: String,
         count: String
@@ -135,6 +147,8 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
         val isValid = hasImages &&
                 hasCategory &&
                 hasSubCategory &&
+                title.isNotBlank() &&
+                description.isNotBlank() &&
                 price.isNotBlank() &&
                 discountRate.isNotBlank() &&
                 count.isNotBlank() &&
@@ -149,6 +163,36 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     * */
     private fun validateDiscountRate(discountRate: Double) =
         discountRate in MIN_DISCOUNT_RATE..MAX_DISCOUNT_RATE
+
+
+    fun createAndSaveProduct(
+        title: String,
+        description: String,
+        price: String,
+        discountRate: String,
+        count: String
+    ) = viewModelScope.launch {
+        runCatching {
+            Product(
+                productName = title,
+                description = description,
+                category = _category.value ?: CategoryType.ALL,
+                subCategory = _subCategory.value ?: SubCategoryType.ALL,
+                price = price.toInt(),
+                saleRate = discountRate.toInt(),
+                saledPrice = _discountPrice.value?.replace(",", "")?.toIntOrNull() ?: 0,
+                productCount = count.toInt(),
+                images = _imageUris.value?.map { it.toString() } ?: emptyList(),
+                colors = _colors.value ?: emptyList(),
+                searchKeywords = title.split(" ")
+            )
+        }.onSuccess { product ->
+            adminProductRepository.addProduct(product, _imageUris.value ?: emptyList())
+            _isSuccess.value = true
+        }.onFailure { e ->
+            _isSuccess.value = false
+        }
+    }
 
     companion object {
         private const val MIN_DISCOUNT_RATE = 0.0
