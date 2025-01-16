@@ -7,7 +7,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/admin_container"
-        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminHomeFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
