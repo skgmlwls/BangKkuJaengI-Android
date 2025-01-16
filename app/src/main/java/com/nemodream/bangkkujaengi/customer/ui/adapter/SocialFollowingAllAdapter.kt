@@ -1,3 +1,5 @@
+package com.nemodream.bangkkujaengi.customer.ui.adapter
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -5,7 +7,7 @@ import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.databinding.RowSocialFollowingAllBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
-class SocialFollowingAllAdapter(): RecyclerView.Adapter<SocialFollowingAllAdapter.SocialFollowingAllViewHolder>() {
+class SocialFollowingAllAdapter : RecyclerView.Adapter<SocialFollowingAllAdapter.SocialFollowingAllViewHolder>() {
     private val items = mutableListOf<Member>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SocialFollowingAllViewHolder {

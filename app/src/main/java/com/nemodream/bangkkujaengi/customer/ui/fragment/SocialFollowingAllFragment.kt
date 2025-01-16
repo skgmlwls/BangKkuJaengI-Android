@@ -1,6 +1,5 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
-import SocialFollowingAllAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingAllBinding
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingAllAdapter
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingAllViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,9 +21,8 @@ class SocialFollowingAllFragment : Fragment() {
     private val viewModel: SocialFollowingAllViewModel by viewModels()
 
     // 팔로잉 프로필 RecyclerView의 어댑터
-    private val socialFollowingAllAdapter: SocialFollowingAllAdapter by lazy {
-        SocialFollowingAllAdapter()
-    }
+    private val socialFollowingAllAdapter = SocialFollowingAllAdapter()
+
 
     // 프래그먼트의 뷰를 생성하는 메서드
     override fun onCreateView(
@@ -64,8 +64,8 @@ class SocialFollowingAllFragment : Fragment() {
     // ViewModel 데이터를 관찰하고 UI를 업데이트하는 메서드
     private fun observeViewModel() {
         // 팔로잉 전체 목록을 뷰모델에서 관찰
-        viewModel.followingMembers.observe(viewLifecycleOwner, Observer { posts ->
-            socialFollowingAllAdapter.submitList(posts)
+        viewModel.followingMembers.observe(viewLifecycleOwner, Observer { followingMembers ->
+            socialFollowingAllAdapter.submitList(followingMembers)
         })
     }
 }

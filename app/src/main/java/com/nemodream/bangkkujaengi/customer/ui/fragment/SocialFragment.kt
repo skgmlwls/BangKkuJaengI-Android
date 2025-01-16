@@ -114,7 +114,7 @@ class SocialPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
             SocialCategoryType.DISCOVERY.ordinal -> SocialDiscoveryFragment.newInstance()
             SocialCategoryType.RANK.ordinal -> SocialRankFragment.newInstance()
             SocialCategoryType.FOLLOWING.ordinal -> SocialFollowingFragment.newInstance()
-            else -> SocialDiscoveryFragment.newInstance() // 임시로 동일한 fragment를 리턴
+            else -> SocialFollowingAllFragment.newInstance() // 임시로 동일한 fragment를 리턴
         }
     }
 }
