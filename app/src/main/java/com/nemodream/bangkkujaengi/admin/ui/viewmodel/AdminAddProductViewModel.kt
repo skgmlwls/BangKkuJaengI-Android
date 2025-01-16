@@ -38,7 +38,13 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     val category: LiveData<CategoryType?> = _category
 
     private val _subCategory = MutableLiveData<SubCategoryType?>(null)
-    val subCategory: LiveData<SubCategoryType?> = _subCategory
+
+    /*
+    * 색상 리스트
+    * 비었으면 색상 미선택
+    * */
+    private val _colors = MutableLiveData<List<String>>(emptyList())
+    val colors: LiveData<List<String>> = _colors
 
     /*
     * 카테고리 설정
@@ -51,6 +57,12 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
 
     fun setSubCategory(subCategoryType: SubCategoryType?) {
         _subCategory.value = subCategoryType
+    }
+
+    fun setColors(color: String) {
+        val currentColors = _colors.value?.toMutableList() ?: mutableListOf()
+        currentColors.add(color)
+        _colors.value = currentColors
     }
 
     /*
@@ -119,12 +131,14 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
         val hasImages = _imageUris.value?.isNotEmpty() == true
         val hasCategory = _category.value != null
         val hasSubCategory = _subCategory.value != null
+        val hasColors = _colors.value?.isNotEmpty() == true
         val isValid = hasImages &&
                 hasCategory &&
                 hasSubCategory &&
                 price.isNotBlank() &&
                 discountRate.isNotBlank() &&
-                count.isNotBlank()
+                count.isNotBlank() &&
+                hasColors
 
         _isSubmitEnabled.value = isValid
     }

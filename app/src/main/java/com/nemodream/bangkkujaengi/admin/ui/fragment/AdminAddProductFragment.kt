@@ -17,8 +17,10 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductColorAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OnImageCancelClickListener
+import com.nemodream.bangkkujaengi.admin.ui.custom.CustomTextFieldDialog
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminAddProductViewModel
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
@@ -30,11 +32,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
     private var _binding: FragmentAdminAddProductBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
     private val viewModel: AdminAddProductViewModel by viewModels()
-    private val imageAdapter = AdminProductImageAdapter(this)
-
-    private lateinit var appContext: Context
+    private val imageAdapter: AdminProductImageAdapter by lazy { AdminProductImageAdapter(this) }
+    private val colorAdapter: AdminProductColorAdapter by lazy { AdminProductColorAdapter() }
 
     /*
     * 사진 선택 권한 요청 콜백
@@ -107,6 +109,7 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
     private fun setupUI() {
         with(binding) {
             rvAdminProductAddImage.adapter = imageAdapter
+            rvProductAddColor.adapter = colorAdapter
             tfAdminProductAddDiscountPrice.editText?.isEnabled = false
         }
     }
@@ -192,7 +195,22 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
             }
 
             btnProductAddSubmit.setOnClickListener {
-                // TODO: Firebase Storage 업로드 및 API 호출
+            }
+
+            btnProductAddColor.setOnClickListener {
+                CustomTextFieldDialog(
+                    context = requireContext(),
+                    message = "색상을 입력하세요",
+                    hint = "색상",
+                    onConfirm = { color ->
+                        // 확인 버튼 클릭 시 처리
+                        if (color.isNotEmpty()) {
+                            viewModel.setColors(color)
+                            validateFields()
+                        }
+                    },
+                    onCancel = {}
+                ).show()
             }
         }
     }
@@ -244,6 +262,10 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
 
         viewModel.discountPrice.observe(viewLifecycleOwner) { price ->
             binding.tfAdminProductAddDiscountPrice.editText?.setText(price)
+        }
+
+        viewModel.colors.observe(viewLifecycleOwner) { colors ->
+            colorAdapter.submitList(colors)
         }
     }
 
