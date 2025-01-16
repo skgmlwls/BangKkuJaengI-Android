@@ -71,7 +71,15 @@ class SocialRankFragment : Fragment(), OnPostItemClickListener {
     private fun observeViewModel() {
         // 게시글 목록을 뷰모델에서 관찰
         viewModel.posts.observe(viewLifecycleOwner, Observer { posts ->
-            socialRankAdapter.submitList(posts)
+            // 상위 3개 포스트에만 rank 필드를 추가
+            val rankedPosts = posts.mapIndexed { index, post ->
+                if (index < 3) {
+                    post.copy(rank = index + 1) // 1, 2, 3위만 rank 필드 설정
+                } else {
+                    post.copy(rank = null) // 나머지 null 처리
+                }
+            }
+            socialRankAdapter.submitList(rankedPosts)
         })
     }
 
