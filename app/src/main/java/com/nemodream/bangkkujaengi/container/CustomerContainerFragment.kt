@@ -65,6 +65,7 @@ class CustomerContainerFragment : Fragment() {
 
     private fun navigateToHomeFragment() {
         // 다른 프래그먼트일 경우 HomeFragment로 이동
+        binding.customerBottomNavigation.selectedItemId = R.id.navigation_home
         navigateToChildFragment(HomeFragment())
     }
 
