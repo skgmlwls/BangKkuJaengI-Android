@@ -85,6 +85,32 @@
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_admin_product_add_sub_category"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="20dp"
+        android:hint="서브 카테고리"
+        app:endIconMode="dropdown_menu"
+        app:expandedHintEnabled="true"
+        app:hintAnimationEnabled="false"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_admin_product_add_category">
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_complete_sub_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tf_admin_product_add_price"
         android:layout_width="0dp"
@@ -98,7 +124,7 @@
         app:hintEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tf_admin_product_add_category"
+        app:layout_constraintTop_toBottomOf="@id/tf_admin_product_add_sub_category"
         app:suffixText="₩">
 
         <com.google.android.material.textfield.TextInputEditText

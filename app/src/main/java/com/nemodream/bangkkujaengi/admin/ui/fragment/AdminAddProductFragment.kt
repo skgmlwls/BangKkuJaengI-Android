@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -22,6 +21,7 @@ import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OnImageCancelClickListener
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminAddProductViewModel
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddProductBinding
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,6 +81,7 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
         setupListeners()
         setupTextChangeListeners()
         observeViewModel()
+        setupCategoryAndSubCategoryDropdown()
     }
 
     override fun onDestroyView() {
@@ -107,23 +108,71 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
         with(binding) {
             rvAdminProductAddImage.adapter = imageAdapter
             tfAdminProductAddDiscountPrice.editText?.isEnabled = false
+        }
+    }
 
-            // Dropdown 설정
-            val categories = CategoryType.entries.map { it.getTabTitle() }
-            val categoryAdapter = ArrayAdapter(
-                requireContext(),
-                R.layout.item_dropdown_category,
-                categories
-            )
-            (tfAdminProductAddCategory.editText as? AutoCompleteTextView)?.apply {
-                setAdapter(categoryAdapter)
-                setOnItemClickListener { _, _, position, _ ->
-                    val selectedCategory = CategoryType.entries[position]
-                    viewModel.setCategory(selectedCategory)
-                    validateFields()
-                }
+    /*
+    * 서브 카테고리 드롭다운 리스트 추가
+    * */
+    private fun setupCategoryAndSubCategoryDropdown() {
+        // Category Dropdown 설정
+        val categoryTitles = CategoryType.entries.map { it.getTabTitle() }
+        val categoryAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.item_dropdown_category,
+            categoryTitles
+        )
+
+        binding.autoCompleteCategory.apply {
+            setAdapter(categoryAdapter)
+            setOnItemClickListener { _, _, position, _ ->
+                // 선택한 카테고리를 Enum으로 가져옴
+                val selectedCategory = CategoryType.entries[position]
+                viewModel.setCategory(selectedCategory)
+                updateSubCategoryDropdown(selectedCategory)
+                validateFields()
             }
         }
+    }
+
+    /*
+    * 서브 카테고리 드롭다운 리스트 추가
+    * 각 카테고리에 맞는 서브 카테고리를 가져온다.
+    * 선택된 서브 카테고리를 설정하여 텍스트필드에 표시한다.
+    * */
+    private fun updateSubCategoryDropdown(categoryType: CategoryType) {
+        clearSubCategory()
+        val subCategoryList = SubCategoryType.getSubCategories(categoryType)
+        val subCategoryTitles = subCategoryList.map { it.title }
+
+        binding.autoCompleteSubCategory.apply {
+            // 어댑터 설정
+            val subCategoryAdapter = ArrayAdapter(
+                requireContext(),
+                R.layout.item_dropdown_category,
+                subCategoryTitles
+            )
+            setAdapter(subCategoryAdapter)
+            isEnabled = subCategoryTitles.isNotEmpty()
+
+            setOnItemClickListener { _, _, position, _ ->
+                val selectedSubCategory = subCategoryList[position]
+                viewModel.setSubCategory(selectedSubCategory)
+            }
+        }
+    }
+
+    /*
+    * 서브 카테고리 초기화
+    * 카테고리 변경이 있을 때 서브 카테고리를 초기화한다.
+    * */
+    private fun clearSubCategory() {
+        binding.autoCompleteSubCategory.apply {
+            setText("")
+            isEnabled = false
+        }
+        viewModel.setSubCategory(null)
+        validateFields()
     }
 
     /*

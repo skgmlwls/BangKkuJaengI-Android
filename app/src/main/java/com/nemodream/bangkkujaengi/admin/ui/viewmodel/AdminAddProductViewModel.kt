@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
+import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -33,7 +34,11 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     * 선택된 카테고리 상태
     * - null이면 카테고리 미선택
     * */
-    private var selectedCategory: CategoryType? = null
+    private val _category = MutableLiveData<CategoryType?>(null)
+    val category: LiveData<CategoryType?> = _category
+
+    private val _subCategory = MutableLiveData<SubCategoryType?>(null)
+    val subCategory: LiveData<SubCategoryType?> = _subCategory
 
     /*
     * 카테고리 설정
@@ -41,7 +46,11 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     * @param category 선택된 카테고리
     * */
     fun setCategory(category: CategoryType) {
-        selectedCategory = category
+        _category.value = category
+    }
+
+    fun setSubCategory(subCategoryType: SubCategoryType?) {
+        _subCategory.value = subCategoryType
     }
 
     /*
@@ -100,9 +109,6 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     * 입력 필드 유효성 검증
     * - 모든 필수 입력 필드와 이미지 존재 여부 확인
     * - 검증 결과에 따라 등록 버튼 활성화 상태 변경
-    * @param price 원가
-    * @param discountRate 할인율
-    * @param count 재고 수량
     * */
     fun validateFields(
         price: String,
@@ -111,9 +117,11 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     ) {
         // 이미지도 함께 검증
         val hasImages = _imageUris.value?.isNotEmpty() == true
-        val hasCategory = selectedCategory != null
+        val hasCategory = _category.value != null
+        val hasSubCategory = _subCategory.value != null
         val isValid = hasImages &&
                 hasCategory &&
+                hasSubCategory &&
                 price.isNotBlank() &&
                 discountRate.isNotBlank() &&
                 count.isNotBlank()
@@ -124,8 +132,6 @@ class AdminAddProductViewModel @Inject constructor() : ViewModel() {
     /*
     * 할인율 범위 검증
     * - 할인율이 최소값과 최대값 사이에 있는지 확인
-    * @param discountRate 검증할 할인율
-    * @return 유효한 범위 내이면 true, 아니면 false
     * */
     private fun validateDiscountRate(discountRate: Double) =
         discountRate in MIN_DISCOUNT_RATE..MAX_DISCOUNT_RATE
