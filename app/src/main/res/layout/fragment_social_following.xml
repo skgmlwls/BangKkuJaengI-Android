@@ -7,20 +7,45 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.SocialFollowingFragment">
 
-    <!-- 프로필 리스트 (수평 스크롤) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_following_profiles"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_following_profile" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/top_scroll_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 수평 스크롤 프로필 리스트 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_following_profiles"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_all_profiles"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/item_following_profile" />
+
+        <!-- "전체" 버튼 -->
+        <TextView
+            android:id="@+id/tv_all_profiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전체"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- 구분선 -->
     <com.google.android.material.divider.MaterialDivider
@@ -28,7 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         style="@style/AppDivider"
-        app:layout_constraintTop_toBottomOf="@id/rv_following_profiles"
+        app:layout_constraintTop_toBottomOf="@id/top_scroll_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
