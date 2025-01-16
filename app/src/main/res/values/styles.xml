@@ -44,7 +44,16 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="AppTextLabel.S14">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="AppTextLabel.S10.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTextLabel.S14.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
