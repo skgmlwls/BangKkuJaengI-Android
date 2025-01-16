@@ -1,5 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
@@ -17,7 +18,6 @@ import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewMode
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.nemodream.bangkkujaengi.utils.loadImage
-import com.nemodream.bangkkujaengi.utils.popBackStack
 import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 
 @AndroidEntryPoint
@@ -27,6 +27,8 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
     private val binding get() = _binding!!
 
     private val viewModel: SocialFollowingViewModel by viewModels()
+
+    private var isFollowing = true
 
     // 팔로잉 프로필 RecyclerView의 어댑터
     private val profileAdapter: SocialFollowingProfilesAdapter by lazy {
@@ -107,12 +109,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
                     "팔로잉 ${selectedMember.followingCount}명     팔로워 ${selectedMember.followerCount}명"
-                // 이미지 로드 방법 2
-                // Glide 라이브러리를 사용하여 이미지를 로드
-//                Glide.with(this)
-//                    .load(selectedMember.memberProfileImage)
-//                    .placeholder(R.drawable.tmp_profile_pricture_24px)
-//                    .into(binding.ivSelectedProfileImage)
             } ?: run {
                 // 선택된 멤버가 없을 경우 프로필 정보를 숨김
                 binding.clSelectedProfileInfo.visibility = View.GONE
@@ -123,14 +119,46 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
             postAdapter.submitList(posts) // 게시글 리스트를 어댑터에 업데이트
         }
+
+        // 팔로잉 상태에 따라 버튼 텍스트 변경
+        viewModel.isFollowing.observe(viewLifecycleOwner) { isFollowing ->
+            updateFollowingButtonStyle(isFollowing)
+        }
     }
 
+    // 팔로우/팔로잉 버튼 스타일 업데이트
+    private fun updateFollowingButtonStyle(isFollowing: Boolean) {
+        if (isFollowing) {
+            binding.btnFollowingFollowing.text = "팔로잉"
+            binding.btnFollowingFollowing.setTextColor(Color.parseColor("#58443B")) // 글자색
+            binding.btnFollowingFollowing.setBackgroundTintList(
+                ColorStateList.valueOf(Color.parseColor("#DFDFDF")) // 버튼 배경색
+            )
+            binding.btnFollowingFollowing.strokeColor =
+                ColorStateList.valueOf(Color.parseColor("#818080")) // 테두리 색상
+            binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께
+        } else {
+            binding.btnFollowingFollowing.text = "팔로우"
+            binding.btnFollowingFollowing.setTextColor(Color.parseColor("#FFFFFF")) // 글자색
+            binding.btnFollowingFollowing.setBackgroundTintList(
+                ColorStateList.valueOf(Color.parseColor("#332828")) // 버튼 배경색
+            )
+            binding.btnFollowingFollowing.strokeColor =
+                ColorStateList.valueOf(Color.parseColor("#000000")) // 테두리 색상
+            binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께
+        }
+    }
     // 리스너 설정
     private fun setupListeners() {
         with(binding) {
             // "전체" 버튼 클릭 리스너 설정
             tvAllProfiles.setOnClickListener {
                 onButtonAllProfilesClick() // 함수 호출
+            }
+
+            // 팔로잉 상태 토글
+            btnFollowingFollowing.setOnClickListener {
+                viewModel.toggleFollowing()
             }
 
 //            toolbar.setNavigationOnClickListener {

@@ -19,7 +19,6 @@
             android:id="@+id/rv_following_profiles"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="8dp"
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
@@ -57,12 +56,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+
     <!-- 선택된 프로필 정보 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_selected_profile_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="10dp"
@@ -80,18 +79,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"/>
+            app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle" />
 
         <TextView
             android:id="@+id/tv_selected_profile_nickname"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:text="닉네임1"
             android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@id/iv_selected_profile_image"
-            app:layout_constraintTop_toTopOf="@id/iv_selected_profile_image"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_selected_profile_image" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_following_following"
+            style="@style/FollowingButtonStyle"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="팔로잉"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@id/tv_selected_profile_nickname"
+            app:layout_constraintTop_toTopOf="@id/tv_selected_profile_nickname"
+            app:layout_constraintBottom_toBottomOf="@id/tv_selected_profile_nickname"/>
+
 
         <TextView
             android:id="@+id/tv_selected_profile_follow_info"
@@ -105,6 +120,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="팔로잉 00명   팔로워 00명" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- 게시글 리스트 -->
     <androidx.recyclerview.widget.RecyclerView
