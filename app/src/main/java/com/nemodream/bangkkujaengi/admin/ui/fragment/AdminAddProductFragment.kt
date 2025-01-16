@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductColorAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
@@ -27,6 +28,8 @@ import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddProductBinding
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
@@ -195,6 +198,22 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
             }
 
             btnProductAddSubmit.setOnClickListener {
+                // 중복 등록을 방지하기 위해 바로 비활성화
+                btnProductAddSubmit.isEnabled = false
+
+                val title = tfAdminProductAddTitle.editText?.text.toString()
+                val description = tfAdminProductAddDescription.editText?.text.toString()
+                val price = tfAdminProductAddPrice.editText?.text.toString()
+                val discountRate = tfAdminProductAddDiscountRate.editText?.text.toString()
+                val count = tfAdminProductAddCount.editText?.text.toString()
+
+                viewModel.createAndSaveProduct(
+                    title = title,
+                    description = description,
+                    price = price,
+                    discountRate = discountRate,
+                    count = count
+                )
             }
 
             btnProductAddColor.setOnClickListener {
@@ -223,6 +242,8 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
     * */
     private fun setupTextChangeListeners() {
         with(binding) {
+            tfAdminProductAddTitle.editText?.doAfterTextChanged { validateFields() }
+            tfAdminProductAddDescription.editText?.doAfterTextChanged { validateFields() }
             tfAdminProductAddPrice.editText?.doAfterTextChanged { price ->
                 viewModel.calculateDiscountPrice(
                     price.toString(),
@@ -267,6 +288,19 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
         viewModel.colors.observe(viewLifecycleOwner) { colors ->
             colorAdapter.submitList(colors)
         }
+
+        viewModel.isSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            when (isSuccess) {
+                true -> {
+                    appContext.showToast("상품이 성공적으로 등록되었습니다")
+                    parentFragmentManager.popBackStack()
+                }
+
+                false -> {
+                    appContext.showToast("상품 등록에 실패했습니다")
+                }
+            }
+        }
     }
 
     /*
@@ -276,6 +310,8 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
     private fun validateFields() {
         with(binding) {
             viewModel.validateFields(
+                tfAdminProductAddTitle.editText?.text.toString(),
+                tfAdminProductAddDescription.editText?.text.toString(),
                 tfAdminProductAddPrice.editText?.text.toString(),
                 tfAdminProductAddDiscountRate.editText?.text.toString(),
                 tfAdminProductAddCount.editText?.text.toString()
