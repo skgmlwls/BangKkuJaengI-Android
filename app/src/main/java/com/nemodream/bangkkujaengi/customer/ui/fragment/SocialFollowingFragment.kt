@@ -17,6 +17,8 @@ import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewMode
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.nemodream.bangkkujaengi.utils.loadImage
+import com.nemodream.bangkkujaengi.utils.popBackStack
+import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -54,6 +56,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         setupRecyclerViews() // RecyclerView 초기화
         observeViewModel() // ViewModel 데이터 관찰 설정
         viewModel.loadFollowingMembers() // 팔로잉 멤버 데이터를 로드
+        setupListeners() // 리스너 설정
     }
 
     // 프래그먼트가 파괴될 때 Binding 해제
@@ -122,9 +125,27 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         }
     }
 
-    /**
-     * 게시글 클릭 이벤트를 처리하는 메서드
-     */
+    // 리스너 설정
+    private fun setupListeners() {
+        with(binding) {
+            // "전체" 버튼 클릭 리스너 설정
+            tvAllProfiles.setOnClickListener {
+                onButtonAllProfilesClick() // 함수 호출
+            }
+
+//            toolbar.setNavigationOnClickListener {
+//                popBackStack()
+//            }
+
+        }
+    }
+
+    // "전체" 버튼 클릭 시 호출
+    private fun onButtonAllProfilesClick() {
+        replaceParentFragment(SocialFollowingAllFragment.newInstance(), "SocialFragment")
+    }
+
+    //게시글 클릭 이벤트를 처리하는 메서드
     override fun onPostItemClick(post: Post) {
         // 게시글 클릭 시 처리할 로직 (예: 상세 화면으로 이동)
     }
