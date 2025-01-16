@@ -11,13 +11,16 @@
     <!-- 프로필 사진 -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_following_profile_image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="3dp"
         tools:srcCompat="@tools:sample/avatars"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"/>
+        app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"
+        app:strokeColor="@null"
+        app:strokeWidth="0dp"/>
 
     <!-- 닉네임 -->
     <TextView

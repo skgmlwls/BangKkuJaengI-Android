@@ -65,11 +65,13 @@ class SocialFollowingProfilesAdapter(
             binding.tvFollowingProfileNickname.text = member.memberNickName
             binding.tvFollowingProfileNickname.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
 
-            // 선택 상태에 따라 스타일 변경
+            // 선택 상태에 따라 테두리 설정
             if (isSelected) {
-                binding.ivFollowingProfileImage.setBackgroundResource(R.drawable.background_selected_profile)
+                binding.ivFollowingProfileImage.strokeColor = itemView.context.getColorStateList(R.color.black)
+                binding.ivFollowingProfileImage.strokeWidth = 7f // 원하는 두께
             } else {
-                binding.ivFollowingProfileImage.setBackgroundResource(android.R.color.transparent)
+                binding.ivFollowingProfileImage.strokeColor = null
+                binding.ivFollowingProfileImage.strokeWidth = 0f
             }
         }
     }
