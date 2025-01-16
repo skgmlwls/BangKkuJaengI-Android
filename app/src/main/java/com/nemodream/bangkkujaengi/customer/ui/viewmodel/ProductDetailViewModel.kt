@@ -22,6 +22,10 @@ class ProductDetailViewModel @Inject constructor(
     private var _quantity = MutableLiveData(1)
     val quantity: LiveData<Int> = _quantity
 
+    // 선택된 색상을 저장
+    private var _selectedColor = MutableLiveData<String>(null)
+    val selectedColor: LiveData<String> = _selectedColor
+
     fun loadProduct(productId: String) = viewModelScope.launch {
         runCatching {
             repository.getProducts(productId)
@@ -43,12 +47,16 @@ class ProductDetailViewModel @Inject constructor(
         _quantity.value = newQuantity
     }
 
+    // 선택 색상 업데이트
+    fun updateSelectedColor(color: String) {
+        _selectedColor.value = color
+    }
+
     // 장바구니 정보 저장
     fun saveCartProduct(productId: String) = viewModelScope.launch {
         val currentQuantity = _quantity.value ?: 1
-
         runCatching {
-            repository.saveCartProduct(productId, currentQuantity)
+            repository.saveCartProduct(productId, currentQuantity, _selectedColor.value ?: "")
         }.onSuccess {
             Log.d("ProductDetailViewModel", "saveCartProduct: $it")
         }.onFailure {
