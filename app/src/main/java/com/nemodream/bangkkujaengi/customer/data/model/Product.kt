@@ -1,5 +1,9 @@
 package com.nemodream.bangkkujaengi.customer.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Product(
     val productId: String = "",
     val productName: String = "",
@@ -18,4 +22,4 @@ data class Product(
     val subCategory: SubCategoryType = SubCategoryType.ALL,
     val createdAt: Long = System.currentTimeMillis(),
     val colors: List<String> = emptyList(),
-)
+): Parcelable

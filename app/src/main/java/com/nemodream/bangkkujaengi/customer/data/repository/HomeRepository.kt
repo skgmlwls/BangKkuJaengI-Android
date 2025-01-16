@@ -80,7 +80,8 @@ class HomeRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saleRate = getLong("saledRate")?.toInt() ?: 0
+            saleRate = getLong("saledRate")?.toInt() ?: 0,
+            colors = get("colors") as? List<String> ?: emptyList()
         )
     }
 
@@ -98,7 +99,7 @@ class HomeRepository @Inject constructor(
         )
 
 
-    fun saveCartProduct(productId: String, quantity: Int = 1) {
+    fun saveCartProduct(productId: String, quantity: Int = 1, color: String) {
         val userCartRef = firestore.collection("Cart").document("testuser")
 
         userCartRef.get()
@@ -108,7 +109,8 @@ class HomeRepository @Inject constructor(
                     val items = (document.get("items") as? List<Map<String, Any>>)?.map {
                         Cart(
                             productId = it["productId"] as String,
-                            quantity = (it["quantity"] as Long).toInt()
+                            quantity = (it["quantity"] as Long).toInt(),
+                            color = it["color"] as String,
                         )
                     } ?: listOf()
 
@@ -121,18 +123,19 @@ class HomeRepository @Inject constructor(
                         }
 
                         items.map {
-                            if (it.productId == productId) Cart(productId, newQuantity)
+                            if (it.productId == productId) Cart(productId, newQuantity, color)
                             else it
                         }
                     } else {
-                        items + Cart(productId, quantity)
+                        items + Cart(productId, quantity, color)
                     }
 
                     // Map으로 변환하여 저장
                     val itemsToSave = updatedItems.map {
                         mapOf(
                             "productId" to it.productId,
-                            "quantity" to it.quantity
+                            "quantity" to it.quantity,
+                            "color" to it.color,
                         )
                     }
 
@@ -144,7 +147,8 @@ class HomeRepository @Inject constructor(
                         "items" to listOf(
                             mapOf(
                                 "productId" to productId,
-                                "quantity" to quantity
+                                "quantity" to quantity,
+                                "color" to color,
                             )
                         ),
                         "isDelete" to false

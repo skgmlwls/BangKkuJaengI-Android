@@ -8,5 +8,6 @@ data class ShoppingCart(
 data class Cart(
     var productId: String = "",
     var quantity: Int = 0,
+    var color: String = "",
     var checked: Boolean = false
 )
