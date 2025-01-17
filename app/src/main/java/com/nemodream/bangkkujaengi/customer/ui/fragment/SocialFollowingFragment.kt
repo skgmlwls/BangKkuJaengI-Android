@@ -28,8 +28,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
     private val viewModel: SocialFollowingViewModel by viewModels()
 
-    private var isFollowing = true
-
     // 팔로잉 프로필 RecyclerView의 어댑터
     private val profileAdapter: SocialFollowingProfilesAdapter by lazy {
         SocialFollowingProfilesAdapter(mutableListOf()) { member ->
@@ -97,7 +95,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
                 // 선택된 팔로잉의 프로필 정보바 표시
                 binding.clSelectedProfileInfo.visibility = View.VISIBLE
-                // 이미지 로드 방법 1
                 binding.ivSelectedProfileImage.loadImage(selectedMember.memberProfileImage.toString())
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
