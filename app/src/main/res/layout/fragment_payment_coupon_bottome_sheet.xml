@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bottom_sheet_background"
-    tools:context=".customer.ui.fragment.PaymentCouponBottomeSheetFragment">
+    tools:context=".customer.ui.fragment.PaymentCouponBottomSheetFragment">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/view"
