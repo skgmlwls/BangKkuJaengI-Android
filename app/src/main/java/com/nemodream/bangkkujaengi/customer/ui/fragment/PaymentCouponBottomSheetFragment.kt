@@ -63,6 +63,9 @@ class PaymentCouponBottomSheetFragment(val paymentFragment: PaymentFragment) : B
                     putString("select_document_id", paymentCouponBottomSheetViewModel.checked_document_id.value)
                 }
 
+                Log.d("12345", "select_position : ${paymentCouponBottomSheetViewModel.checked_position.value}")
+                Log.d("12345", "select_document_id : ${paymentCouponBottomSheetViewModel.checked_document_id.value}")
+
                 parentFragmentManager.setFragmentResult("couponResultKey", bundle)
 
                 dismiss()
