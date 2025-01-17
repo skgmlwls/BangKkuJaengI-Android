@@ -55,6 +55,7 @@ class SelectCouponAdapter(
             position
         )
 
+        // 쿠폰 삭제 버튼
         holder.rowPaymentSelectCouponRecyclerviewBinding.btnRowRowPaymentCouponDelete.setOnClickListener {
             paymentFragment.checked_coupon_document_id_list.clear()
             paymentFragment.select_coupon_list.clear()
