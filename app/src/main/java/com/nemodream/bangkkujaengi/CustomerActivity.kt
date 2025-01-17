@@ -5,16 +5,25 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.nemodream.bangkkujaengi.databinding.ActivityCustomerBinding
+import com.nemodream.bangkkujaengi.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CustomerActivity : AppCompatActivity() {
     private val binding: ActivityCustomerBinding by lazy { ActivityCustomerBinding.inflate(layoutInflater) }
+    private var lastBackPress: Long = 0
+
+    // 네비게이션 보여야 되는 화면은 여기 정의해주세요.
+    private val showBottomNavDestinations = listOf(
+        R.id.navigation_home,
+        R.id.navigation_social,
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +33,12 @@ class CustomerActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.customer_container) as NavHostFragment
-
-        onBackPressedDispatcher.addCallback(this) {
-            val navController = navHostFragment.navController
-            if (!navController.popBackStack()) {
-                finish()
-            }
-        }
+        setupBackPressHandler(navHostFragment)
     }
 
-    // NavHost 설정
+    /**
+     * NavHost를 설정하고 BottomNavigation과 연결
+     */
     private fun setupNavHost(): NavController {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.customer_container) as NavHostFragment
@@ -42,19 +47,71 @@ class CustomerActivity : AppCompatActivity() {
         return navController
     }
 
-    private fun setupListeners(navController: NavController) {
-        // 특정 화면에서 BottomNavigation 숨기기/보이기
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                // BottomNavigation이 보여야 되는 화면 정의
-                R.id.navigation_home, R.id.navigation_social -> {
-                    binding.customerBottomNavigation.visibility = View.VISIBLE
-                }
 
-                else -> {
-                    binding.customerBottomNavigation.visibility = View.GONE
-                }
+    /**
+     * 뒤로가기 버튼 핸들러를 설정
+     * Home 화면에서는 두 번 클릭 시 앱이 종료
+     * 다른 화면에서는 일반적인 뒤로가기 동작을 수행
+     */
+    private fun setupBackPressHandler(navHostFragment: NavHostFragment) {
+        onBackPressedDispatcher.addCallback(this) {
+            val navController = navHostFragment.navController
+            handleBackPress(navController)
+        }
+    }
+
+    /**
+     * 뒤로가기 버튼 클릭 시의 동작을 처리
+     * Home 화면인 경우 두 번 클릭 로직을 실행하고,
+     * 다른 화면에서는 일반적인 뒤로가기를 수행
+     */
+    private fun handleBackPress(navController: NavController) {
+        val currentDestination = navController.currentDestination
+        when {
+            isHomeFragment(currentDestination) -> handleHomeBackPress()
+            !navController.popBackStack() -> finish()
+        }
+    }
+
+    /**
+     * 현재 화면이 Home 화면인지 확인
+     */
+    private fun isHomeFragment(destination: NavDestination?): Boolean =
+        destination?.id == R.id.navigation_home
+
+    /**
+     * Home 화면에서의 뒤로가기 버튼 클릭을 처리
+     * 첫 번째 클릭 시 안내 메시지를 표시하고,
+     * 정해진 시간 내에 두 번째 클릭 시 앱을 종료
+     */
+    private fun handleHomeBackPress() {
+        val currentTime = System.currentTimeMillis()
+        if (isFirstBackPressOrTimeExceeded(currentTime)) {
+            lastBackPress = currentTime
+            showSnackBar(binding.root, BACK_PRESS_MESSAGE)
+        } else {
+            finish()
+        }
+    }
+
+    private fun isFirstBackPressOrTimeExceeded(currentTime: Long): Boolean =
+        currentTime - lastBackPress > BACK_PRESS_THRESHOLD
+
+    /**
+     * 특정 화면에서 BottomNavigation의 표시 여부를 설정
+     * Home, Social 화면에서는 표시되고 다른 화면에서는 숨김
+     */
+    private fun setupListeners(navController: NavController) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.customerBottomNavigation.visibility = when (destination.id) {
+                in showBottomNavDestinations -> View.VISIBLE
+                else -> View.GONE
             }
         }
+    }
+
+    companion object {
+        private const val BACK_PRESS_THRESHOLD = 2000L
+        private const val BACK_PRESS_MESSAGE = "뒤로가기 버튼을 한 번 더 누르면 종료됩니다."
     }
 }

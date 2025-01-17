@@ -1,13 +1,16 @@
 package com.nemodream.bangkkujaengi.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.nemodream.bangkkujaengi.R
 
@@ -30,8 +33,12 @@ fun ImageView.loadImage(url: String) {
 * SnackBar 확장 함수
 * 메세지를 받아 SnackBar로 보여주는 확장함수
 * */
-fun Fragment.showSnackBar(message: String) {
-    view?.let { Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show() }
+fun Context.showSnackBar(view: View, message: String) {
+    Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        .setAnchorView(
+            (this as? AppCompatActivity)?.findViewById<BottomNavigationView>(R.id.customer_bottom_navigation)
+        )
+        .show()
 }
 
 fun View.hideKeyboard() {
