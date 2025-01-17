@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
@@ -51,7 +53,6 @@ class ShoppingCartFragment : Fragment() {
     // 장바구니에 담긴 상품 정보를 담을 리스트
     var cart_product_data_list = mutableListOf<Product>()
 
-    var checked_product_data_list = mutableListOf<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,8 +66,8 @@ class ShoppingCartFragment : Fragment() {
         setting_price_textview()
         // 버튼 기능 메소드 호출
         fn_btn_shopping_cart_buy()
-//        // recycelrview 초기 세팅 메소드 호출
-//        setting_recyclerview()
+        // recycelrview 초기 세팅 메소드 호출
+        setting_recyclerview()
         // recycelrview 업데이트 메소드 호출
         refresh_recyclerview_shopping_cart()
 
@@ -118,14 +119,26 @@ class ShoppingCartFragment : Fragment() {
             fragmentShoppingCartBinding.btnShoppingCartBuy.text = it
         }
         fragmentShoppingCartBinding.btnShoppingCartBuy.setOnClickListener {
-            val data_budle = Bundle()
-            // 유저 ID 전달
-            data_budle.putString("user_id", user_id)
-            // 유저 전화 번호 전달
-            data_budle.putString("user_phone_number", "01034381511")
-            // 유저 주소 전달
-            data_budle.putString("user_address", "서울시 강남구 역삼동")
-            replaceParentFragment2(PaymentFragment(), "payment_fragment", data_budle)
+            viewLifecycleOwner.lifecycleScope.launch {
+                val work1 = async(Dispatchers.IO) {
+                    ShoppingCartRepository.getting_user_data_by_user_id(user_id)
+                }
+                val user_data = work1.await()
+
+                val memberData = user_data?.get("member_data") as? Member
+
+                Log.d("user_data", "${memberData?.memberPhoneNumber}")
+
+                val data_budle = Bundle()
+                // 유저 ID 전달
+                data_budle.putString("user_id", user_id)
+                // 유저 전화 번호 전달
+                data_budle.putString("user_phone_number", memberData?.memberPhoneNumber)
+                // 유저 주소 전달
+                data_budle.putString("user_address", "서울시 강남구 역삼동")
+
+                replaceParentFragment2(PaymentFragment(), "payment_fragment", data_budle)
+            }
         }
     }
 
@@ -145,7 +158,7 @@ class ShoppingCartFragment : Fragment() {
         // 로딩바 활성화
         fragmentShoppingCartBinding.pdShoppingCartProductListLoading.visibility = View.VISIBLE
 
-        CoroutineScope(Dispatchers.Main).launch {
+        viewLifecycleOwner.lifecycleScope.launch {
 
             // 장바구니 데이터를 가져온다
             val work1 = async(Dispatchers.IO) {
@@ -166,12 +179,12 @@ class ShoppingCartFragment : Fragment() {
                 return@launch
             }
             work1.forEach {
+                val cart_data = it["cart_data"] as ShoppingCart
                 // 장바구니 document id를 가져온다
-                cart_user_id = it["cart_document_id"] as String
+                cart_user_id = cart_data.userId
 
                 // 장바구니 데이터를 가져온다
                 work1.map {
-                    val cart_data = it["cart_data"] as ShoppingCart
                     cart_data.items.forEach {
                         cart_data_list = cart_data
                     }

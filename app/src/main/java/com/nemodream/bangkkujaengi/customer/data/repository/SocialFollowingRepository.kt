@@ -26,7 +26,7 @@ class SocialFollowingRepository @Inject constructor(){
                 isActive = true,
                 createAt = System.currentTimeMillis(),
                 followingCount = 5,
-                followingList = emptyList()
+                followingList = emptyList(),
             ),
             Member(
                 id = "2",

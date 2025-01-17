@@ -194,6 +194,7 @@ class ShoppingCartAdapter(
                                 shoppingCartViewModel.tv_shopping_cart_tot_sale_price_text.value!! +
                                 shoppingCartViewModel.tv_shopping_cart_tot_delivery_cost_text.value!!
 
+
                 }
             }
 
@@ -236,6 +237,7 @@ class ShoppingCartAdapter(
                         shoppingCartViewModel.tv_shopping_cart_tot_price_text.value!! -
                                 shoppingCartViewModel.tv_shopping_cart_tot_sale_price_text.value!! +
                                 shoppingCartViewModel.tv_shopping_cart_tot_delivery_cost_text.value!!
+
                 }
 
             }
@@ -375,7 +377,7 @@ class ShoppingCartAdapter(
                             shoppingCartViewModel.tv_shopping_cart_tot_price_text.value!! -
                                     shoppingCartViewModel.tv_shopping_cart_tot_sale_price_text.value!! +
                                     shoppingCartViewModel.tv_shopping_cart_tot_delivery_cost_text.value!!
-                        
+
                     }
 
                     // 작업 완료 후 ProgressBar 숨기고 버튼 복원

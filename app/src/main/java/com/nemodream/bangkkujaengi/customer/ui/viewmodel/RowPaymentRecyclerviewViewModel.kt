@@ -13,5 +13,7 @@ class RowPaymentRecyclerviewViewModel() : ViewModel() {
     var tv_row_payment_product_sale_percent = MutableLiveData<Int>(10)
     // 상품 할인가
     var tv_row_payment_product_sale_price = MutableLiveData<Int>(900)
+    // 상품 갯수
+    var tv_row_payment_product_cnt = MutableLiveData<Int>(1)
 
 }

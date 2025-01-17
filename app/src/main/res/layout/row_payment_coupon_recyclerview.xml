@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_row_payment_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#FFFFFF">
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:checkable="true"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,7 +24,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_row_payment_coupon_name"
+                android:id="@+id/tv_row_payment_coupon_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="신규 고객 감사 쿠폰"

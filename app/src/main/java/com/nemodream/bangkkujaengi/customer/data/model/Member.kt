@@ -35,4 +35,7 @@ data class Member(
 
     // 팔로잉 목록
     val followingList: List<Member>,
+
+    // 쿠폰 문서 id 리스트
+    val couponDocumentId: List<String> = emptyList()
 )
