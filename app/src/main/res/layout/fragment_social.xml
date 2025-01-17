@@ -41,13 +41,13 @@
         style="@style/AppTabLayoutStyle"
         android:layout_width="0dp"
         app:tabInlineLabel="true"
-        app:tabGravity="start"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_social"
         app:tabIndicatorColor="@color/black"
-        app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray_400" />
 

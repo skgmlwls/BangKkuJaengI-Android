@@ -4,20 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.ui.fragment.HomeFragment
-import com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment
-import com.nemodream.bangkkujaengi.customer.ui.fragment.ShoppingCartFragment
 import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFragment
 import com.nemodream.bangkkujaengi.databinding.FragmentCustomerContainerBinding
 import com.nemodream.bangkkujaengi.utils.navigateToChildFragment
+import com.nemodream.bangkkujaengi.utils.showSnackBar
 
 // ParentFragment.kt
 class CustomerContainerFragment : Fragment() {
     private var _binding: FragmentCustomerContainerBinding? = null
     private val binding get() = _binding!!
+
+    private var backPressedTime: Long = 0L
+
+    // 프래그먼트 프로퍼티
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var socialFragment: SocialFragment
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        homeFragment = HomeFragment()
+        socialFragment = SocialFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,23 +45,53 @@ class CustomerContainerFragment : Fragment() {
 
         // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
-            navigateToChildFragment(HomeFragment())
+            navigateToChildFragment(homeFragment)
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            handleBackPressed()
+        }
+    }
+
+    private fun handleBackPressed() {
+        val currentFragment = childFragmentManager.findFragmentById(R.id.customer_container)
+        when (currentFragment) {
+            is HomeFragment -> handleHomeFragmentBackPressed()
+            else -> navigateToHomeFragment()
+        }
+    }
+
+    private fun handleHomeFragmentBackPressed() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - backPressedTime <= DELAY_TIME) {
+            // 2초 이내에 다시 백버튼을 누르면 앱 종료
+            requireActivity().finish()
+        } else {
+            // 첫 번째 백버튼 클릭 시 메시지 표시
+            backPressedTime = currentTime
+            showSnackBar(BACK_SNACK_NAME)
+        }
+    }
+
+    private fun navigateToHomeFragment() {
+        // 다른 프래그먼트일 경우 HomeFragment로 이동
+        binding.customerBottomNavigation.selectedItemId = R.id.navigation_home
+        navigateToChildFragment(homeFragment)
     }
 
     private fun setupBottomNavigation() {
         binding.customerBottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    childFragmentManager.commit {
-                        replace(R.id.customer_container, HomeFragment())
-                    }
+                    navigateToChildFragment(homeFragment)
                     true
                 }
+
                 R.id.navigation_social -> {
-                    navigateToChildFragment(SocialFragment())
+                    navigateToChildFragment(socialFragment)
                     true
                 }
+
                 else -> false
             }
         }
@@ -61,4 +102,8 @@ class CustomerContainerFragment : Fragment() {
         _binding = null
     }
 
+    companion object {
+        const val DELAY_TIME = 2000L
+        const val BACK_SNACK_NAME = "뒤로가기 버튼을 한 번 더 누르면 종료됩니다"
+    }
 }

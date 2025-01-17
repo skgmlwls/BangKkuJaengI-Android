@@ -70,47 +70,39 @@
         app:layout_constraintStart_toStartOf="@id/ll_product_order_count"
         app:layout_constraintTop_toBottomOf="@id/ll_product_order_count" />
 
-    <View
-        android:id="@+id/view_product_order_color_area"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/background_stroke_gray_500_fill"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_product_order_color_label"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_order_color_label" />
+        app:layout_constraintTop_toBottomOf="@id/tv_product_order_color_label">
 
-    <TextView
-        android:id="@+id/tv_product_order_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="색상을 선택하세요"
-        android:textColor="@color/gray_500"
-        app:layout_constraintBottom_toBottomOf="@id/view_product_order_color_area"
-        app:layout_constraintStart_toStartOf="@id/view_product_order_color_area"
-        app:layout_constraintTop_toTopOf="@id/view_product_order_color_area" />
-
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_arrow_drop_up"
-        app:layout_constraintBottom_toBottomOf="@id/view_product_order_color_area"
-        app:layout_constraintEnd_toEndOf="@id/view_product_order_color_area"
-        app:layout_constraintTop_toTopOf="@id/view_product_order_color_area" />
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:hint="색상을 선택하세요"
+            android:inputType="none"
+            android:textColor="@color/gray_500" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_product_order_color_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="색상을 선택하세요"
-        android:visibility="gone"
-        android:textColor="@android:color/holo_red_dark"
-        app:layout_constraintTop_toBottomOf="@id/view_product_order_color_area"
-        app:layout_constraintStart_toStartOf="@id/view_product_order_color_area"
         android:layout_marginTop="4dp"
-        />
+        android:text="색상을 선택하세요"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayout" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_cart"
         android:layout_width="0dp"
@@ -140,6 +132,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_cart"
-        app:layout_constraintTop_toBottomOf="@id/view_product_order_color_area" />
+        app:layout_constraintTop_toBottomOf="@id/textInputLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

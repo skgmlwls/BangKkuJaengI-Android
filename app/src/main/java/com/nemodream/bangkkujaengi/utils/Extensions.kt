@@ -66,6 +66,7 @@ fun Fragment.popBackStack() {
 fun ImageView.loadImage(url: String) {
     Glide.with(context)
         .load(url)
+        .centerCrop()
         .placeholder(R.color.gray_300)
         .error(R.color.gray_500)
         .into(this)

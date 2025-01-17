@@ -1,10 +1,10 @@
 package com.nemodream.bangkkujaengi.customer.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFollowingFragment
 import com.nemodream.bangkkujaengi.databinding.ItemSocialPostBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 
@@ -38,13 +38,20 @@ class SocialDiscoveryAdapter(
 
     class SocialDiscoveryViewHolder(private val binding: ItemSocialPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(post: Post,) {
+        fun bind(post: Post) {
             binding.ivSocialPostItemThumbnail.loadImage(post.imageList[0])
             binding.tvSocialPostItemTitle.text = post.title
-            // binding.ivSocialPostItemProfilePicture.loadImage(작성자 프사)
-            // 닉네임은 유저 데이터 모델 작성 후 변경 예정
+            binding.ivSocialPostItemProfilePicture.loadImage(post.authorProfilePicture)
             binding.tvSocialPostItemNickname.text = post.nickname
             binding.tvSocialPostItemSavedCount.text = post.savedCount.toString()
+
+            // 랭킹 뱃지 처리
+            if (post.rank != null) {
+                binding.tvRankBadge.visibility = View.VISIBLE
+                binding.tvRankBadge.text = post.rank.toString()
+            } else {
+                binding.tvRankBadge.visibility = View.GONE
+            }
         }
     }
 }
