@@ -148,17 +148,20 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
             binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께
         }
     }
+
+
     // 리스너 설정
     private fun setupListeners() {
         with(binding) {
-            // "전체" 버튼 클릭 리스너 설정
-            tvAllProfiles.setOnClickListener {
-                onButtonAllProfilesClick() // 함수 호출
-            }
-
             // 팔로잉 상태 토글
             btnFollowingFollowing.setOnClickListener {
                 viewModel.toggleFollowing()
+            }
+
+            tvAllProfiles.setOnClickListener{
+                replaceParentFragment(
+                    SocialFollowingAllFragment.newInstance(),
+                    "SocialFragment")
             }
 
 //            toolbar.setNavigationOnClickListener {
@@ -168,10 +171,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         }
     }
 
-    // "전체" 버튼 클릭 시 호출
-    private fun onButtonAllProfilesClick() {
-        replaceParentFragment(SocialFollowingAllFragment.newInstance(), "SocialFragment")
-    }
 
     //게시글 클릭 이벤트를 처리하는 메서드
     override fun onPostItemClick(post: Post) {

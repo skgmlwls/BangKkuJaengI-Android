@@ -72,7 +72,10 @@ class SocialFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             delay(SocialFragment.Companion.DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
-            binding.tabSocialCategory.selectTab(binding.tabSocialCategory.getTabAt(initialPosition), true)
+            // 뷰가 파괴되지 않았는지 확인
+            if (_binding != null) {
+                binding.tabSocialCategory.selectTab(binding.tabSocialCategory.getTabAt(initialPosition), true)
+            }
         }
     }
 
