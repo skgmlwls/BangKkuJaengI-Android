@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.Cart
+import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import kotlinx.coroutines.tasks.await
@@ -33,6 +34,8 @@ class ShoppingCartRepository {
                 shopping_cart_item_list.add(map)
             }
 
+            Log.d("test1010", "${shopping_cart_item_list}")
+
             shopping_cart_item_list.map {
                 val cartData = it["cart_data"] as? ShoppingCart // cart_data를 ShoppingCart로 안전하게 캐스팅
                 cartData?.items?.forEach { cart ->
@@ -45,6 +48,7 @@ class ShoppingCartRepository {
             return shopping_cart_item_list
         }
 
+        // 상품 document id로 상품 정보 가져오기
         suspend fun getting_prodcut_by_product_document_id(product_document_id_list: List<String>): MutableList<Map<String, *>> {
             Log.d("test200", "test2: ${product_document_id_list}")
             val firestore = FirebaseFirestore.getInstance()
@@ -70,6 +74,7 @@ class ShoppingCartRepository {
             return product_list
         }
 
+        // test
         suspend fun add_cart_items_by_product_ids(user_id: String) {
             Log.d("add_cart_item", "여기옴")
             val firestore = FirebaseFirestore.getInstance()
@@ -116,9 +121,7 @@ class ShoppingCartRepository {
             }
         }
 
-
-
-
+        // 장바구니 아이템 갯수 업데이트
         suspend fun update_cart_item_quantity(user_id: String, productId: String, quantity: Int) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
@@ -151,6 +154,7 @@ class ShoppingCartRepository {
             documentReference.update(updateMap).await()
         }
 
+        // 장바구니 아이템 체크 업데이트
         suspend fun update_cart_item_checked(user_id: String, productId: String, checked: Boolean) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
@@ -249,6 +253,48 @@ class ShoppingCartRepository {
 
             return imageUri
         }
+
+        // 유저 id를 통해 유저 데이터 가져오는 메소드
+        suspend fun getting_user_data_by_user_id(user_id: String): Map<String, *>? {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Member")
+
+            // Firestore에서 memberId 필드로 사용자 검색
+            val result = collectionReference.whereEqualTo("memberId", user_id).get().await()
+
+            if (result.documents.isNotEmpty()) {
+                val document = result.documents[0] // 첫 번째 문서 가져오기
+
+
+
+                val member = Member(
+                    id = document.id,
+                    memberId = document.getString("memberId") ?: "",
+                    memberPassword = document.getString("memberPassword") ?: "",
+                    memberName = document.getString("memberName") ?: "",
+                    memberNickName = document.getString("memberNickName") ?: "",
+                    memberPhoneNumber = document.getString("memberPhoneNumber") ?: "", // 처리된 전화번호
+                    memberProfileImage = document.getString("memberProfileImage"),
+                    point = document.getString("point")?.toIntOrNull() ?: 3000,
+                    isActive = document.getBoolean("isActive") ?: false,
+                    createAt = document.getLong("createAt") ?: 0L,
+                    followingCount = document.getLong("followingCount")?.toInt() ?: 0,
+                    followingList = emptyList(), // 리스트 매핑 필요 시 처리
+                    couponDocumentId = document.get("couponDocumentId") as? List<String>
+                        ?: emptyList(),
+                    followerCount = document.getLong("followerCount")?.toInt() ?: 0,
+                )
+
+                return mapOf(
+                    "member_document_id" to document.id,
+                    "member_data" to member
+                )
+            }
+
+            return null // 문서가 없을 경우 null 반환
+        }
+
+
 
     }
 

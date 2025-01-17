@@ -107,17 +107,8 @@
                     layout="@layout/view_category_deco"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@id/category_broadcast"
-                    app:layout_constraintStart_toEndOf="@id/category_fabric"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <include
-                    android:id="@+id/category_broadcast"
-                    layout="@layout/view_category_broadcast"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/category_deco"
+                    app:layout_constraintStart_toEndOf="@id/category_fabric"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

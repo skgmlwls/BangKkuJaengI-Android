@@ -18,8 +18,9 @@ class SocialDiscoveryRepository @Inject constructor() {
         return listOf(
             Post(
                 id = "1",
-                nickname = "user1",
-                title = "Test Post 1",
+                nickname = "소셜유저",
+                authorProfilePicture = "https://example.com/image1.jpg",
+                title = "내방소개",
                 content = "This is a test post",
                 imageList = listOf("https://example.com/image1.jpg"),
                 savedCount = 5,
@@ -27,8 +28,9 @@ class SocialDiscoveryRepository @Inject constructor() {
             ),
             Post(
                 id = "2",
-                nickname = "user2",
-                title = "Test Post 2",
+                nickname = "소셜유저",
+                authorProfilePicture = "https://example.com/image1.jpg",
+                title = "두번째 내방소개",
                 content = "Another test post",
                 imageList = listOf("https://example.com/image2.jpg"),
                 savedCount = 10,
@@ -36,11 +38,32 @@ class SocialDiscoveryRepository @Inject constructor() {
             ),
             Post(
                 id = "3",
-                nickname = "user3",
-                title = "Test Post 3",
+                nickname = "방꾸쟁이유저",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "첫번째 내방소개",
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 2,
+                commentCount = 1
+            ),
+            Post(
+                id = "4",
+                nickname = "방꾸쟁이유저",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "다섯번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "5",
+                nickname = "김혜인",
+                authorProfilePicture = "https://example.com/image3.jpg",
+                title = "방청소하기",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 0,
                 commentCount = 1
             )
         )

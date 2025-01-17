@@ -6,6 +6,7 @@
     android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_row_payment_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFFFFF">

@@ -12,6 +12,8 @@ kotlinxCoroutinesAndroid = "1.9.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+navigationFragmentKtx = "2.8.5"
+navigationUiKtx = "2.8.5"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 roomRuntime = "2.6.1"
@@ -23,6 +25,9 @@ firebaseCommonKtx = "21.0.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }

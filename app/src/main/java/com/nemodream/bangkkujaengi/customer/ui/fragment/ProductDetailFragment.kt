@@ -3,7 +3,6 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
@@ -21,7 +22,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentProductDetailBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
-import com.nemodream.bangkkujaengi.utils.popBackStack
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -31,6 +31,8 @@ class ProductDetailFragment: Fragment() {
     private var _binding: FragmentProductDetailBinding? = null
     private val binding get() = _binding!!
 
+    private val args: ProductDetailFragmentArgs by navArgs()
+
     private val viewModel: ProductDetailViewModel by viewModels()
 
     private val adapter: ProductDetailBannerAdapter by lazy { ProductDetailBannerAdapter() }
@@ -39,8 +41,8 @@ class ProductDetailFragment: Fragment() {
     // 상태바 색상 변경을 위한 window 객체 초기화
     private val window: Window by lazy { activity?.window ?: throw IllegalStateException("Activity is null") }
 
-    // 번들 객체를 통해 받은 아이디 프로퍼티로 저장
-    private val productId: String by lazy { arguments?.getString("PRODUCT_ID") ?: "" }
+    // safeArgs 객체를 통해 받은 아이디 프로퍼티로 저장
+    private val productId: String by lazy { args.productId }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -144,13 +146,14 @@ class ProductDetailFragment: Fragment() {
     private fun setupListeners() {
         with(binding) {
             toolbar.setNavigationOnClickListener {
-                popBackStack()
+                findNavController().navigateUp()
             }
 
             btnProductOrder.setOnClickListener {
-                // BottomSheet 표시
-                val bottomSheet = ProductOrderBottomSheetFragment.newInstance(productId)
-                bottomSheet.show(childFragmentManager, bottomSheet.tag)
+                viewModel.product.value?.let { product ->
+                    val bottomSheet = ProductOrderBottomSheetFragment.newInstance(product)
+                    bottomSheet.show(childFragmentManager, bottomSheet.tag)
+                }
             }
         }
     }
