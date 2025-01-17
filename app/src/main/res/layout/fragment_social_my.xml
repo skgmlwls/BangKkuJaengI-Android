@@ -11,9 +11,9 @@
         android:id="@+id/cl_my_profile_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -41,19 +41,16 @@
             app:layout_constraintTop_toTopOf="@id/iv_my_profile_image" />
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_following_following"
-            style="@style/FollowingButtonStyle"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="팔로잉"
-            android:textSize="10sp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_social_my_edit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/ic_edit_24px"
             app:layout_constraintStart_toEndOf="@id/tv_my_profile_nickname"
             app:layout_constraintTop_toTopOf="@id/tv_my_profile_nickname"
-            app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname"/>
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname" />
 
 
         <TextView
@@ -77,6 +74,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:padding="8dp"
+        android:layout_marginTop="20dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         app:layout_constraintTop_toBottomOf="@id/cl_my_profile_info"
