@@ -28,17 +28,17 @@ class PaymentFragment : Fragment() {
 
     val paymentViewModel: PaymentViewModel by viewModels()
 
+
     // 테스트
     val testData = Array(3) {
         "상품명 $it"
     }
-
     // 유저 ID
-    var user_id: String = ""
+    private lateinit var user_id: String
     // 유저 전화번호
-    var user_phone_number: String = ""
+    private lateinit var user_phone_number: String
     // 유저 주소
-    var user_address: String = ""
+    private lateinit var user_address: String
 
     var payment_product_user_id = ""
 
@@ -54,12 +54,15 @@ class PaymentFragment : Fragment() {
     //
     var select_coupon_list = mutableListOf<Coupon>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         fragmentPaymentBinding = FragmentPaymentBinding.inflate(inflater, container, false)
-
         // 유저 아이디 세팅
         getting_user_id()
         // 리사이클러뷰 설정
@@ -132,9 +135,12 @@ class PaymentFragment : Fragment() {
 
     // 유저 아이디 세팅 메소드
     fun getting_user_id() {
-        user_id = arguments?.getString("user_id").toString()
-        user_phone_number = arguments?.getString("user_phone_number").toString()
-        user_address = arguments?.getString("user_address").toString()
+        arguments?.let {
+            user_id = PaymentFragmentArgs.fromBundle(it).userId
+            user_phone_number = PaymentFragmentArgs.fromBundle(it).userPhoneNumber
+            user_address = PaymentFragmentArgs.fromBundle(it).userAddress
+        }
+
         Log.d("testId", user_id)
     }
 
