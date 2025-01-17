@@ -1,29 +1,22 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ShoppingCartAdapter
-import com.nemodream.bangkkujaengi.customer.ui.viewmodel.RowShoppingCartRecyclerviewViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ShoppingCartViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentShoppingCartBinding
-import com.nemodream.bangkkujaengi.databinding.RowShoppingCartRecyclerviewBinding
-import com.nemodream.bangkkujaengi.utils.loadImage
-import com.nemodream.bangkkujaengi.utils.navigateToChildFragment
-import com.nemodream.bangkkujaengi.utils.replaceParentFragment
-import com.nemodream.bangkkujaengi.utils.replaceParentFragment2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -129,15 +122,16 @@ class ShoppingCartFragment : Fragment() {
 
                 Log.d("user_data", "${memberData?.memberPhoneNumber}")
 
-                val data_budle = Bundle()
-                // 유저 ID 전달
-                data_budle.putString("user_id", user_id)
-                // 유저 전화 번호 전달
-                data_budle.putString("user_phone_number", memberData?.memberPhoneNumber)
-                // 유저 주소 전달
-                data_budle.putString("user_address", "서울시 강남구 역삼동")
-
-                replaceParentFragment2(PaymentFragment(), "payment_fragment", data_budle)
+//                val data_budle = Bundle()
+//                // 유저 ID 전달
+//                data_budle.putString("user_id", user_id)
+//                // 유저 전화 번호 전달
+//                data_budle.putString("user_phone_number", memberData?.memberPhoneNumber)
+//                // 유저 주소 전달
+//                data_budle.putString("user_address", "서울시 강남구 역삼동")
+//
+                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(user_id, memberData?.memberPhoneNumber.toString(), "서울시 강남구 역삼동")
+                findNavController().navigate(action)
             }
         }
     }

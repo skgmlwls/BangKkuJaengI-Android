@@ -2,7 +2,6 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,8 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayout
 import com.nemodream.bangkkujaengi.R
@@ -22,28 +22,19 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.CategoryProductViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentCategoryProductBinding
-import com.nemodream.bangkkujaengi.utils.popBackStack
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CategoryProductFragment: Fragment(), ProductClickListener {
     private var _binding: FragmentCategoryProductBinding? = null
     private val binding get() = _binding!!
 
+    private val args: CategoryProductFragmentArgs by navArgs()
+
     private val viewModel: CategoryProductViewModel by viewModels()
 
     private val adapter: ProductGridAdapter by lazy { ProductGridAdapter(this) }
-    private var categoryType: CategoryType? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // 전달받은 categoryType을 초기화
-        categoryType = CategoryType.valueOf(
-            arguments?.getString(KEY_CATEGORY_TYPE) ?: CategoryType.ALL.name
-        )
-    }
+    private val categoryType: CategoryType by lazy { args.category }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,10 +58,8 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_container, ProductDetailFragment.newInstance(product.productId))
-            .addToBackStack(null)
-            .commit()
+        val action = CategoryProductFragmentDirections.actionNavigationCategoryToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
     }
 
     private fun setupUI() {
@@ -93,7 +82,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     private fun setupListeners() {
         with(binding) {
             toolbarCategoryProduct.setNavigationOnClickListener {
-                popBackStack()
+                findNavController().navigateUp()
             }
 
             tabCategory.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -112,10 +101,8 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
         binding.toolbarCategoryProduct.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_search -> {
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.parent_container, SearchFragment())
-                        .addToBackStack(null)
-                        .commit()
+                    val action = CategoryProductFragmentDirections.actionNavigationCategoryToNavigationSearch()
+                    findNavController().navigate(action)
                     true
                 }
                 else -> false
@@ -138,7 +125,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
         }
 
         // 초기 데이터 로드와 탭 선택
-        categoryType?.let { initialType ->
+        categoryType.let { initialType ->
             val position = initialType.ordinal
             setupSubCategoryChips(initialType)
             binding.tabCategory.getTabAt(position)?.select()
@@ -235,19 +222,6 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
                 }
             }
         }.show()
-    }
-
-    companion object {
-        private const val KEY_CATEGORY_TYPE = "category_type"
-        private const val DELAY_TIME = 100L
-
-        fun newInstance(type: CategoryType): CategoryProductFragment {
-            return CategoryProductFragment().apply {
-                arguments = Bundle().apply {
-                    putString(KEY_CATEGORY_TYPE, type.name)
-                }
-            }
-        }
     }
 
 }
