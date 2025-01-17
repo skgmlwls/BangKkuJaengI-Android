@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Banner
@@ -18,9 +19,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PromotionAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
-import com.nemodream.bangkkujaengi.utils.navigateToChildFragment
-import com.nemodream.bangkkujaengi.utils.navigateToParentFragment
-import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -60,7 +58,8 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     * 배너 클릭 리스너
     * */
     override fun onItemClick(banner: Banner) {
-        replaceParentFragment(ProductDetailFragment.newInstance(banner.productId), "HomeFragment")
+        val action = HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(banner.productId)
+        findNavController().navigate(action)
     }
 
     /*
@@ -106,43 +105,37 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     private fun setupListeners() {
         with(binding) {
             categoryFurniture.root.setOnClickListener {
-                replaceParentFragment(
-                    CategoryProductFragment.newInstance(CategoryType.FURNITURE),
-                    CategoryType.FURNITURE.name
-                )
+                val action = HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(CategoryType.FURNITURE)
+                findNavController().navigate(action)
             }
 
             categoryLighting.root.setOnClickListener {
-                replaceParentFragment(
-                    CategoryProductFragment.newInstance(CategoryType.LIGHTING),
-                    CategoryType.LIGHTING.name
-                )
+                val action = HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(CategoryType.LIGHTING)
+                findNavController().navigate(action)
             }
 
             categoryFabric.root.setOnClickListener {
-                replaceParentFragment(
-                    CategoryProductFragment.newInstance(CategoryType.FABRIC),
-                    CategoryType.FABRIC.name
-                )
+                val action = HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(CategoryType.FABRIC)
+                findNavController().navigate(action)
             }
 
             categoryDeco.root.setOnClickListener {
-                replaceParentFragment(
-                    CategoryProductFragment.newInstance(CategoryType.DECO),
-                    CategoryType.DECO.name
-                )
+                val action = HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(CategoryType.DECO)
+                findNavController().navigate(action)
             }
 
             // 각 메뉴 버튼에 따라서 화면 이동하기
             toolbarHome.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_search -> {
-                        replaceParentFragment(SearchFragment(), "HomeFragment")
+                        val action = HomeFragmentDirections.actionNavigationHomeToNavigationSearch()
+                        findNavController().navigate(action)
                         true
                     }
 
                     R.id.menu_cart -> {
-                        replaceParentFragment(ShoppingCartFragment(), "HomeFragment")
+                        val action = HomeFragmentDirections.actionNavigationHomeToNavigationCart()
+                        findNavController().navigate(action)
                         true
                     }
                     else -> false
@@ -152,10 +145,12 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     }
 
     override fun onProductClick(product: Product) {
-        replaceParentFragment(ProductDetailFragment.newInstance(product.productId), "HomeFragment")
+        val action = HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
     }
 
     override fun onMoreProductsClick(title: String) {
-        navigateToParentFragment(PromotionFragment.newInstance(title))
+        val action = HomeFragmentDirections.actionNavigationHomeToNavigationPromotion(title)
+        findNavController().navigate(action)
     }
 }

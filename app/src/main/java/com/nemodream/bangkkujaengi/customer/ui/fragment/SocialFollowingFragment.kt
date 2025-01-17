@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.customer.data.model.Post
@@ -18,7 +19,6 @@ import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewMode
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.nemodream.bangkkujaengi.utils.loadImage
-import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -158,15 +158,11 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 viewModel.toggleFollowing()
             }
 
-            tvAllProfiles.setOnClickListener{
-                replaceParentFragment(
-                    SocialFollowingAllFragment.newInstance(),
-                    "SocialFragment")
+            tvAllProfiles.setOnClickListener {
+                val action = SocialFragmentDirections.actionNavigationSocialToSocialFollowingAllFragment()
+                findNavController().navigate(action)
             }
 
-//            toolbar.setNavigationOnClickListener {
-//                popBackStack()
-//            }
 
         }
     }

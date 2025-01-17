@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingAllBinding
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingAllAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingAllViewModel
-import com.nemodream.bangkkujaengi.utils.popBackStack
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -78,7 +78,7 @@ class SocialFollowingAllFragment : Fragment() {
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
-                popBackStack()
+                findNavController().navigateUp()
             }
         }
     }

@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.customer.data.model.SocialCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialBinding
-import com.nemodream.bangkkujaengi.utils.popBackStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -54,7 +54,7 @@ class SocialFragment: Fragment() {
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
-                popBackStack()
+                findNavController().navigateUp()
             }
         }
     }
@@ -71,7 +71,7 @@ class SocialFragment: Fragment() {
         val initialPosition = socialCategoryType?.ordinal ?: 0
 
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(SocialFragment.Companion.DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
+            delay(DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
             // 뷰가 파괴되지 않았는지 확인
             if (_binding != null) {
                 binding.tabSocialCategory.selectTab(binding.tabSocialCategory.getTabAt(initialPosition), true)
@@ -88,7 +88,7 @@ class SocialFragment: Fragment() {
 
         // TabLayout과 ViewPager2 연결
         TabLayoutMediator(binding.tabSocialCategory, binding.viewPagerSocialCategory) { tab, position ->
-            tab.text = SocialCategoryType.values()[position].getSocialTabTitle()
+            tab.text = SocialCategoryType.entries[position].getSocialTabTitle()
         }.attach()
     }
 

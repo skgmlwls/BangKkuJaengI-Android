@@ -9,6 +9,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.SortType
@@ -16,7 +17,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.PromotionViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentPromotionBinding
-import com.nemodream.bangkkujaengi.utils.replaceParentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -145,6 +145,7 @@ class PromotionFragment: Fragment(), ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        replaceParentFragment(ProductDetailFragment.newInstance(product.productId), "HomeFragment")
+        val action = HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
     }
 }
