@@ -34,6 +34,8 @@ class ProductOrderBottomSheetFragment : BottomSheetDialogFragment() {
         requireArguments().getParcelable(PRODUCT_KEY)!!
     }
 
+    private var cartClickListener: OnCartClickListener? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         appContext = context
@@ -165,16 +167,21 @@ class ProductOrderBottomSheetFragment : BottomSheetDialogFragment() {
     private fun showActionDialog() {
         CustomDialog(
             context = requireContext(),
-            message = "장바구니에 상품이 이동했습니다\n" +
-                    "장바구니로 이동하시겠습니까?",
-            confirmText = "확인",
-            cancelText = "계속 쇼핑하기",
+            message = "장바구니에 상품이 담겼습니다.\n장바구니로 이동하시겠습니까?",
+            confirmText = "장바구니로 이동",
+            cancelText = "쇼핑 계속하기",
             onConfirm = {
-                // 확인 버튼 클릭 시 처리
+                dismiss() // BottomSheet 닫기
+                cartClickListener?.onMoveToCartAction()
             },
-            onCancel = {}
+            onCancel = {
+                // 현재 화면 유지
+            }
         ).show()
-        dismiss()
+    }
+
+    fun setOnCartClickListener(listener: OnCartClickListener) {
+        cartClickListener = listener
     }
 
     companion object {
@@ -188,4 +195,9 @@ class ProductOrderBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
     }
+
+}
+
+interface OnCartClickListener {
+    fun onMoveToCartAction()
 }

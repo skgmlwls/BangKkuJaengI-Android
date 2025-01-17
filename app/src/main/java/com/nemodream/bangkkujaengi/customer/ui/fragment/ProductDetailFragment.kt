@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProductDetailFragment: Fragment() {
+class ProductDetailFragment: Fragment(), ProductOrderBottomSheetFragment.OnCartClickListener {
     private var _binding: FragmentProductDetailBinding? = null
     private val binding get() = _binding!!
 
@@ -152,10 +152,17 @@ class ProductDetailFragment: Fragment() {
             btnProductOrder.setOnClickListener {
                 viewModel.product.value?.let { product ->
                     val bottomSheet = ProductOrderBottomSheetFragment.newInstance(product)
+                    bottomSheet.setOnCartClickListener(this@ProductDetailFragment)
                     bottomSheet.show(childFragmentManager, bottomSheet.tag)
                 }
             }
         }
+    }
+
+    override fun onMoveToCartAction() {
+        findNavController().navigate(
+            ProductDetailFragmentDirections.actionNavigationProductDetailToNavigationCart()
+        )
     }
 
     /*
