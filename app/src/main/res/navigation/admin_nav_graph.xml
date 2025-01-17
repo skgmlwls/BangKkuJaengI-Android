@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_adminHomeFragment_to_adminProductFragment"
             app:destination="@id/adminProductFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminCouponFragment"
+            app:destination="@id/adminCouponFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAddProductFragment"
@@ -26,4 +29,8 @@
             android:id="@+id/action_adminProductFragment_to_adminAddProductFragment"
             app:destination="@id/adminAddProductFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/adminCouponFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminCouponFragment"
+        android:label="AdminCouponFragment" />
 </navigation>
