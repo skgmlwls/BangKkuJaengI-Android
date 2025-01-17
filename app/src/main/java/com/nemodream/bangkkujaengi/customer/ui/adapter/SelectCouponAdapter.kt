@@ -58,7 +58,7 @@ class SelectCouponAdapter(
         // 쿠폰 삭제 버튼
         holder.rowPaymentSelectCouponRecyclerviewBinding.btnRowRowPaymentCouponDelete.setOnClickListener {
             paymentFragment.checked_coupon_document_id_list.clear()
-            paymentFragment.select_coupon_list.clear()
+            paymentFragment.paymentViewModel.select_coupon_list.value?.clear()
 
             Log.d("5", "${paymentFragment.checked_coupon_document_id_list}")
 
