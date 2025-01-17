@@ -145,7 +145,7 @@ class PromotionFragment: Fragment(), ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        val action = HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(product.productId)
+        val action = PromotionFragmentDirections.actionNavigationPromotionToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
     }
 }
