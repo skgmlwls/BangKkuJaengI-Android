@@ -1,33 +1,37 @@
 package com.nemodream.bangkkujaengi
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.nemodream.bangkkujaengi.container.AdminFragment
+import androidx.navigation.fragment.NavHostFragment
 import com.nemodream.bangkkujaengi.databinding.ActivityAdminBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AdminActivity : AppCompatActivity() {
     private val binding: ActivityAdminBinding by lazy { ActivityAdminBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setupBackPressHandler()
+    }
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.admin_parent_container, AdminFragment()) // add에서 replace로 변경
-                .commit()
-        }
+    /**
+     * 뒤로가기 버튼 핸들러를 설정합니다.
+     * Fragment 백스택이 있는 경우 이전 화면으로 이동하고,
+     * 없는 경우 액티비티를 종료합니다.
+     */
+    private fun setupBackPressHandler() {
+        onBackPressedDispatcher.addCallback(this) {
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.admin_container) as NavHostFragment
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (supportFragmentManager.backStackEntryCount > 0) {
-                    supportFragmentManager.popBackStack()
-                } else {
+            with(navHostFragment.navController) {
+                if (!popBackStack()) {
                     finish()
                 }
             }
-        })
+        }
     }
 }

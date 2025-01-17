@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.nemodream.bangkkujaengi.R
+import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductAdapter
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminProductViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminProductBinding
@@ -52,14 +52,12 @@ class AdminProductFragment : Fragment() {
     private fun setupListeners() {
         with(binding) {
             toolbarAdminProduct.setNavigationOnClickListener {
-                parentFragmentManager.popBackStack()
+                findNavController().navigateUp()
             }
 
             btnProductAdd.setOnClickListener {
-                parentFragmentManager.beginTransaction()
-                    .add(R.id.admin_container, AdminAddProductFragment())
-                    .addToBackStack("AdminProductFragment")
-                    .commit()
+                val action = AdminProductFragmentDirections.actionAdminProductFragmentToAdminAddProductFragment()
+                findNavController().navigate(action)
             }
         }
 
