@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.nemodream.bangkkujaengi.databinding.FragmentAdminCouponBinding
+import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddCouponBinding
 
-class AdminCouponFragment: Fragment() {
-    private var _binding: FragmentAdminCouponBinding? = null
+class AdminAddCouponFragment: Fragment() {
+    private var _binding: FragmentAdminAddCouponBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class AdminCouponFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAdminCouponBinding.inflate(inflater, container, false)
+        _binding = FragmentAdminAddCouponBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -33,13 +33,8 @@ class AdminCouponFragment: Fragment() {
 
     private fun setupListeners() {
         with(binding) {
-            toolbarAdminCoupon.setNavigationOnClickListener {
+            toolbarAddCoupon.setNavigationOnClickListener {
                 findNavController().navigateUp()
-            }
-
-            btnCouponAdd.setOnClickListener {
-                val action = AdminCouponFragmentDirections.actionAdminCouponFragmentToAdminAddCouponFragment()
-                findNavController().navigate(action)
             }
         }
     }

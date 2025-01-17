@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_admin_product"
+        android:id="@+id/toolbar_product_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_admin_product"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_product_product"
         tools:listitem="@layout/item_admin_product__list" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

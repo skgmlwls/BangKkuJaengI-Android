@@ -51,7 +51,7 @@ class AdminProductFragment : Fragment() {
 
     private fun setupListeners() {
         with(binding) {
-            toolbarAdminProduct.setNavigationOnClickListener {
+            toolbarProductProduct.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
 
