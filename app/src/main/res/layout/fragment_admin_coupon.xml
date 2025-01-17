@@ -7,14 +7,14 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_admin_product"
+        android:id="@+id/toolbar_admin_coupon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="상품관리"
+        app:title="쿠폰관리"
         app:titleCentered="true"
         app:titleTextAppearance="@style/AppToolbarTitleStyle" />
 
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_admin_product"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_admin_coupon"
         tools:listitem="@layout/row_payment_coupon_recyclerview" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
