@@ -2,9 +2,12 @@ package com.nemodream.bangkkujaengi
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.nemodream.bangkkujaengi.databinding.ActivityCustomerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +21,16 @@ class CustomerActivity : AppCompatActivity() {
         setContentView(binding.root)
         val navController = setupNavHost()
         setupListeners(navController)
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.customer_container) as NavHostFragment
+
+        onBackPressedDispatcher.addCallback(this) {
+            val navController = navHostFragment.navController
+            if (!navController.popBackStack()) {
+                finish()
+            }
+        }
     }
 
     // NavHost 설정
