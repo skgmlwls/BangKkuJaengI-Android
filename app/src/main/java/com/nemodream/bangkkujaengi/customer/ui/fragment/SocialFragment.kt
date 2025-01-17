@@ -132,7 +132,7 @@ class SocialPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
             SocialCategoryType.RANK.ordinal -> SocialRankFragment()
             SocialCategoryType.FOLLOWING.ordinal -> SocialFollowingFragment()
             else -> {
-                SocialDiscoveryFragment()
+                SocialMyFragment()
             }
         }
     }
