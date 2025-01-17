@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingAllBinding
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingAllAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingAllViewModel
+import com.nemodream.bangkkujaengi.utils.popBackStack
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +42,7 @@ class SocialFollowingAllFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
+        setupListeners()
         viewModel.loadFollowingAllMembers()
     }
 
@@ -69,5 +72,14 @@ class SocialFollowingAllFragment : Fragment() {
         viewModel.followingMembers.observe(viewLifecycleOwner, Observer { followingMembers ->
             socialFollowingAllAdapter.submitList(followingMembers)
         })
+    }
+
+    // 리스너 설정
+    private fun setupListeners() {
+        with(binding) {
+            toolbarSocial.setNavigationOnClickListener {
+                popBackStack()
+            }
+        }
     }
 }
