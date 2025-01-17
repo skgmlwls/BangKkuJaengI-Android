@@ -280,7 +280,8 @@ class ShoppingCartRepository {
                     createAt = document.getLong("createAt") ?: 0L,
                     followingCount = document.getLong("followingCount")?.toInt() ?: 0,
                     followingList = emptyList(), // 리스트 매핑 필요 시 처리
-                    couponDocumentId = document.get("couponDocumentId") as? List<String> ?: emptyList(),
+                    couponDocumentId = document.get("couponDocumentId") as? List<String>
+                        ?: emptyList(),
                     followerCount = document.getLong("followerCount")?.toInt() ?: 0,
                 )
 

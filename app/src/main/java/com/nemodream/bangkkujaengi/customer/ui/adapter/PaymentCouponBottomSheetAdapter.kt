@@ -65,6 +65,11 @@ class PaymentCouponBottomSheetAdapter(
         // 쿠폰 하나만 선택되도록 하기 위한 메소드 호출
         select_single_coupon(holder, paymentCouponBottomSheetViewModel, position)
 
+
+        if (paymentCouponBottomSheetViewModel.checked_document_id.value == coupon_list[position].documentId) {
+            holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = true
+        }
+
     }
 
     // 옵저버 세팅 메소드
@@ -148,6 +153,7 @@ class PaymentCouponBottomSheetAdapter(
         }
 
         holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.setOnClickListener {
+            holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = false
             val isChecked = !holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked
             holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = isChecked
             if (isChecked) {

@@ -76,23 +76,58 @@ class PaymentFragment : Fragment() {
             // 선택한 쿠폰 리스트 초기화
             select_coupon_list.clear()
             // 선택한 쿠폰 문서 id 리스트 초기화
-            checked_coupon_document_id_list.clear()
+//            checked_coupon_document_id_list.clear()
 
             val selectedPosition = result.getInt("select_position")
             val selectedDocumentId = result.getString("select_document_id")
 
-            // 쿠폰 리스트 중 선택된 position 을 ViewModel 에 설정
-            paymentViewModel.checked_position.value = selectedPosition
-            checked_coupon_document_id_list.add(selectedDocumentId!!)
+            // 이전에 선택했던 쿠폰과 같지 않으면 선택한 쿠폰 리스트 초기화 후 선택한 쿠폰 추가
+            if (paymentViewModel.checked_position.value != selectedPosition){
+                checked_coupon_document_id_list.clear()
 
-            Log.d("1234", "selectedPosition : ${selectedPosition}")
-            Log.d("1234", "selectedDocumentId : ${selectedDocumentId}")
+                // 쿠폰 리스트 중 선택된 position 을 ViewModel 에 설정
+                paymentViewModel.checked_position.value = selectedPosition
+                checked_coupon_document_id_list.add(selectedDocumentId!!)
+            }
+
+            // setting_checked_coupon_list(selectedDocumentId, selectedPosition)
+
             refresh_select_coupon_recyclerview()
         }
 
 
 
         return fragmentPaymentBinding.root
+    }
+
+    fun setting_checked_coupon_list(selectedDocumentId : String?, selectedPosition : Int) {
+        // 이전에 선택해서 삭제했던 쿠폰이 였어도 추가할 수 있도록 체크하는 변수
+        var check_coupon = 0
+
+        // 선택된 쿠폰 리스트에 이미 있는 항목이면 그 항목을 삭제한다.
+        checked_coupon_document_id_list.forEach {
+            if (it == selectedDocumentId) {
+                checked_coupon_document_id_list.remove(it)
+                check_coupon++
+            }
+        }
+
+        // 이전에 선택했던 쿠폰과 같지 않으면 선택한 쿠폰 리스트 초기화 후 선택한 쿠폰 추가
+        if (paymentViewModel.checked_position.value != selectedPosition){
+            checked_coupon_document_id_list.clear()
+
+            // 쿠폰 리스트 중 선택된 position 을 ViewModel 에 설정
+            paymentViewModel.checked_position.value = selectedPosition
+            checked_coupon_document_id_list.add(selectedDocumentId!!)
+        }
+        else {
+            if (check_coupon == 0) {
+                checked_coupon_document_id_list.add(selectedDocumentId!!)
+            }
+        }
+
+        Log.d("1234", "selectedPosition : ${selectedPosition}")
+        Log.d("1234", "selectedDocumentId : ${selectedDocumentId}")
     }
 
     // 유저 아이디 세팅 메소드
@@ -136,9 +171,12 @@ class PaymentFragment : Fragment() {
 
                 // 쿠폰 목록 보여주기
                 // PaymentCouponBottomSheetFragment 에 데이터 전달
-                val bottomSheetFragment = PaymentCouponBottomSheetFragment(). apply {
+                val bottomSheetFragment = PaymentCouponBottomSheetFragment(this@PaymentFragment). apply {
                     arguments = Bundle().apply {
                         putString("user_id", user_id)
+//                        if (checked_coupon_document_id_list.size != 0) {
+//                            putString("selected_document_id", checked_coupon_document_id_list[0])
+//                        }
                     }
                 }
                 bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
@@ -199,16 +237,17 @@ class PaymentFragment : Fragment() {
     fun refresh_select_coupon_recyclerview() {
         viewLifecycleOwner.lifecycleScope.launch {
             val work1 = async(Dispatchers.IO) {
+                Log.d("5", "checked_coupon_document_id_list : ${checked_coupon_document_id_list}")
                 PaymentRepository.getting_coupon_by_select_coupon_document_id(checked_coupon_document_id_list)
             }
             val coupon_list = work1.await()
-            Log.d("666", "coupon_document_id_list : ${select_coupon_list}")
+            // Log.d("666", "coupon_document_id_list : ${select_coupon_list}")
 
             coupon_list.forEach {
                 select_coupon_list.add(it["coupon_data"] as Coupon)
             }
 
-            Log.d("666", "coupon_document_id_list : ${select_coupon_list}")
+            // Log.d("5", "coupon_document_id_list : ${select_coupon_list}")
             fragmentPaymentBinding.rvPaymentSelectCouponList.adapter?.notifyDataSetChanged()
         }
     }
@@ -216,7 +255,9 @@ class PaymentFragment : Fragment() {
     fun setting_recyclerview_select_coupon() {
         fragmentPaymentBinding.apply {
             rvPaymentSelectCouponList.adapter = SelectCouponAdapter(
-                select_coupon_list
+                select_coupon_list,
+                this@PaymentFragment,
+                viewLifecycleOwner
             )
             rvPaymentSelectCouponList.layoutManager = LinearLayoutManager(context)
         }
