@@ -1,6 +1,5 @@
 package com.nemodream.bangkkujaengi.utils
 
-import android.os.Bundle
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.View
@@ -8,54 +7,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.nemodream.bangkkujaengi.R
-
-/*
-* BottomNavigation에서 화면을 전환할때 활용하는 함수
-* */
-fun Fragment.navigateToChildFragment(fragment: Fragment) {
-    childFragmentManager.commit {
-        replace(R.id.customer_container, fragment)
-    }
-}
-
-fun Fragment.navigateToParentFragment(fragment: Fragment) {
-    parentFragmentManager.commit {
-        replace(R.id.customer_container, fragment)
-    }
-}
-
-/*
-* ParentFragment 화면을 변경하는 함수
-* 새로운 화면을 BottomNavigation을 공유하지 않고, 가리는 목적으로 활용
-* */
-fun Fragment.replaceParentFragment(fragment: Fragment, tag: String) {
-    requireParentFragment().parentFragment?.parentFragmentManager?.commit {
-        replace(R.id.parent_container, fragment)
-        addToBackStack(tag)
-    }
-}
-
-// 데이터 전달이 가능한 ParentFragment 화면을 변경하는 함수
-fun Fragment.replaceParentFragment2(fragment: Fragment, tag: String, data: Bundle? = null) {
-    data?.let {
-        fragment.arguments = it // 전달받은 데이터를 Fragment의 arguments에 설정
-    }
-    requireParentFragment().parentFragment?.parentFragmentManager?.commit {
-        replace(R.id.parent_container, fragment)
-        addToBackStack(tag)
-    }
-}
-
-/*
-* 현재 Fragment 스택을 제거한다.
-* */
-fun Fragment.popBackStack() {
-    parentFragmentManager.popBackStack()
-}
 
 /*
 * 이미지 로드 확장 함수
