@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProductDetailFragment: Fragment(), ProductOrderBottomSheetFragment.OnCartClickListener {
+class ProductDetailFragment: Fragment(), OnCartClickListener {
     private var _binding: FragmentProductDetailBinding? = null
     private val binding get() = _binding!!
 
@@ -163,8 +163,8 @@ class ProductDetailFragment: Fragment(), ProductOrderBottomSheetFragment.OnCartC
         findNavController().navigate(
             ProductDetailFragmentDirections.actionNavigationProductDetailToNavigationCart()
         )
-    }
 
+    }
     /*
     * newInstance: 프래그먼트 인스턴스 생성
     * productId를 Bundle객체로 전달 받는다.
