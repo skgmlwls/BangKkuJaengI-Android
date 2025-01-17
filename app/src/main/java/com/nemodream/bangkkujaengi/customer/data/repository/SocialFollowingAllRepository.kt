@@ -1,17 +1,16 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import com.nemodream.bangkkujaengi.customer.data.model.Member
-import com.nemodream.bangkkujaengi.customer.data.model.Post
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SocialFollowingRepository @Inject constructor(){
+class SocialFollowingAllRepository @Inject constructor(){
 
     /**
      * 사용자가 팔로잉 중인 회원 목록을 가져온다
      */
-    fun getFollowingMembers(): List<Member> {
+    fun getFollowingAllMembers(): List<Member> {
         // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
         return listOf(
             Member(
@@ -147,46 +146,5 @@ class SocialFollowingRepository @Inject constructor(){
                 followerCount = 9
             ),
         )
-    }
-
-    /**
-     * 특정 회원이 작성한 게시글 목록을 가져옵니다.
-     */
-    fun getPostsByMember(member: Member): List<Post> {
-        // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
-        val allPosts = listOf(
-            Post(
-                id = "post11",
-                nickname = "닉네임1",
-                authorProfilePicture = "https://example.com/image1.jpg",
-                title = "게시글 제목 11",
-                content = "게시글 내용 11",
-                imageList = listOf("https://example.com/post1_img11.jpg"),
-                savedCount = 10,
-                commentCount = 5
-            ),
-            Post(
-                id = "post22",
-                nickname = "닉네임1",
-                authorProfilePicture = "https://example.com/image1.jpg",
-                title = "게시글 제목 22",
-                content = "게시글 내용 22",
-                imageList = listOf("https://example.com/post2_img11.jpg"),
-                savedCount = 15,
-                commentCount = 8
-            ),
-            Post(
-                id = "post32",
-                nickname = "닉네임2",
-                authorProfilePicture = "https://example.com/image1.jpg",
-                title = "게시글 제목 33",
-                content = "게시글 내용 33",
-                imageList = listOf("https://example.com/post2_img11.jpg"),
-                savedCount = 15,
-                commentCount = 8
-            )
-        )
-        // 특정 회원의 닉네임으로 필터링
-        return allPosts.filter { it.nickname == member.memberNickName }
     }
 }

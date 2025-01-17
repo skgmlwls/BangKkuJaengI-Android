@@ -26,6 +26,16 @@ class SocialFollowingViewModel @Inject constructor(
     private val _selectedMember = MutableLiveData<Member?>()
     val selectedMember: LiveData<Member?> get() = _selectedMember
 
+    // 초기 상태: 팔로잉
+    private val _isFollowing = MutableLiveData<Boolean>(true)
+    val isFollowing: LiveData<Boolean> get() = _isFollowing
+
+
+    // 팔로잉 상태를 반전
+    fun toggleFollowing() {
+        _isFollowing.value = _isFollowing.value?.not()
+    }
+
     // 팔로잉 멤버 목록 로드
     fun loadFollowingMembers() {
         val members = repository.getFollowingMembers() // 데이터베이스나 API에서 데이터 가져옴

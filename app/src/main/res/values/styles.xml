@@ -20,6 +20,10 @@
         <item name="cornerSize">4dp</item>
     </style>
 
+    <style name="AppRoundedImage.Circle" >
+        <item name="cornerSize">50%</item>
+    </style>
+
     <!--  텍스트 스타일  -->
     <style name="AppToolbarTitleStyle" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
@@ -108,7 +112,23 @@
     <!-- 둥근 모서리 -->
     <style name="RoundedCornerImage">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">10dp</item>
+        <item name="cornerSize">7dp</item>
+    </style>
+
+    <!--팔로잉 버튼 서식-->
+    <style name="FollowingButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">#818080</item> <!-- 테두리 색상 -->
+        <item name="strokeWidth">1dp</item> <!-- 테두리 두께 -->
+        <item name="cornerRadius">5dp</item> <!-- 모서리 둥글게 -->
+        <item name="backgroundTint">#DFDFDF</item> <!-- 버튼 배경색 -->
+        <item name="android:textColor">#58443B</item> <!-- 글자색 -->
+    </style>
+
+    <!--팔로우 버튼 서식-->
+    <style name="FollowButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">5dp</item> <!-- 모서리 둥글게 -->
+        <item name="backgroundTint">#332828</item> <!-- 버튼 배경색 -->
+        <item name="android:textColor">#FFFFFF</item> <!-- 글자색 -->
     </style>
 
 </resources>
