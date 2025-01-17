@@ -56,15 +56,42 @@ class SocialFollowingViewModel @Inject constructor(
         loadMemberPosts(member) // 해당 멤버의 게시글 로드
     }
 
-    // 선택된 멤버의 팔로잉 상태를 반전
+    // 선택된 멤버의 팔로잉 상태를 반전 및 업데이트
     fun toggleFollowing() {
-        val selectedId = _selectedMember.value?.id ?: return
-        val currentState = followingStates[selectedId] ?: false
+        val selectedMember = _selectedMember.value ?: return
+        val currentState = followingStates[selectedMember.id] ?: false
         val newState = !currentState
 
-        followingStates[selectedId] = newState
+        // 팔로잉 상태 업데이트
+        followingStates[selectedMember.id] = newState
         _isFollowing.value = newState
+
+        // 현재 선택된 멤버의 인덱스를 찾기
+        val currentIndex = _followingMembers.value?.indexOf(selectedMember) ?: -1
+
+        // `followingList` 업데이트
+        val updatedFollowingList = _followingMembers.value.orEmpty().toMutableList()
+        if (newState) {
+            updatedFollowingList.add(selectedMember)
+        } else {
+            updatedFollowingList.remove(selectedMember)
+        }
+
+        // 전체 팔로잉 멤버 목록 업데이트
+        _followingMembers.value = updatedFollowingList
+
+        // 삭제 후에도 선택 상태를 유지
+        if (currentIndex >= 0 && currentIndex < updatedFollowingList.size) {
+            selectMember(updatedFollowingList[currentIndex])
+        } else if (currentIndex > 0) {
+            // 마지막 멤버를 삭제한 경우 이전 멤버 선택
+            selectMember(updatedFollowingList[currentIndex - 1])
+        } else {
+            // 모두 삭제된 경우 선택 해제
+            _selectedMember.value = null
+        }
     }
+
 
     // 특정 멤버의 게시글 로드
     private fun loadMemberPosts(member: Member) {
