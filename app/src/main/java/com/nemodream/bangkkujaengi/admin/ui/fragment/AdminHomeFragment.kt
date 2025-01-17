@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
-import com.nemodream.bangkkujaengi.container.AdminFragment
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminHomeBinding
 
 class AdminHomeFragment: Fragment() {
@@ -35,15 +35,16 @@ class AdminHomeFragment: Fragment() {
     private fun setupListeners() {
         with(binding) {
             btnManageProduct.root.setOnClickListener {
-                (parentFragment as? AdminFragment)?.fragmentManager?.beginTransaction()
-                    ?.add(R.id.admin_container, AdminProductFragment())
-                    ?.addToBackStack("AdminHomeFragment")
-                    ?.commit()
+                val action = AdminHomeFragmentDirections.actionAdminHomeFragmentToAdminProductFragment()
+                findNavController().navigate(action)
             }
 
             btnManageBroadcastProduct.root.setOnClickListener {}
             btnManageBanner.root.setOnClickListener {}
-            btnManageCoupon.root.setOnClickListener {}
+            btnManageCoupon.root.setOnClickListener {
+                val action = AdminHomeFragmentDirections.actionAdminHomeFragmentToAdminCouponFragment()
+                findNavController().navigate(action)
+            }
             btnManageOrder.root.setOnClickListener {}
         }
     }

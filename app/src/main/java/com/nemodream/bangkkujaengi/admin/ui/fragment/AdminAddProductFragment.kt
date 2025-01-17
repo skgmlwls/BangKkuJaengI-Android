@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductColorAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
@@ -28,8 +28,6 @@ import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddProductBinding
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
@@ -194,7 +192,7 @@ class AdminAddProductFragment : Fragment(), OnImageCancelClickListener {
             }
 
             toolbarAdminProductAdd.setNavigationOnClickListener {
-                parentFragmentManager.popBackStack()
+                findNavController().navigateUp()
             }
 
             btnProductAddSubmit.setOnClickListener {
