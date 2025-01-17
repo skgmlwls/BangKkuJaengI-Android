@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class PaymentCouponBottomSheetFragment : BottomSheetDialogFragment() {
+class PaymentCouponBottomSheetFragment(val paymentFragment: PaymentFragment) : BottomSheetDialogFragment() {
 
     lateinit var fragmentPaymentCouponBottomSheetBinding: FragmentPaymentCouponBottomeSheetBinding
 
@@ -46,6 +46,12 @@ class PaymentCouponBottomSheetFragment : BottomSheetDialogFragment() {
         fragmentPaymentCouponBottomSheetBinding = FragmentPaymentCouponBottomeSheetBinding.inflate(inflater, container, false)
 
         paymentCouponBottomSheetViewModel.user_id.value = arguments?.getString("user_id")
+        if (paymentFragment.checked_coupon_document_id_list.size != 0) {
+            paymentCouponBottomSheetViewModel.checked_document_id.value =
+                paymentFragment.checked_coupon_document_id_list[0]
+        }
+        Log.d("1818", "selected_document_id : ${paymentCouponBottomSheetViewModel.checked_document_id.value}")
+
         Log.d("1234", "user_id : ${paymentCouponBottomSheetViewModel.user_id.value}")
 
         // 쿠폰 항목을 클릭시 BottomSheet 닫기
