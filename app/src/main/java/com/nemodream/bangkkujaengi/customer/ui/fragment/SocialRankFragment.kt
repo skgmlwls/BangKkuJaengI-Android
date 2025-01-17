@@ -48,13 +48,6 @@ class SocialRankFragment : Fragment(), OnPostItemClickListener {
         _binding = null
     }
 
-    // 뷰페이저 설정을 위해 newInstance() 메서드 추가
-    companion object {
-        fun newInstance(): SocialRankFragment {
-            return SocialRankFragment()
-        }
-    }
-
     /**
      * RecyclerView 설정
      */

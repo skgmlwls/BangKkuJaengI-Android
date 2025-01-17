@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.customer.data.model.SocialCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialBinding
@@ -19,6 +20,7 @@ class SocialFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var socialCategoryType: SocialCategoryType? = null
+    private var currentPosition: Int = 0  // 현재 탭의 포지션을 저장
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,11 @@ class SocialFragment: Fragment() {
         socialCategoryType = SocialCategoryType.valueOf(
             arguments?.getString(KEY_SOCIAL_CATEGORY_TYPE) ?: SocialCategoryType.DISCOVERY.name
         )
+
+        // 이전에 저장된 탭 상태가 있다면 상태값 가져오기
+        savedInstanceState?.let {
+            currentPosition = it.getInt(KEY_CURRENT_POSITION, 0)
+        }
     }
 
 
@@ -68,13 +75,11 @@ class SocialFragment: Fragment() {
             binding.tabSocialCategory.addTab(binding.tabSocialCategory.newTab().setText(type.getSocialTabTitle()))
         }
 
-        val initialPosition = socialCategoryType?.ordinal ?: 0
-
         viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_TIME) // 초기 탭 선택 시 자연스러운 애니메이션을 위해 딜레이를 준다.
             // 뷰가 파괴되지 않았는지 확인
             if (_binding != null) {
-                binding.tabSocialCategory.selectTab(binding.tabSocialCategory.getTabAt(initialPosition), true)
+                binding.tabSocialCategory.selectTab(binding.tabSocialCategory.getTabAt(currentPosition), true)
             }
         }
     }
@@ -90,11 +95,20 @@ class SocialFragment: Fragment() {
         TabLayoutMediator(binding.tabSocialCategory, binding.viewPagerSocialCategory) { tab, position ->
             tab.text = SocialCategoryType.entries[position].getSocialTabTitle()
         }.attach()
+
+        // 탭 페이지가 바뀔 때마다 currentPosition을 업데이트
+        binding.viewPagerSocialCategory.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                currentPosition = position
+            }
+        })
     }
 
 
     companion object {
         private const val KEY_SOCIAL_CATEGORY_TYPE = "social_category_type"
+        private const val KEY_CURRENT_POSITION = "current_position"
         private const val DELAY_TIME = 100L
 
         fun newInstance(type: SocialCategoryType): SocialFragment {
@@ -110,14 +124,16 @@ class SocialFragment: Fragment() {
 // ViewPager2의 어댑터
 class SocialPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = SocialCategoryType.values().size
+    override fun getItemCount(): Int = SocialCategoryType.entries.size
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            SocialCategoryType.DISCOVERY.ordinal -> SocialDiscoveryFragment.newInstance()
-            SocialCategoryType.RANK.ordinal -> SocialRankFragment.newInstance()
-            SocialCategoryType.FOLLOWING.ordinal -> SocialFollowingFragment.newInstance()
-            else -> SocialFollowingAllFragment.newInstance() // 임시로 동일한 fragment를 리턴
+            SocialCategoryType.DISCOVERY.ordinal -> SocialDiscoveryFragment()
+            SocialCategoryType.RANK.ordinal -> SocialRankFragment()
+            SocialCategoryType.FOLLOWING.ordinal -> SocialFollowingFragment()
+            else -> {
+                SocialDiscoveryFragment()
+            }
         }
     }
 }

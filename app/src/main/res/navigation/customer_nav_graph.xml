@@ -120,9 +120,5 @@
     <dialog
         android:id="@+id/productOrderBottomSheetFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.ProductOrderBottomSheetFragment"
-        android:label="ProductOrderBottomSheetFragment" >
-        <action
-            android:id="@+id/action_productOrderBottomSheetFragment_to_navigation_cart"
-            app:destination="@id/navigation_cart" />
-    </dialog>
+        android:label="ProductOrderBottomSheetFragment" />
 </navigation>

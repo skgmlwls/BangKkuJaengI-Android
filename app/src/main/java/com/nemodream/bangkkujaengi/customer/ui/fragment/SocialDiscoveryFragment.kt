@@ -48,13 +48,6 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
         _binding = null
     }
 
-    // 뷰페이저 설정을 위해 newInstance() 메서드 추가
-    companion object {
-        fun newInstance(): SocialDiscoveryFragment {
-            return SocialDiscoveryFragment()
-        }
-    }
-
     /**
      * RecyclerView 설정
      */

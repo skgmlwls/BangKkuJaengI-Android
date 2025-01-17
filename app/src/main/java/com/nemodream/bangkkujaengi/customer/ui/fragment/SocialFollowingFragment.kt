@@ -12,13 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
-import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
-import dagger.hilt.android.AndroidEntryPoint
 import com.nemodream.bangkkujaengi.utils.loadImage
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -65,13 +65,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    // 뷰페이저 사용 시 인스턴스를 생성하기 위한 메서드
-    companion object {
-        fun newInstance(): SocialFollowingFragment {
-            return SocialFollowingFragment()
-        }
     }
 
     // RecyclerView를 초기화하는 메서드
