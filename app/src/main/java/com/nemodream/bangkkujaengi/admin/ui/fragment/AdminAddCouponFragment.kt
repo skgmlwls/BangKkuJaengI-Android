@@ -4,18 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminAddCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddCouponBinding
 import com.nemodream.bangkkujaengi.utils.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@AndroidEntryPoint
 class AdminAddCouponFragment: Fragment() {
     private var _binding: FragmentAdminAddCouponBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: AdminAddCouponViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +36,26 @@ class AdminAddCouponFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        setupTextChangeListeners()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.isSubmitEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            binding.btnCouponAddSubmit.isEnabled = isEnabled
+        }
+
+        // 할인타입
+        viewModel.isDiscountPercent.observe(viewLifecycleOwner) { isPercent ->
+            if (isPercent) {
+                binding.tfAdminCouponAddPrice.visibility = View.GONE
+                binding.tfAdminCouponAddPercent.visibility = View.VISIBLE
+                return@observe
+            }
+
+            binding.tfAdminCouponAddPercent.visibility = View.GONE
+            binding.tfAdminCouponAddPrice.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {
@@ -46,20 +73,38 @@ class AdminAddCouponFragment: Fragment() {
                 showDatePicker()
             }
 
-            groupAdminCouponAddDiscount.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                // 할인율이 케츠라면 텍스트필드도 할인율로 보이기
-                if (checkedId == R.id.btn_discount_percent && isChecked) {
-                    tfAdminCouponAddPrice.visibility = View.GONE
-                    tfAdminCouponAddPercent.visibility = View.VISIBLE
-                    return@addOnButtonCheckedListener
-                }
-                // 할인 가격이 체크라면 텍스트 필드를 할인 가격으로 보이기
-                if (checkedId == R.id.btn_discount_price && isChecked) {
-                    tfAdminCouponAddPercent.visibility = View.GONE
-                    tfAdminCouponAddPrice.visibility = View.VISIBLE
-                    return@addOnButtonCheckedListener
-                }
+            groupAdminCouponAddDiscount.addOnButtonCheckedListener { _, checkedId, _ ->
+                viewModel.setDiscountPercent(checkedId == R.id.btn_discount_percent)
             }
+        }
+    }
+
+    private fun setupTextChangeListeners() {
+        with(binding) {
+            tfAdminCouponAddTitle.editText?.doAfterTextChanged { validateFields() }
+            tfAdminCouponAddDescription.editText?.doAfterTextChanged { validateFields() }
+            tfAdminCouponAddLimitDate.editText?.doAfterTextChanged { validateFields() }
+            tfAdminCouponAddMinPrice.editText?.doAfterTextChanged { validateFields() }
+            tfAdminCouponAddPercent.editText?.doAfterTextChanged { validateFields() }
+        }
+    }
+
+    /*
+    * 입력 필드 유효성 검증
+    * - 모든 필드의 값을 ViewModel에 전달하여 검증
+    * */
+    private fun validateFields() {
+        with(binding) {
+            viewModel.validateFields(
+                tfAdminCouponAddTitle.editText?.text.toString(),
+                tfAdminCouponAddDescription.editText?.text.toString(),
+                tfAdminCouponAddLimitDate.editText?.text.toString(),
+                tfAdminCouponAddMinPrice.editText?.text.toString(),
+                when (viewModel.isDiscountPercent.value!!) {
+                    true -> tfAdminCouponAddPercent.editText?.text.toString()
+                    false -> tfAdminCouponAddPrice.editText?.text.toString()
+                }
+            )
         }
     }
 
