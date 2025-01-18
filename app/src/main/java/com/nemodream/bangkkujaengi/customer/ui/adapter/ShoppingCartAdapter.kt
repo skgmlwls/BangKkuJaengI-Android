@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
@@ -331,7 +332,7 @@ class ShoppingCartAdapter(
                     rowShoppingCartViewModel.tv_row_shopping_cart_product_cnt.value?.minus(1)
 
                 // 수량 데이터 업데이트
-                CoroutineScope(Dispatchers.Main).launch {
+                viewLifecycleOwner.lifecycleScope.launch {
                     val work1 = async(Dispatchers.IO) {
                         ShoppingCartRepository.update_cart_item_quantity(
                             cart_user_id,
