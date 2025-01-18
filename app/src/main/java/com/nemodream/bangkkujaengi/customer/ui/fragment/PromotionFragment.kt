@@ -43,7 +43,6 @@ class PromotionFragment: Fragment(), ProductClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         setupListeners()
-        setupBackPress()
         viewModel.getPromotionByTitle(title)
         observeViewModel()
     }
@@ -55,9 +54,7 @@ class PromotionFragment: Fragment(), ProductClickListener {
             }
 
             toolbarPromotion.setNavigationOnClickListener {
-                parentFragmentManager.commit {
-                    replace(R.id.customer_container, HomeFragment())
-                }
+                findNavController().navigateUp()
             }
         }
     }
@@ -87,15 +84,6 @@ class PromotionFragment: Fragment(), ProductClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-
-    private fun setupBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            parentFragmentManager.commit {
-                replace(R.id.customer_container, HomeFragment())
-            }
-        }
     }
 
     private fun showSortPopup(view: View) {
