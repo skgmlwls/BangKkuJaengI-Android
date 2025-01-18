@@ -62,10 +62,58 @@ class SelectCouponAdapter(
 
             Log.d("5", "${paymentFragment.checked_coupon_document_id_list}")
 
+            reset_tv_payment_to_0()
+
+            test()
+
+
             paymentFragment.refresh_select_coupon_recyclerview()
         }
 
 
+    }
+
+    // 결제 금액 0으로 초기화 메소드
+    fun reset_tv_payment_to_0() {
+        paymentFragment.paymentViewModel.tv_payment_tot_price_text.value = 0
+        paymentFragment.paymentViewModel.tv_payment_tot_sale_price_text.value = 0
+        paymentFragment.paymentViewModel.tv_payment_coupon_sale_price_text.value = 0
+        // paymentFragment.paymentViewModel.tv_payment_tot_delivery_cost_text.value = 0
+        paymentFragment.paymentViewModel.tv_payment_tot_sum_price_text.value = 0
+    }
+
+    fun test() {
+        // 결제 금액 텍스트 값 세팅
+        var position = 0
+        paymentFragment.paymentViewModel.payment_product_data_list.value?.forEach {
+
+            // 총 상품 가격 뷰모델 값 세팅
+            paymentFragment.paymentViewModel.tv_payment_tot_price_text.value =
+                paymentFragment.paymentViewModel.tv_payment_tot_price_text.value?.plus(it.price * paymentFragment.payment_product_list.items[position].quantity)
+
+            // 총 할인 가격 뷰모델 값 세팅
+            paymentFragment.paymentViewModel.tv_payment_tot_sale_price_text.value =
+                paymentFragment.paymentViewModel.tv_payment_tot_sale_price_text.value?.plus(
+                    (it.price - (it.price * (1 - (it.saleRate / 100.0))).toInt() ) * paymentFragment.payment_product_list.items[position].quantity
+                )
+
+            // 총 합 금액 뷰모델 값 세팅
+            paymentFragment.paymentViewModel.tv_payment_tot_sum_price_text.value =
+                paymentFragment.paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                    ((it.price * (1 - (it.saleRate / 100.0))).toInt()* paymentFragment.payment_product_list.items[position].quantity)
+                )
+
+
+            position++
+        }
+
+        // 총 합 금액에 배송비 추가
+        paymentFragment.paymentViewModel.tv_payment_tot_sum_price_text.value =
+            paymentFragment.paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                paymentFragment.paymentViewModel.tv_payment_tot_delivery_cost_text.value!!
+            )
+
+        Log.d("test1234", "payment_product_data_list : ${paymentFragment.paymentViewModel.tv_payment_tot_price_text.value}")
     }
 
     // 옵저버 세팅 메소드

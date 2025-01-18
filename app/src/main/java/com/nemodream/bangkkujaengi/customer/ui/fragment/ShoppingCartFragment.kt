@@ -27,7 +27,7 @@ import java.util.Locale
 class ShoppingCartFragment : Fragment() {
 
     lateinit var fragmentShoppingCartBinding: FragmentShoppingCartBinding
-    val shoppingCartViewModel: ShoppingCartViewModel by viewModels()
+    val shoppingCartViewModel : ShoppingCartViewModel by viewModels()
 
     var productList = Array(3) {
         "상품 테스트 ${it}"
@@ -106,11 +106,14 @@ class ShoppingCartFragment : Fragment() {
 
     }
 
-    // 버튼 기능 메소드
+    // 버튼 기능 메소드 - 구매 하기
     fun fn_btn_shopping_cart_buy() {
+        
+        // 구매하기 버튼 텍스트 옵저버
         shoppingCartViewModel.btn_shopping_cart_buy_text.observe(viewLifecycleOwner){
             fragmentShoppingCartBinding.btnShoppingCartBuy.text = it
         }
+        
         fragmentShoppingCartBinding.btnShoppingCartBuy.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 val work1 = async(Dispatchers.IO) {
@@ -118,18 +121,12 @@ class ShoppingCartFragment : Fragment() {
                 }
                 val user_data = work1.await()
 
+                expectation_price_rest_to_0()
+
                 val memberData = user_data?.get("member_data") as? Member
 
                 Log.d("user_data", "${memberData?.memberPhoneNumber}")
 
-//                val data_budle = Bundle()
-//                // 유저 ID 전달
-//                data_budle.putString("user_id", user_id)
-//                // 유저 전화 번호 전달
-//                data_budle.putString("user_phone_number", memberData?.memberPhoneNumber)
-//                // 유저 주소 전달
-//                data_budle.putString("user_address", "서울시 강남구 역삼동")
-//
                 val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(user_id, memberData?.memberPhoneNumber.toString(), "서울시 강남구 역삼동")
                 findNavController().navigate(action)
             }
@@ -201,11 +198,13 @@ class ShoppingCartFragment : Fragment() {
                 Log.d("test300", "setting_toolbar: ${it.images}")
             }
 
+            expectation_price_rest_to_0()
+
             // recycelrview 초기 세팅 메소드 호출
             setting_recyclerview()
 
             // 버튼 텍스트 업데이트
-            shoppingCartViewModel.btn_shopping_cart_buy_text.value = "구매하기"
+            shoppingCartViewModel.btn_shopping_cart_buy_text.value = "구매하기 (${cart_product_data_list.size})"
 
             // 로딩바 비활성화
             fragmentShoppingCartBinding.pdShoppingCartProductListLoading.visibility = View.GONE
@@ -232,5 +231,12 @@ class ShoppingCartFragment : Fragment() {
         }
     }
 
+    // 총 상품 가격 요약 텍스트 0으로 초기화 하는 메소드
+    fun expectation_price_rest_to_0() {
+        shoppingCartViewModel.tv_shopping_cart_tot_price_text.value = 0
+        shoppingCartViewModel.tv_shopping_cart_tot_sale_price_text.value = 0
+        // shoppingCartViewModel.tv_shopping_cart_tot_delivery_cost_text.value = 0
+        shoppingCartViewModel.tv_shopping_cart_tot_sum_price_text.value = 0
+    }
 
 }
