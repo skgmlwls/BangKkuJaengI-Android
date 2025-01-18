@@ -13,4 +13,16 @@ class AdminCouponRepository @Inject constructor(
     suspend fun saveCoupon(coupon: Coupon) {
         firestore.collection("Coupon").add(coupon).await()
     }
+
+    // 쿠폰 정보 읽어오기
+    suspend fun loadCoupon(): List<Coupon> = try {
+        val snapshot = firestore.collection("Coupon").get().await()
+        snapshot.documents.map { document ->
+            document.toObject(Coupon::class.java)?.copy(
+                documentId = document.id
+            ) ?: throw Exception("쿠폰 정보 불러오기 실패")
+        }
+    } catch (e: Exception) {
+        throw e
+    }
 }
