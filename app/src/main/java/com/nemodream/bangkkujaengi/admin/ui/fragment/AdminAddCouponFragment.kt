@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.admin.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.admin.ui.custom.CustomCouponDialog
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminAddCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminAddCouponBinding
 import com.nemodream.bangkkujaengi.utils.showSnackBar
@@ -18,11 +20,17 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @AndroidEntryPoint
-class AdminAddCouponFragment: Fragment() {
+class AdminAddCouponFragment : Fragment() {
     private var _binding: FragmentAdminAddCouponBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var appContext: Context
     private val viewModel: AdminAddCouponViewModel by viewModels()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +84,30 @@ class AdminAddCouponFragment: Fragment() {
             groupAdminCouponAddDiscount.addOnButtonCheckedListener { _, checkedId, _ ->
                 viewModel.setDiscountPercent(checkedId == R.id.btn_discount_percent)
             }
+
+            btnCouponAddSubmit.setOnClickListener {
+                CustomCouponDialog(
+                    appContext,
+                    tfAdminCouponAddTitle.editText?.text.toString(),
+                    tfAdminCouponAddDescription.editText?.text.toString(),
+                    tfAdminCouponAddLimitDate.editText?.text.toString(),
+                    tfAdminCouponAddMinPrice.editText?.text.toString(),
+                    if (viewModel.isDiscountPercent.value!!) "${tfAdminCouponAddPercent.editText?.text} %" else "${tfAdminCouponAddPrice.editText?.text} 원",
+                    "쿠폰 등록",
+                    "취소",
+                    onConfirm = {
+                        viewModel.createAndSaveCoupon(
+                            tfAdminCouponAddTitle.editText?.text.toString(),
+                            tfAdminCouponAddDescription.editText?.text.toString(),
+                            tfAdminCouponAddLimitDate.editText?.text.toString(),
+                            tfAdminCouponAddMinPrice.editText?.text.toString(),
+                            if (viewModel.isDiscountPercent.value!!) tfAdminCouponAddPercent.editText?.text.toString() else tfAdminCouponAddPrice.editText?.text.toString()
+                        )
+                        findNavController().navigateUp()
+                    },
+                    onCancel = {},
+                ).show()
+            }
         }
     }
 
@@ -100,10 +132,7 @@ class AdminAddCouponFragment: Fragment() {
                 tfAdminCouponAddDescription.editText?.text.toString(),
                 tfAdminCouponAddLimitDate.editText?.text.toString(),
                 tfAdminCouponAddMinPrice.editText?.text.toString(),
-                when (viewModel.isDiscountPercent.value!!) {
-                    true -> tfAdminCouponAddPercent.editText?.text.toString()
-                    false -> tfAdminCouponAddPrice.editText?.text.toString()
-                }
+                if (viewModel.isDiscountPercent.value!!) tfAdminCouponAddPercent.editText?.text.toString() else tfAdminCouponAddPrice.editText?.text.toString()
             )
         }
     }
