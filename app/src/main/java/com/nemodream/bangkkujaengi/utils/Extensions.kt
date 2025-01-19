@@ -12,7 +12,10 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Timestamp
 import com.nemodream.bangkkujaengi.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /*
 * 이미지 로드 확장 함수
@@ -55,4 +58,10 @@ fun Context.showToast(message: String) {
 * */
 fun Number.toCommaString(): String {
     return String.format("%,d", this)
+}
+
+
+fun Timestamp.toFormattedDate(): String {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return dateFormat.format(toDate())
 }
