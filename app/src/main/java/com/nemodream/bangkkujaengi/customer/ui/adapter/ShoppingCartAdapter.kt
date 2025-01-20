@@ -170,7 +170,7 @@ class ShoppingCartAdapter(
             if (isChecked) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
-                        ShoppingCartRepository.update_cart_item_checked(
+                        ShoppingCartRepository.update_cart_item_checked_by_user_id(
                             cart_user_id,
                             cart_data_list.items[position].productId,
                             isChecked
@@ -203,7 +203,7 @@ class ShoppingCartAdapter(
             else {
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
-                        ShoppingCartRepository.update_cart_item_checked(
+                        ShoppingCartRepository.update_cart_item_checked_by_user_id(
                             cart_user_id,
                             cart_data_list.items[position].productId,
                             isChecked
