@@ -131,4 +131,10 @@
         <item name="android:textColor">#FFFFFF</item> <!-- 글자색 -->
     </style>
 
+    <!--EditText 밑줄 숨기기-->
+    <style name="NoUnderlineEditText">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">#000000</item> <!-- 검정색 텍스트 -->
+    </style>
+
 </resources>

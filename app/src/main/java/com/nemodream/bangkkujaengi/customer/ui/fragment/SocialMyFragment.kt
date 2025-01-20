@@ -2,6 +2,7 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,12 +49,48 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         observeViewModel()
         viewModel.loadMyProfile() // 프로필 데이터 로드
         setupTabClickListeners() // 탭 클릭 리스너 설정
+        setupProfileEdit() // 편집 모드 전환
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
+    private fun setupProfileEdit() {
+        val nicknameEditText = binding.etMyProfileNickname // EditText로 변경된 닉네임 필드
+        val nicknameTextView = binding.tvMyProfileNickname // 원래 TextView
+        val editIcon = binding.ivSocialMyEdit
+        val saveButton = binding.btnSaveEdit
+
+        // 초기 상태: 닉네임 편집 불가능
+        nicknameEditText.visibility = View.GONE // EditText 숨기기
+        nicknameTextView.visibility = View.VISIBLE // TextView 보이기
+
+        // 수정 버튼 클릭
+        editIcon.setOnClickListener {
+            nicknameEditText.setText(nicknameTextView.text) // TextView의 텍스트를 EditText로 복사
+            nicknameTextView.visibility = View.GONE // TextView 숨기기
+            nicknameEditText.visibility = View.VISIBLE // EditText 보이기
+            nicknameEditText.requestFocus()  // 포커스 이동
+            editIcon.visibility = View.GONE  // 수정 아이콘 숨김
+            saveButton.visibility = View.VISIBLE // "수정완료" 버튼 표시
+        }
+
+        // "수정완료" 버튼 클릭
+        saveButton.setOnClickListener {
+            val editedNickname = nicknameEditText.text.toString() // 수정된 닉네임
+            viewModel.updateNickname(editedNickname) // ViewModel에 저장 로직 호출
+
+            nicknameTextView.text = editedNickname // TextView에 수정된 텍스트 표시
+            nicknameEditText.visibility = View.GONE // EditText 숨기기
+            nicknameTextView.visibility = View.VISIBLE // TextView 보이기
+            editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
+            saveButton.visibility = View.GONE  // "수정완료" 버튼 숨김
+        }
+    }
+
 
     // "내가쓴글" 및 "저장됨" 탭 클릭 이벤트 설정
     private fun setupTabClickListeners() {
@@ -92,7 +129,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         viewModel.myProfile.observe(viewLifecycleOwner, Observer { profile ->
             profile?.let {
                 binding.ivMyProfileImage.loadImage(it.memberProfileImage.toString()) // 프로필 이미지
-                binding.tvMyProfileNickname.text = it.memberNickName      // 닉네임
+                binding.tvMyProfileNickname.text = Editable.Factory.getInstance().newEditable(it.memberNickName) // 닉네임
                 binding.tvMyProfileFollowInfo.text =
                     "팔로잉 ${it.followingCount}명   팔로워 ${it.followerCount}명" // 팔로우 정보
             }
