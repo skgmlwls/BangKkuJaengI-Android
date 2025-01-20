@@ -93,6 +93,8 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
             nicknameEditText.requestFocus()  // 포커스 이동
             editIcon.visibility = View.GONE  // 수정 아이콘 숨김
             saveButton.visibility = View.VISIBLE // "수정완료" 버튼 표시
+            binding.btnSocialMySaveEdit.setPadding(0,0,0,0)
+            binding.etMyProfileNickname.setPadding(8,0,0,20)
         }
 
         // "수정완료" 버튼 클릭
