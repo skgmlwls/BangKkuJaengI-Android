@@ -7,25 +7,25 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductAdapter
-import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminProductViewModel
-import com.nemodream.bangkkujaengi.databinding.FragmentAdminProductBinding
+import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminCouponAdapter
+import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminCouponViewModel
+import com.nemodream.bangkkujaengi.databinding.FragmentAdminCouponBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AdminProductFragment : Fragment() {
-    private var _binding: FragmentAdminProductBinding? = null
+class AdminCouponFragment: Fragment() {
+    private var _binding: FragmentAdminCouponBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AdminProductViewModel by viewModels()
-    private val productAdapter by lazy { AdminProductAdapter() }
+    private val couponAdapter: AdminCouponAdapter by lazy { AdminCouponAdapter() }
+    private val viewModel: AdminCouponViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAdminProductBinding.inflate(inflater, container, false)
+        _binding = FragmentAdminCouponBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,8 +36,6 @@ class AdminProductFragment : Fragment() {
         observeViewModel()
     }
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -45,27 +43,26 @@ class AdminProductFragment : Fragment() {
 
     private fun setupUI() {
         with(binding) {
-            rvAdminProductList.adapter = productAdapter
+            rvAdminCouponList.adapter = couponAdapter
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.couponList.observe(viewLifecycleOwner) {
+            couponAdapter.submitList(it)
         }
     }
 
     private fun setupListeners() {
         with(binding) {
-            toolbarProductProduct.setNavigationOnClickListener {
+            toolbarAdminCoupon.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
 
-            btnProductAdd.setOnClickListener {
-                val action = AdminProductFragmentDirections.actionAdminProductFragmentToAdminAddProductFragment()
+            btnCouponAdd.setOnClickListener {
+                val action = AdminCouponFragmentDirections.actionAdminCouponFragmentToAdminAddCouponFragment()
                 findNavController().navigate(action)
             }
-        }
-
-    }
-
-    private fun observeViewModel() {
-        viewModel.products.observe(viewLifecycleOwner) { products ->
-            productAdapter.submitList(products)
         }
     }
 

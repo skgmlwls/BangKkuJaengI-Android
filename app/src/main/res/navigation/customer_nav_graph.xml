@@ -31,7 +31,7 @@
         android:id="@+id/navigation_social"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFragment"
         android:label="SocialFragment"
-        tools:layout="@layout/fragment_social" >
+        tools:layout="@layout/fragment_social">
         <action
             android:id="@+id/action_navigation_social_to_socialFollowingAllFragment"
             app:destination="@id/socialFollowingAllFragment" />
@@ -64,6 +64,9 @@
         <argument
             android:name="productId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_product_detail_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
     </fragment>
     <fragment
         android:id="@+id/navigation_promotion"
@@ -74,15 +77,16 @@
         <argument
             android:name="title"
             app:argType="string" />
-        <action
-            android:id="@+id/action_navigation_promotion_to_navigation_product_detail"
-            app:destination="@id/navigation_product_detail" />
+
         <action
             android:id="@+id/action_navigation_promotion_to_navigation_search"
             app:destination="@id/navigation_search" />
         <action
             android:id="@+id/action_navigation_promotion_to_navigation_cart"
             app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_promotion_to_navigation_product_detail"
+            app:destination="@id/navigation_product_detail" />
     </fragment>
     <fragment
         android:id="@+id/navigation_search"
@@ -93,7 +97,7 @@
         android:id="@+id/navigation_cart"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.ShoppingCartFragment"
         android:label="fragment_shopping_cart"
-        tools:layout="@layout/fragment_shopping_cart" >
+        tools:layout="@layout/fragment_shopping_cart">
         <action
             android:id="@+id/action_navigation_cart_to_paymentFragment"
             app:destination="@id/paymentFragment" />
@@ -102,11 +106,12 @@
         android:id="@+id/paymentFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment"
         android:label="fragment_payment"
-        tools:layout="@layout/fragment_payment" >
+        tools:layout="@layout/fragment_payment">
         <argument
             android:name="userId"
             app:argType="string" />
-        <argument android:name="userPhoneNumber"
+        <argument
+            android:name="userPhoneNumber"
             app:argType="string" />
         <argument
             android:name="userAddress"
@@ -120,5 +125,6 @@
     <dialog
         android:id="@+id/productOrderBottomSheetFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.ProductOrderBottomSheetFragment"
-        android:label="ProductOrderBottomSheetFragment" />
+        android:label="ProductOrderBottomSheetFragment"
+        tools:layout="@layout/fragment_product_order_bottom_sheet" />
 </navigation>

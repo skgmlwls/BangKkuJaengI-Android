@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav_graph"
+    app:startDestination="@id/adminHomeFragment">
+
+    <fragment
+        android:id="@+id/adminHomeFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminHomeFragment"
+        android:label="AdminHomeFragment"
+        tools:layout="@layout/fragment_admin_home" >
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminProductFragment"
+            app:destination="@id/adminProductFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminCouponFragment"
+            app:destination="@id/adminCouponFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminAddProductFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminAddProductFragment"
+        android:label="AdminAddProductFragment" />
+    <fragment
+        android:id="@+id/adminProductFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminProductFragment"
+        android:label="AdminProductFragment" >
+        <action
+            android:id="@+id/action_adminProductFragment_to_adminAddProductFragment"
+            app:destination="@id/adminAddProductFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminCouponFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminCouponFragment"
+        android:label="AdminCouponFragment" >
+        <action
+            android:id="@+id/action_adminCouponFragment_to_adminAddCouponFragment"
+            app:destination="@id/adminAddCouponFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminAddCouponFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminAddCouponFragment"
+        android:label="AdminAddCouponFragment" />
+</navigation>
