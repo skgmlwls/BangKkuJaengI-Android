@@ -62,7 +62,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         val nicknameEditText = binding.etMyProfileNickname // EditText로 변경된 닉네임 필드
         val nicknameTextView = binding.tvMyProfileNickname // 원래 TextView
         val editIcon = binding.ivSocialMyEdit
-        val saveButton = binding.btnSaveEdit
+        val saveButton = binding.btnSocialMySaveEdit
 
         // 초기 상태: 닉네임 편집 불가능
         nicknameEditText.visibility = View.GONE // EditText 숨기기
