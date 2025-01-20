@@ -30,4 +30,15 @@ class AdminProductViewModel @Inject constructor(
             it.printStackTrace()
         }
     }
+
+    fun deleteProduct(productId: String) = viewModelScope.launch {
+        runCatching {
+            adminProductRepository.deleteProduct(productId)
+        }.onSuccess {
+            // 삭제된 데이터를 리스트에서 수정한다.
+            _products.value = _products.value?.filter { it.productId != productId }
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
 }

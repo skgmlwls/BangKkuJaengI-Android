@@ -64,4 +64,9 @@ class AdminProductRepository @Inject constructor(
             val imageUrls = product.images.map { path -> getImageUrl(path) }
             product.copy(images = imageUrls)
         }
+
+    // productId를 받아 해당 상품을 삭제한다.
+    fun deleteProduct(productId: String) {
+        firestore.collection("Product").document(productId).delete()
+    }
 }
