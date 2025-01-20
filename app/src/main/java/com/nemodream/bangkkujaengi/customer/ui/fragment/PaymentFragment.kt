@@ -6,13 +6,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.data.model.CouponType
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.Purchase
+import com.nemodream.bangkkujaengi.customer.data.model.PurchaseState
 import com.nemodream.bangkkujaengi.customer.data.repository.PaymentRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PaymentProductAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SelectCouponAdapter
@@ -54,6 +61,9 @@ class PaymentFragment : Fragment() {
     // 선택된 쿠폰 목록을 담을 리스트
     var checked_coupon_document_id_list = mutableListOf<String>()
 
+    // 구매 내역 리스트
+    var purchase_product = mutableListOf<Purchase>()
+
 
     // var select_coupon_list = mutableListOf<Coupon>()
 
@@ -88,8 +98,78 @@ class PaymentFragment : Fragment() {
         // PaymentCouponBottomSheetFragment에서 결과 수신
         setting_checked_coupon_list()
 
+        // 결제 하기 버튼 클릭 관련
+        setting_btn_payment_make_payment()
+
         return fragmentPaymentBinding.root
     }
+
+    // 결제 하기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
+
+    // 결제 버튼 클릭 메소드
+    fun setting_btn_payment_make_payment() {
+
+        fragmentPaymentBinding.btnPaymentMakePayment.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                // 장바구니 항목 중 구매 항목 삭제
+                val work1 = async(Dispatchers.IO) {
+                    Log.d("1122", "${payment_product_list.items.map { it.productId }}")
+                    PaymentRepository.remove_cart_item_by_payment_product_document_id_list(user_id, payment_product_list.items.map { it.productId })
+                }.await()
+
+                val time_stamp = Timestamp.now()
+                var position = 0
+
+                val work2 = async(Dispatchers.IO) {
+                    payment_product_list.items.map {
+                        // 할인 후 가격 //////////////////////////////////////////////////////////////
+                        // 원가
+                        val originalPrice = paymentViewModel.payment_product_data_list.value!![position].price
+                        // 할인율
+                        val discountRate = paymentViewModel.payment_product_data_list.value!![position].saleRate
+                        // 할인 후 가격
+                        val tot_price = ((originalPrice * (1 - (discountRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                        ////////////////////////////////////////////////////////////////////////////
+
+                        val purchase = Purchase(
+                            memberId = user_id,
+                            productTitle = paymentViewModel.payment_product_data_list.value!![position].productName,
+                            images = paymentViewModel.payment_product_data_list.value!![position].images[0],
+                            productId = it.productId,
+                            productCost = paymentViewModel.payment_product_data_list.value!![position].price,
+                            couponSalePrice = paymentViewModel.tv_payment_coupon_sale_price_text.value!!,
+                            saleRate = paymentViewModel.payment_product_data_list.value!![position].saleRate,
+                            totPrice = tot_price,
+                            purchaseDate = time_stamp,
+                            purchaseState = PurchaseState.READY_TO_SHIP.name,
+                            purchaseInvoiceNumber = 0,
+                            purchaseQuantity = it.quantity,
+                            Delete = false
+                        )
+
+                        purchase_product.add(purchase)
+
+                        position++
+                    }
+
+                    // 구매 항목 데이터 저장
+                    PaymentRepository.add_purchase_product(purchase_product)
+
+                }.await()
+
+                purchase_product.forEach {
+                    Log.d("2233", "purchase_product : ${it}")
+                }
+
+                val action = PaymentFragmentDirections.actionPaymentFragmentToPaymentCompletedFragment()
+                findNavController().navigate(action)
+
+            }
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // PaymentCouponBottomSheetFragment에서 결과 수신
     fun setting_checked_coupon_list() {
@@ -191,31 +271,7 @@ class PaymentFragment : Fragment() {
         }
     }
 
-    // 선택된 쿠폰 옵저버 세팅
-    fun setting_select_coupon_observe() {
-
-        paymentViewModel.select_coupon_list.observe(viewLifecycleOwner) {
-
-            paymentViewModel.tv_payment_coupon_sale_price_text.observe(viewLifecycleOwner) {
-                val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
-                fragmentPaymentBinding.tvPaymentTotSalePrice.text = formattedPrice
-                paymentViewModel.tv_payment_tot_sum_price_text.value =
-                    paymentViewModel.tv_payment_tot_price_text.value!! -
-                            paymentViewModel.tv_payment_tot_sale_price_text.value!! -
-                            it
-            }
-
-        }
-
-    }
-
     fun setting_button() {
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            val work1 = async(Dispatchers.IO) {
-
-            }
-        }
 
         fragmentPaymentBinding.apply {
             btnPaymentCouponListShow.setOnClickListener {
@@ -225,9 +281,6 @@ class PaymentFragment : Fragment() {
                 val bottomSheetFragment = PaymentCouponBottomSheetFragment(this@PaymentFragment). apply {
                     arguments = Bundle().apply {
                         putString("user_id", user_id)
-//                        if (checked_coupon_document_id_list.size != 0) {
-//                            putString("selected_document_id", checked_coupon_document_id_list[0])
-//                        }
                     }
                 }
                 bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)

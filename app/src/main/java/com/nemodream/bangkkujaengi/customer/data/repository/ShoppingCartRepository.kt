@@ -122,70 +122,84 @@ class ShoppingCartRepository {
         }
 
         // 장바구니 아이템 갯수 업데이트
-        suspend fun update_cart_item_quantity(user_id: String, productId: String, quantity: Int) {
+        suspend fun update_cart_item_quantity(userId: String, productId: String, quantity: Int) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
-            val documentReference = collectionReference.document(user_id)
 
-            Log.d("test123", "${user_id}")
-            Log.d("test123", "update_cart_item_quantity_plus_one: ${productId}")
+            try {
+                // userId로 문서 검색
+                val querySnapshot = collectionReference.whereEqualTo("userId", userId).get().await()
 
-            // 기존 문서 데이터를 가져온다
-            val documentSnapshot = documentReference.get().await()
-            val shoppingCart = documentSnapshot.toObject(ShoppingCart::class.java)
+                if (!querySnapshot.isEmpty) {
+                    // 첫 번째 문서 가져오기 (userId로 검색했으므로 한 문서만 있다고 가정)
+                    val document = querySnapshot.documents[0]
+                    val shoppingCart = document.toObject(ShoppingCart::class.java)
 
-            // items 리스트를 업데이트한다
-            val updatedItems = shoppingCart?.items?.map { cart ->
-                Log.d("test123", "update_cart_item_quantity_plus_one: ${cart.productId}")
+                    // items 리스트를 업데이트
+                    val updatedItems = shoppingCart?.items?.map { cart ->
+                        if (cart.productId == productId) {
+                            cart.copy(quantity = quantity) // quantity 값을 업데이트
+                        } else {
+                            cart
+                        }
+                    }
 
-                if (cart.productId == productId) {
-                    cart.copy(quantity = quantity) // quantity 값을 업데이트
+                    // 수정할 데이터를 맵에 담기
+                    val updateMap = mapOf(
+                        "items" to updatedItems
+                    )
+
+                    // Firestore에 수정된 데이터 업데이트
+                    collectionReference.document(document.id).update(updateMap).await()
+
+                    Log.d("CartUpdate", "Updated quantity for productId: $productId in userId: $userId")
                 } else {
-                    cart
+                    Log.e("FirestoreError", "No cart found for userId: $userId")
                 }
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error updating cart item quantity: ${e.message}", e)
             }
-
-            // 수정할 데이터를 맵에 담는다
-            val updateMap = mapOf(
-                "items" to updatedItems
-            )
-
-            // Firestore에 수정된 데이터를 업데이트한다
-            documentReference.update(updateMap).await()
         }
+
 
         // 장바구니 아이템 체크 업데이트
-        suspend fun update_cart_item_checked(user_id: String, productId: String, checked: Boolean) {
+        suspend fun update_cart_item_checked_by_user_id(userId: String, productId: String, checked: Boolean) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
-            val documentReference = collectionReference.document(user_id)
 
-            Log.d("test123", "${user_id}")
-            Log.d("test123", "update_cart_item_quantity_plus_one: ${productId}")
+            try {
+                // userId로 문서 검색
+                val querySnapshot = collectionReference.whereEqualTo("userId", userId).get().await()
 
-            // 기존 문서 데이터를 가져온다
-            val documentSnapshot = documentReference.get().await()
-            val shoppingCart = documentSnapshot.toObject(ShoppingCart::class.java)
+                if (!querySnapshot.isEmpty) {
+                    // 첫 번째 문서 가져오기 (userId로 검색했으므로 한 문서만 있다고 가정)
+                    val document = querySnapshot.documents[0]
+                    val shoppingCart = document.toObject(ShoppingCart::class.java)
 
-            // items 리스트를 업데이트한다
-            val updatedItems = shoppingCart?.items?.map { cart ->
-                Log.d("test123", "update_cart_item_quantity_plus_one: ${cart.productId}")
+                    // items 리스트를 업데이트
+                    val updatedItems = shoppingCart?.items?.map { cart ->
+                        if (cart.productId == productId) {
+                            cart.copy(checked = checked) // checked 값을 업데이트
+                        } else {
+                            cart
+                        }
+                    }
 
-                if (cart.productId == productId) {
-                    cart.copy(checked = checked) // quantity 값을 업데이트
+                    // Firestore에 수정된 데이터 업데이트
+                    val updateMap = mapOf(
+                        "items" to updatedItems
+                    )
+                    collectionReference.document(document.id).update(updateMap).await()
+
+                    Log.d("Firestore", "Cart item updated for userId: $userId, productId: $productId")
                 } else {
-                    cart
+                    Log.e("FirestoreError", "No document found for userId: $userId")
                 }
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error updating cart item: ${e.message}", e)
             }
-
-            // 수정할 데이터를 맵에 담는다
-            val updateMap = mapOf(
-                "items" to updatedItems
-            )
-
-            // Firestore에 수정된 데이터를 업데이트한다
-            documentReference.update(updateMap).await()
         }
+
 
 
 

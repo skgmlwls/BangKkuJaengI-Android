@@ -135,6 +135,16 @@ class ShoppingCartAdapter(
         rowShoppingCartViewModel.tv_row_shopping_cart_product_name.observe(viewLifecycleOwner) {
             holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductName.text = it
         }
+
+        if (cart_data_list.items[position].color == "") {
+            holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductOption.text =
+                "옵션 : 없음"
+        }
+        else {
+            holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductOption.text =
+                "옵션 : " + cart_data_list.items[position].color
+        }
+        
         // 할인 비율 업데이트
         rowShoppingCartViewModel.tv_row_shopping_cart_product_sale_percent.observe(viewLifecycleOwner) {
             holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductSalePercent.text = it.toString() + "%"
@@ -170,7 +180,7 @@ class ShoppingCartAdapter(
             if (isChecked) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
-                        ShoppingCartRepository.update_cart_item_checked(
+                        ShoppingCartRepository.update_cart_item_checked_by_user_id(
                             cart_user_id,
                             cart_data_list.items[position].productId,
                             isChecked
@@ -203,7 +213,7 @@ class ShoppingCartAdapter(
             else {
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
-                        ShoppingCartRepository.update_cart_item_checked(
+                        ShoppingCartRepository.update_cart_item_checked_by_user_id(
                             cart_user_id,
                             cart_data_list.items[position].productId,
                             isChecked

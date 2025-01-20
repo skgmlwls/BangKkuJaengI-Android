@@ -101,7 +101,15 @@
         <action
             android:id="@+id/action_navigation_cart_to_paymentFragment"
             app:destination="@id/paymentFragment" />
+        <action
+            android:id="@+id/action_navigation_cart_to_orderHistoryFragment"
+            app:destination="@id/orderHistoryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/orderHistoryFragment"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragment"
+        android:label="fragment_order_history"
+        tools:layout="@layout/fragment_order_history" />
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment"
@@ -116,6 +124,20 @@
         <argument
             android:name="userAddress"
             app:argType="string" />
+        <action
+            android:id="@+id/action_paymentFragment_to_paymentCompletedFragment"
+            app:destination="@id/paymentCompletedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentCompletedFragment"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentCompletedFragment"
+        android:label="fragment_payment_completed"
+        tools:layout="@layout/fragment_payment_completed">
+
+        <action
+            android:id="@+id/popUpto_paymentCompletedFragment_to_HomeFragment"
+            app:popUpTo="@id/navigation_home"
+            />
     </fragment>
     <fragment
         android:id="@+id/socialFollowingAllFragment"

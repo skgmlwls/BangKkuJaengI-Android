@@ -56,6 +56,14 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
 
                     />
+                <TextView
+                    android:id="@+id/tv_row_shopping_cart_product_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:text=""
+                    />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
