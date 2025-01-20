@@ -31,23 +31,27 @@ class SocialMyViewModel @Inject constructor(
         _myProfile.value = repository.getMyProfile()
     }
 
-     // 게시글 목록 로드
-    fun loadPosts() {
+    // 내가 쓴 글 게시글 목록 로드
+    fun loadMyWrittenPosts() {
         viewModelScope.launch {
-            val postList = repository.getPosts()
+            val postList = repository.getMyWittenPosts()
             _posts.value = postList
         }
     }
 
-    // 게시글 필터링 함수
-    fun filterPostsByType(type: String) {
-        val member = _myProfile.value ?: return
-        val allPosts = _posts.value ?: return
-
-        _posts.value = when (type) {
-            "MY_POSTS" -> allPosts.filter { it.nickname == member.memberNickName }
-            "SAVED_POSTS" -> member.savedPost
-            else -> allPosts
+    // 내가 쓴 글 게시글 목록 로드
+    fun loadMySavedPosts() {
+        viewModelScope.launch {
+            val postList = repository.getMySavedPosts()
+            _posts.value = postList
         }
     }
+
+    fun updateNickname(newNickname: String) {
+        val currentProfile = _myProfile.value
+        if (currentProfile != null) {
+            _myProfile.value = currentProfile.copy(memberNickName = newNickname)
+        }
+    }
+
 }
