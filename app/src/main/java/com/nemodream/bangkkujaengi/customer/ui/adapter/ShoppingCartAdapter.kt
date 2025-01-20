@@ -135,6 +135,16 @@ class ShoppingCartAdapter(
         rowShoppingCartViewModel.tv_row_shopping_cart_product_name.observe(viewLifecycleOwner) {
             holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductName.text = it
         }
+
+        if (cart_data_list.items[position].color == "") {
+            holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductOption.text =
+                "옵션 : 없음"
+        }
+        else {
+            holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductOption.text =
+                "옵션 : " + cart_data_list.items[position].color
+        }
+        
         // 할인 비율 업데이트
         rowShoppingCartViewModel.tv_row_shopping_cart_product_sale_percent.observe(viewLifecycleOwner) {
             holder.rowShoppingCartRecyclerviewBinding.tvRowShoppingCartProductSalePercent.text = it.toString() + "%"
