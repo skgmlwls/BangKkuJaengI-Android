@@ -9,7 +9,7 @@ data class Member(
     // 아이디
     val memberId: String = "",
     // 닉네임
-    val memberNickname : String = "",
+    val memberNickName : String = "",
     // 비밀번호
     val memberPassword: String = "",
     // 전화번호

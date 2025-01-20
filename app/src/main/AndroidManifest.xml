@@ -20,13 +20,10 @@
         android:theme="@style/Theme.BangKkuJaengI"
         tools:targetApi="31">
         <activity
-            android:name=".SignUpActivity"
+            android:name=".customer.ui.fragment.findAccount.FindInfoActivity"
             android:exported="false" />
         <activity
             android:name=".SignInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CustomerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +31,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CustomerActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
