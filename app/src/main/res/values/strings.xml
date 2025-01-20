@@ -2,7 +2,7 @@
     <string name="app_name">방꾸쟁이</string>
     <string name="label_home">홈</string>
     <string name="label_social">소셜</string>
-
+    <string name="label_order_history">주문/배송</string>
     <string name="label_shopping_cart">장바구니</string>
     <string name="label_shopping_cart_expected_price">예상 금액</string>
     <string name="label_payment">상품 결제</string>
