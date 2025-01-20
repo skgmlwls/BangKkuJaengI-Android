@@ -24,7 +24,7 @@ class AdminCouponViewModel @Inject constructor(
     val couponList: LiveData<List<Coupon>> get() = _couponList
 
     // 쿠폰 로드하기
-    private fun loadCoupon() = viewModelScope.launch {
+    fun loadCoupon() = viewModelScope.launch {
         runCatching {
             couponRepository.loadCoupon()
         }.onSuccess {
@@ -33,6 +33,16 @@ class AdminCouponViewModel @Inject constructor(
             Log.d("AdminCouponViewModel", "loadCoupon: $it")
         }.onFailure { e ->
             Log.e("AdminCouponViewModel", "loadCoupon: $e")
+        }
+    }
+
+    fun deleteCoupon(coupon: Coupon) = viewModelScope.launch {
+        runCatching {
+            couponRepository.deleteCoupon(coupon)
+        }.onSuccess {
+            // 삭제 되었다면 현재 리스트에서 해당 쿠폰 삭제
+            _couponList.value = _couponList.value?.filter { it.documentId != coupon.documentId }
+        }.onFailure { e ->
         }
     }
 

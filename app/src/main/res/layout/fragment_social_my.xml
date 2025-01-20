@@ -37,9 +37,9 @@
             android:text="닉네임1"
             android:textStyle="bold"
             android:textSize="20sp"
+            android:textColor="#000000"
             app:layout_constraintStart_toEndOf="@id/iv_my_profile_image"
             app:layout_constraintTop_toTopOf="@id/iv_my_profile_image" />
-
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_social_my_edit"
@@ -51,7 +51,6 @@
             app:layout_constraintStart_toEndOf="@id/tv_my_profile_nickname"
             app:layout_constraintTop_toTopOf="@id/tv_my_profile_nickname"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname" />
-
 
         <TextView
             android:id="@+id/tv_my_profile_follow_info"
@@ -116,4 +115,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_social_post" />
+
+    <!-- EditText (수정시 보일 부분) -->
+    <EditText
+        android:id="@+id/et_my_profile_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="닉네임1"
+        android:textColor="#000000"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/iv_my_profile_image"
+        app:layout_constraintTop_toTopOf="@id/iv_my_profile_image" />
+
+    <!-- 수정완료 버튼 -->
+    <Button
+        android:id="@+id/btnSaveEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정완료"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/tv_my_profile_nickname"
+        app:layout_constraintTop_toTopOf="@id/tv_my_profile_nickname"
+        app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname" />
 </androidx.constraintlayout.widget.ConstraintLayout>

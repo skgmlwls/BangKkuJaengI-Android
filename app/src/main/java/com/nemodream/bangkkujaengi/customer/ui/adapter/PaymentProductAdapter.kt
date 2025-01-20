@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
@@ -64,7 +65,7 @@ class PaymentProductAdapter(
     // 이미지 로드 메소드
     fun setting_image_load(holder: PaymentProductViewHolder, position: Int) {
         // 상품 이미지 로드
-        CoroutineScope(Dispatchers.Main).launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val work1 = async(Dispatchers.IO) {
                 ShoppingCartRepository.getting_image(payment_product_data_list[position].images[0])
             }

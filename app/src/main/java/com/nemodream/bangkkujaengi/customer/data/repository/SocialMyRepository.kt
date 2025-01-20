@@ -32,9 +32,107 @@ class SocialMyRepository @Inject constructor() {
         )
     }
 
-    suspend fun getPosts(): List<Post> {
+    suspend fun getMyWittenPosts(): List<Post> {
         // 테스트용 더미 데이터 생성
-        return listOf(
+        val allPosts = listOf(
+            Post(
+                id = "1",
+                nickname = "소셜유저",
+                authorProfilePicture = "https://example.com/image1.jpg",
+                title = "내방소개",
+                content = "This is a test post",
+                imageList = listOf("https://example.com/image1.jpg"),
+                savedCount = 5,
+                commentCount = 3
+            ),
+            Post(
+                id = "2",
+                nickname = "소셜유저",
+                authorProfilePicture = "https://example.com/image1.jpg",
+                title = "두번째 내방소개",
+                content = "Another test post",
+                imageList = listOf("https://example.com/image2.jpg"),
+                savedCount = 10,
+                commentCount = 8
+            ),
+            Post(
+                id = "3",
+                nickname = "방꾸쟁이유저",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "첫번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 2,
+                commentCount = 1
+            ),
+            Post(
+                id = "4",
+                nickname = "방꾸쟁이유저",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "다섯번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "5",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image3.jpg",
+                title = "방꾸쟁이의 첫번째 글",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 0,
+                commentCount = 1
+            ),
+            Post(
+                id = "6",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "방꾸쟁이의 두번째 글",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "7",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "방꾸쟁이의 세번째 글",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "8",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "방꾸쟁이의 네번째 글",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "9",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "방꾸쟁이의 다섯번째 글",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+        )
+        // 현재 로그인 유저 닉네임으로 필터링
+        return allPosts.filter { it.nickname == getMyProfile().memberNickName }
+    }
+
+    suspend fun getMySavedPosts(): List<Post> {
+        // 테스트용 더미 데이터 생성
+        val savedPosts = listOf(
             Post(
                 id = "1",
                 nickname = "소셜유저",
@@ -84,8 +182,40 @@ class SocialMyRepository @Inject constructor() {
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 0,
                 commentCount = 1
-            )
+            ),
+            Post(
+                id = "6",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "다섯번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "7",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "다섯번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
+            Post(
+                id = "8",
+                nickname = "방꾸쟁이",
+                authorProfilePicture = "https://example.com/image2.jpg",
+                title = "다섯번째 내방소개",
+                content = "Third test post",
+                imageList = listOf("https://example.com/image3.jpg"),
+                savedCount = 9,
+                commentCount = 0
+            ),
         )
+        // 현재 로그인 유저 닉네임으로 필터링
+        return savedPosts
     }
 }
 

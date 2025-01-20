@@ -6,13 +6,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.data.model.CouponType
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.Purchase
+import com.nemodream.bangkkujaengi.customer.data.model.PurchaseState
 import com.nemodream.bangkkujaengi.customer.data.repository.PaymentRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PaymentProductAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SelectCouponAdapter
@@ -54,6 +61,9 @@ class PaymentFragment : Fragment() {
     // 선택된 쿠폰 목록을 담을 리스트
     var checked_coupon_document_id_list = mutableListOf<String>()
 
+    // 구매 내역 리스트
+    var purchase_product = mutableListOf<Purchase>()
+
 
     // var select_coupon_list = mutableListOf<Coupon>()
 
@@ -83,14 +93,87 @@ class PaymentFragment : Fragment() {
         
         // 선택된 쿠폰 목록 recyclerview 설정
         setting_recyclerview_select_coupon()
+
         // 선택된 쿠폰 리스트 초기화
+        // PaymentCouponBottomSheetFragment에서 결과 수신
         setting_checked_coupon_list()
+
+        // 결제 하기 버튼 클릭 관련
+        setting_btn_payment_make_payment()
 
         return fragmentPaymentBinding.root
     }
 
+    // 결제 하기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
+
+    // 결제 버튼 클릭 메소드
+    fun setting_btn_payment_make_payment() {
+
+        fragmentPaymentBinding.btnPaymentMakePayment.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                // 장바구니 항목 중 구매 항목 삭제
+                val work1 = async(Dispatchers.IO) {
+                    Log.d("1122", "${payment_product_list.items.map { it.productId }}")
+                    PaymentRepository.remove_cart_item_by_payment_product_document_id_list(user_id, payment_product_list.items.map { it.productId })
+                }.await()
+
+                val time_stamp = Timestamp.now()
+                var position = 0
+
+                val work2 = async(Dispatchers.IO) {
+                    payment_product_list.items.map {
+                        // 할인 후 가격 //////////////////////////////////////////////////////////////
+                        // 원가
+                        val originalPrice = paymentViewModel.payment_product_data_list.value!![position].price
+                        // 할인율
+                        val discountRate = paymentViewModel.payment_product_data_list.value!![position].saleRate
+                        // 할인 후 가격
+                        val tot_price = ((originalPrice * (1 - (discountRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                        ////////////////////////////////////////////////////////////////////////////
+
+                        val purchase = Purchase(
+                            memberId = user_id,
+                            productTitle = paymentViewModel.payment_product_data_list.value!![position].productName,
+                            images = paymentViewModel.payment_product_data_list.value!![position].images[0],
+                            productId = it.productId,
+                            productCost = paymentViewModel.payment_product_data_list.value!![position].price,
+                            couponSalePrice = paymentViewModel.tv_payment_coupon_sale_price_text.value!!,
+                            saleRate = paymentViewModel.payment_product_data_list.value!![position].saleRate,
+                            totPrice = tot_price,
+                            purchaseDate = time_stamp,
+                            purchaseState = PurchaseState.READY_TO_SHIP.name,
+                            purchaseInvoiceNumber = 0,
+                            purchaseQuantity = it.quantity,
+                            Delete = false
+                        )
+
+                        purchase_product.add(purchase)
+
+                        position++
+                    }
+
+                    // 구매 항목 데이터 저장
+                    PaymentRepository.add_purchase_product(purchase_product)
+
+                }.await()
+
+                purchase_product.forEach {
+                    Log.d("2233", "purchase_product : ${it}")
+                }
+
+                val action = PaymentFragmentDirections.actionPaymentFragmentToPaymentCompletedFragment()
+                findNavController().navigate(action)
+
+            }
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // PaymentCouponBottomSheetFragment에서 결과 수신
     fun setting_checked_coupon_list() {
-        // PaymentCouponBottomSheetFragment에서 결과 수신
+
         parentFragmentManager.setFragmentResultListener("couponResultKey", viewLifecycleOwner) { requestKey, result ->
             // 선택한 쿠폰 리스트 초기화
             paymentViewModel.select_coupon_list.value?.clear()
@@ -100,8 +183,8 @@ class PaymentFragment : Fragment() {
             this.selectedPosition = result.getInt("select_position")
             this.selectedDocumentId = result.getString("select_document_id")!!
 
-            Log.d("12345", "selectedPosition : ${selectedPosition}")
-            Log.d("12345", "selectedDocumentId : ${selectedDocumentId}")
+            Log.d("123456", "selectedPosition : ${selectedPosition}")
+            Log.d("123456", "selectedDocumentId : ${selectedDocumentId}")
 
             checked_coupon_document_id_list.clear()
 
@@ -113,6 +196,7 @@ class PaymentFragment : Fragment() {
 
             refresh_select_coupon_recyclerview()
         }
+
     }
 
     // 유저 아이디 세팅 메소드
@@ -179,39 +263,15 @@ class PaymentFragment : Fragment() {
             }
 
             // 쿠폰 할인 옵저버
-//            paymentViewModel.tv_payment_coupon_sale_price_text.observe(viewLifecycleOwner) {
-//                val formattedPrice = "- " + NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
-//                fragmentPaymentBinding.tvPaymentCouponSalePrice.text = formattedPrice
-//            }
-
-        }
-    }
-
-    // 선택된 쿠폰 옵저버 세팅
-    fun setting_select_coupon_observe() {
-
-        paymentViewModel.select_coupon_list.observe(viewLifecycleOwner) {
-
             paymentViewModel.tv_payment_coupon_sale_price_text.observe(viewLifecycleOwner) {
-                val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
-                fragmentPaymentBinding.tvPaymentTotSalePrice.text = formattedPrice
-                paymentViewModel.tv_payment_tot_sum_price_text.value =
-                    paymentViewModel.tv_payment_tot_price_text.value!! -
-                            paymentViewModel.tv_payment_tot_sale_price_text.value!! -
-                            it
+                val formattedPrice = "- " + NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
+                fragmentPaymentBinding.tvPaymentCouponSalePrice.text = formattedPrice
             }
 
         }
-
     }
 
     fun setting_button() {
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val work1 = async(Dispatchers.IO) {
-
-            }
-        }
 
         fragmentPaymentBinding.apply {
             btnPaymentCouponListShow.setOnClickListener {
@@ -221,9 +281,6 @@ class PaymentFragment : Fragment() {
                 val bottomSheetFragment = PaymentCouponBottomSheetFragment(this@PaymentFragment). apply {
                     arguments = Bundle().apply {
                         putString("user_id", user_id)
-//                        if (checked_coupon_document_id_list.size != 0) {
-//                            putString("selected_document_id", checked_coupon_document_id_list[0])
-//                        }
                     }
                 }
                 bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
@@ -236,7 +293,7 @@ class PaymentFragment : Fragment() {
     fun setting_recycledrview_order() {
 
         // 장바구니에서 체크된 데이터를 가져온다
-        CoroutineScope(Dispatchers.Main).launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val work1 = async(Dispatchers.IO) {
                 PaymentRepository.getting_payment_product_by_checked(user_id)
             }
@@ -280,7 +337,7 @@ class PaymentFragment : Fragment() {
                 // 총 합 금액 뷰모델 값 세팅
                 paymentViewModel.tv_payment_tot_sum_price_text.value =
                     paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
-                        ((it.price * (1 - (it.saleRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                        ((it.price * (1 - (it.saleRate / 100.0))).toInt()* payment_product_list.items[position].quantity)
                     )
 
 
@@ -324,13 +381,72 @@ class PaymentFragment : Fragment() {
             }
 
             if (coupon_list.size != 0) {
-                paymentViewModel.select_coupon_list.value?.forEach {
-                    if (it.couponType == CouponType.SALE_PRICE.str) {
-                        paymentViewModel.tv_payment_tot_sum_price_text.value =
-                            paymentViewModel.tv_payment_tot_sum_price_text.value?.minus(it.salePrice)
-                        paymentViewModel.tv_payment_coupon_sale_price_text.value =
-                            it.salePrice
+
+                // 총 합 금액 초기화//////////////////////////////////////////////////////////////////
+                var position1 = 0
+                paymentViewModel.tv_payment_tot_sum_price_text.value = 0
+                paymentViewModel.payment_product_data_list.value?.forEach {
+                    // 총 합 금액 뷰모델 값 세팅
+                    paymentViewModel.tv_payment_tot_sum_price_text.value =
+                        paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                            ((it.price * (1 - (it.saleRate / 100.0))).toInt()* payment_product_list.items[position1].quantity)
+                        )
+
+                    position1++
+                }
+                paymentViewModel.tv_payment_tot_sum_price_text.value =
+                    paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(paymentViewModel.tv_payment_tot_delivery_cost_text.value!!)
+                ////////////////////////////////////////////////////////////////////////////////////
+
+                Log.d("123456", "coupon_document_id_list : ${paymentViewModel.select_coupon_list.value!!}")
+                paymentViewModel.select_coupon_list.value!!.forEach {
+                    // Log.d("123456", "coupon_document_id_list : ${it.couponType}")
+
+
+                    when (it.couponType) {
+                        // 쿠폰 타입이 할인 금액일 경우
+                        CouponType.SALE_PRICE.str -> {
+                            // 쿠폰 할인 텍스트
+                            paymentViewModel.tv_payment_coupon_sale_price_text.value =
+                                // 할인 가격
+                                it.salePrice
+
+                        }
+                        // 쿠폰 타입이 할인율 일 경우
+                        CouponType.SALE_RATE.str -> {
+                            // 쿠폰 할인 텍스트
+                            paymentViewModel.tv_payment_coupon_sale_price_text.value =
+                                    // 총 합 금액 = ( 총합 금액 - 총 배송비 ) x 할인 비율
+                                ((paymentViewModel.tv_payment_tot_sum_price_text.value!! -
+                                        paymentViewModel.tv_payment_tot_delivery_cost_text.value!!) *
+                                        // 할인 비율
+                                        ((it.saleRate / 100.0))).toInt()
+
+                        }
                     }
+
+                    var position2 = 0
+                    var tot_sum_price = 0
+                    // 총 합 금액 초기화
+                    paymentViewModel.tv_payment_tot_sum_price_text.value = 0
+
+                    paymentViewModel.payment_product_data_list.value?.forEach {
+                        Log.d("123455", "SALE_PRICE : ${it.price}")
+
+                        // 총 합 금액 뷰모델 값 세팅
+                        tot_sum_price += (((it.price * (1 - (it.saleRate / 100.0))).toInt() * payment_product_list.items[position2].quantity))
+
+                        position2++
+                    }
+
+                    paymentViewModel.tv_payment_tot_sum_price_text.value = tot_sum_price
+
+                    // 총 합 금액 = 총합 금액 + 총 배송비 - 쿠폰 할인
+                    paymentViewModel.tv_payment_tot_sum_price_text.value =
+                        paymentViewModel.tv_payment_tot_sum_price_text.value!! +
+                                paymentViewModel.tv_payment_tot_delivery_cost_text.value!! -
+                                paymentViewModel.tv_payment_coupon_sale_price_text.value!!
+                    
                 }
             }
             else {
