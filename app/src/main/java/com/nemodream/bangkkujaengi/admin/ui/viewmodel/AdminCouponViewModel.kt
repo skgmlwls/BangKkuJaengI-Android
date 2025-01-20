@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AdminCouponViewModel @Inject constructor(
     private val couponRepository: AdminCouponRepository,
-): ViewModel() {
+) : ViewModel() {
 
     // 쿠폰 리스트
     private val _couponList = MutableLiveData<List<Coupon>>(emptyList())
@@ -33,4 +33,13 @@ class AdminCouponViewModel @Inject constructor(
         }
     }
 
+    fun deleteCoupon(coupon: Coupon) = viewModelScope.launch {
+        runCatching {
+            couponRepository.deleteCoupon(coupon)
+        }.onSuccess {
+            // 삭제 되었다면 현재 리스트에서 해당 쿠폰 삭제
+            _couponList.value = _couponList.value?.filter { it.documentId != coupon.documentId }
+        }.onFailure { e ->
+        }
+    }
 }
