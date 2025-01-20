@@ -12,6 +12,7 @@ import com.nemodream.bangkkujaengi.customer.data.model.PaymentItems
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.Promotion
+import com.nemodream.bangkkujaengi.customer.data.model.Purchase
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
@@ -147,37 +148,6 @@ class PaymentRepository {
             return couponList
         }
 
-
-//        suspend fun getting_coupon_by_select_coupon_document_id(couponDocumentIdList: List<String>): MutableList<Coupon> {
-//            val firestore = FirebaseFirestore.getInstance()
-//            val collectionReference = firestore.collection("Coupon")
-//            Log.d("coupon2", "coupon_document_id_list: $couponDocumentIdList")
-//
-//            val couponList = mutableListOf<Coupon>()
-//
-//            if (couponDocumentIdList.isEmpty()) {
-//                Log.d("coupon2", "No document IDs provided")
-//                return couponList
-//            }
-//
-//            for (documentId in couponDocumentIdList) {
-//                val documentSnapshot = collectionReference.document(documentId).get().await()
-//
-//                if (documentSnapshot.exists()) {
-//                    val coupon = documentSnapshot.toObject(Coupon::class.java)?.copy(documentId = documentId)
-//                    if (coupon != null) {
-//                        couponList.add(coupon)
-//                    } else {
-//                        Log.d("coupon2", "Document $documentId could not be converted to Coupon object")
-//                    }
-//                } else {
-//                    Log.d("coupon2", "Document $documentId does not exist")
-//                }
-//            }
-//
-//            return couponList
-//        }
-
         // 상품 document id로 상품 정보 가져오기
         suspend fun getting_coupon_by_select_coupon_document_id(couponDocumentIdList: List<String>): MutableList<Map<String, *>> {
             Log.d("test200", "test2: ${couponDocumentIdList}")
@@ -204,6 +174,54 @@ class PaymentRepository {
             return coupon_list
         }
 
+        // 구매 항목 목록 id로 장바구니 항목 지우기
+        suspend fun remove_cart_item_by_payment_product_document_id_list(user_id: String, payment_product_id_list: List<String>) {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Cart")
+
+            try {
+                // 유저 ID로 Cart 문서 가져오기
+                val result = collectionReference.whereEqualTo("userId", user_id).get().await()
+
+                // 유저의 장바구니 데이터 처리
+                for (document in result.documents) {
+                    val cartData = document.toObject(PaymentProduct::class.java)
+
+                    if (cartData != null) {
+                        // payment_product_id_list에 해당하는 항목만 제거
+                        val updatedItems = cartData.items.filterNot { payment_product_id_list.contains(it.productId) }
+
+                        // 업데이트할 데이터 생성
+                        val updatedCartData = mapOf("items" to updatedItems)
+
+                        // Firestore 문서 업데이트
+                        collectionReference.document(document.id).update(updatedCartData).await()
+
+                        Log.d("CartUpdate", "Updated cart for documentId: ${document.id}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error removing cart items: ${e.message}", e)
+            }
+        }
+
+
+        // 구매 항목 저장 메서드
+        suspend fun add_purchase_product(purchase_product: MutableList<Purchase>) {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Purchase")
+
+            try {
+                // Firestore에 구매 항목 저장
+                purchase_product.forEach { purchase ->
+                    collectionReference.add(purchase).await()
+                    Log.d("PurchaseSave", "Added purchase: $purchase")
+                }
+            } catch (e: Exception) {
+                // 에러 처리
+                Log.e("FirestoreError", "Error adding purchase product: ${e.message}", e)
+            }
+        }
 
 
     }

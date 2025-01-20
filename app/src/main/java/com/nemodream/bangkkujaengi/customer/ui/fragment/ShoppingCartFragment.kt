@@ -35,7 +35,7 @@ class ShoppingCartFragment : Fragment() {
 
     // var cart_document_id_list = mutableListOf<String>()
 
-    var user_id = "testuser"
+    var user_id = "testuser2"
 
     // 장바구니 document id를 변수
     var cart_user_id:String = ""
@@ -66,6 +66,7 @@ class ShoppingCartFragment : Fragment() {
 
 
         fn_test_button()
+        fn_btn_shopping_cart_order_history()
 
         return fragmentShoppingCartBinding.root
     }
@@ -140,6 +141,14 @@ class ShoppingCartFragment : Fragment() {
                     ShoppingCartRepository.add_cart_items_by_product_ids(user_id)
                 }.await()
             }
+        }
+    }
+
+    // 주문 내역 가는 테스트 버튼
+    fun fn_btn_shopping_cart_order_history() {
+        fragmentShoppingCartBinding.btnShoppingCartOrderHistory.setOnClickListener {
+            val action = ShoppingCartFragmentDirections.actionNavigationCartToOrderHistoryFragment()
+            findNavController().navigate(action)
         }
     }
 
