@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,11 +44,32 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         observeViewModel()
         viewModel.loadMyProfile() // 프로필 데이터 로드
         viewModel.loadPosts()     // 게시글 데이터 로드
+        setupTabClickListeners() // 탭 클릭 리스너 설정
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // "내가쓴글" 및 "저장됨" 탭 클릭 이벤트 설정
+    private fun setupTabClickListeners() {
+        binding.tvMyPosts.setOnClickListener {
+            viewModel.filterPostsByType("MY_POSTS") // 내가 쓴 글 필터링
+            updateTabStyle(isMyPostsSelected = true)
+        }
+        binding.tvSavedPosts.setOnClickListener {
+            viewModel.filterPostsByType("SAVED_POSTS") // 저장된 글 필터링
+            updateTabStyle(isMyPostsSelected = false)
+        }
+    }
+
+    // 탭 스타일 업데이트
+    private fun updateTabStyle(isMyPostsSelected: Boolean) {
+        // "내가쓴글" 선택시
+        binding.tvMyPosts.setTypeface(null, if (isMyPostsSelected) Typeface.BOLD else Typeface.NORMAL)
+        // "저장됨" 선택시
+        binding.tvSavedPosts.setTypeface(null, if (isMyPostsSelected) Typeface.NORMAL else Typeface.BOLD)
     }
 
 

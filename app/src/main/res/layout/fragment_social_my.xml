@@ -85,6 +85,8 @@
             android:text="내가쓴글"
             android:textSize="15sp"
             android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -96,6 +98,9 @@
             android:layout_marginLeft="20dp"
             android:text="저장됨"
             android:textSize="15sp"
+            android:textStyle="normal"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toEndOf="@id/tv_my_posts"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
