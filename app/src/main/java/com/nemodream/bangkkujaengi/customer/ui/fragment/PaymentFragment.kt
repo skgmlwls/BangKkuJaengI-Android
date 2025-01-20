@@ -161,6 +161,9 @@ class PaymentFragment : Fragment() {
                     Log.d("2233", "purchase_product : ${it}")
                 }
 
+                val action = PaymentFragmentDirections.actionPaymentFragmentToPaymentCompletedFragment()
+                findNavController().navigate(action)
+
             }
         }
 

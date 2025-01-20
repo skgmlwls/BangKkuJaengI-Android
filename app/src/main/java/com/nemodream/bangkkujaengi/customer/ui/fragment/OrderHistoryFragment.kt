@@ -52,10 +52,10 @@ class OrderHistoryFragment : Fragment() {
 
 
             // purchaseDate에서 날짜(년-월-일)만 추출하여 중복 제거 및 정렬
-            val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+            val dateTimeFormatter = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
             orderHistoryViewModel.order_history_date_list.value = orderHistoryViewModel.order_history_product_list.value!!
                 .mapNotNull { it.purchaseDate?.toDate() } // Timestamp를 Date로 변환
-                .map { dateFormatter.format(it).toInt() } // 날짜 형식으로 변환 (yyyy-MM-dd)
+                .map { dateTimeFormatter.format(it).toLong() } // 날짜 형식으로 변환 (yyyy-MM-dd)
                 .distinct() // 중복 제거
                 .sortedDescending() // 내림차순 정렬
 

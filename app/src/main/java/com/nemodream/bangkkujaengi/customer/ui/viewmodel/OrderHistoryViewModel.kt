@@ -10,6 +10,6 @@ class OrderHistoryViewModel() : ViewModel() {
     var order_history_product_list = MutableLiveData<List<Purchase>>()
 
     // 구매 날짜 리스트
-    var order_history_date_list = MutableLiveData<List<Int>>()
+    var order_history_date_list = MutableLiveData<List<Long>>()
 
 }

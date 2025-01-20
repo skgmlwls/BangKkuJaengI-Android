@@ -124,7 +124,15 @@
         <argument
             android:name="userAddress"
             app:argType="string" />
+        <action
+            android:id="@+id/action_paymentFragment_to_paymentCompletedFragment"
+            app:destination="@id/paymentCompletedFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/paymentCompletedFragment"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentCompletedFragment"
+        android:label="fragment_payment_completed"
+        tools:layout="@layout/fragment_payment_completed" />
     <fragment
         android:id="@+id/socialFollowingAllFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SocialFollowingAllFragment"
