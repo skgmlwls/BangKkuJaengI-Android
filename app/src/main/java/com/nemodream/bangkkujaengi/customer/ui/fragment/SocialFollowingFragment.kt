@@ -110,7 +110,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         // 선택된 멤버의 게시글 리스트 관찰
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
             // 게시글 유무에 따라 "게시글이 아직 없습니다" 텍스트 보여줌
-            if (posts.isEmpty()) {
+            if (posts.isNullOrEmpty()) {
                 binding.tvNoPosts.visibility = View.VISIBLE
                 binding.rvFollowingPosts.visibility = View.GONE
             } else {
