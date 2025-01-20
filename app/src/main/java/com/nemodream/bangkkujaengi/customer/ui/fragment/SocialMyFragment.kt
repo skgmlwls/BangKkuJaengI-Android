@@ -52,11 +52,28 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         setupProfileEdit() // 편집 모드 전환
     }
 
+    override fun onPause() {
+        super.onPause()
+        resetToNormalMode() // 다른 프래그먼트로 이동 시 일반 모드로 초기화
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    // 수정 모드에서 일반 모드로 전환
+    private fun resetToNormalMode() {
+        val nicknameEditText = binding.etMyProfileNickname
+        val nicknameTextView = binding.tvMyProfileNickname
+        val editIcon = binding.ivSocialMyEdit
+        val saveButton = binding.btnSocialMySaveEdit
+
+        nicknameEditText.visibility = View.GONE // EditText 숨기기
+        nicknameTextView.visibility = View.VISIBLE // TextView 보이기
+        editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
+        saveButton.visibility = View.GONE  // "수정완료" 버튼 숨김
+    }
 
     private fun setupProfileEdit() {
         val nicknameEditText = binding.etMyProfileNickname // EditText로 변경된 닉네임 필드
