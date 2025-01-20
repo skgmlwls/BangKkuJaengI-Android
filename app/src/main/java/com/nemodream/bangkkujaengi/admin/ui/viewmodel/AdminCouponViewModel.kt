@@ -14,7 +14,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AdminCouponViewModel @Inject constructor(
     private val couponRepository: AdminCouponRepository,
-) : ViewModel() {
+): ViewModel() {
+    init {
+        loadCoupon()
+    }
 
     // 쿠폰 리스트
     private val _couponList = MutableLiveData<List<Coupon>>(emptyList())
@@ -42,4 +45,5 @@ class AdminCouponViewModel @Inject constructor(
         }.onFailure { e ->
         }
     }
+
 }

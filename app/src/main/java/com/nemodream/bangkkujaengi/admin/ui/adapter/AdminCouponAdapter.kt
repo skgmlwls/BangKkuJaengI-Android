@@ -1,6 +1,5 @@
 package com.nemodream.bangkkujaengi.admin.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -14,6 +13,7 @@ import com.nemodream.bangkkujaengi.utils.toFormattedDate
 class AdminCouponAdapter(
     private val onCouponDeleteListener: OnCouponDeleteListener,
 ): ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
+class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdminCouponViewHolder {
         return AdminCouponViewHolder(
@@ -39,11 +39,13 @@ class AdminCouponAdapter(
                 onCouponDelete(adapterPosition)
             }
         }
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(coupon: Coupon) {
             with(binding) {
                 tvRowPaymentCouponTitle.text = coupon.title
                 tvRowPaymentCouponPrice.text = if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
+                tvRowPaymentCouponPrice.text = coupon.salePrice.toCommaString()
                 tvRowPaymentCouponCondition.text = coupon.conditionDescription
                 tvRowPaymentCouponPeriod.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
             }

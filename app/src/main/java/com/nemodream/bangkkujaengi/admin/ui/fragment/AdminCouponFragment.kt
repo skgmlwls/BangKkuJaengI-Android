@@ -12,6 +12,7 @@ import com.nemodream.bangkkujaengi.admin.ui.adapter.OnCouponDeleteListener
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminCouponViewModel
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
+import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminCouponBinding
 import dagger.hilt.android.AndroidEntryPoint
 
