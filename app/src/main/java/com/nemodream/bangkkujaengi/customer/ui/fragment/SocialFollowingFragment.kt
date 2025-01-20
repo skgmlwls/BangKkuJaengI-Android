@@ -11,7 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.data.repository.SocialFollowingRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
@@ -107,7 +109,15 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
         // 선택된 멤버의 게시글 리스트 관찰
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
-            postAdapter.submitList(posts) // 게시글 리스트를 어댑터에 업데이트
+            // 게시글 유무에 따라 "게시글이 아직 없습니다" 텍스트 보여줌
+            if (posts.isEmpty()) {
+                binding.tvNoPosts.visibility = View.VISIBLE
+                binding.rvFollowingPosts.visibility = View.GONE
+            } else {
+                binding.tvNoPosts.visibility = View.GONE
+                binding.rvFollowingPosts.visibility = View.VISIBLE
+                postAdapter.submitList(posts) // 게시글 리스트를 어댑터에 업데이트
+            }
         }
 
         // 팔로잉 상태에 따라 버튼 텍스트 변경
@@ -115,6 +125,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
             updateFollowingButtonStyle(isFollowing)
         }
     }
+
 
     // 팔로우/팔로잉 버튼 스타일 업데이트
     private fun updateFollowingButtonStyle(isFollowing: Boolean) {
