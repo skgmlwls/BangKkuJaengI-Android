@@ -31,19 +31,21 @@ class SocialMyViewModel @Inject constructor(
         _myProfile.value = repository.getMyProfile()
     }
 
-    // 내가 쓴 글 게시글 목록 로드
+
+    // 게시글을 로드하는 함수
     fun loadMyWrittenPosts() {
         viewModelScope.launch {
-            val postList = repository.getMyWittenPosts()
-            _posts.value = postList
+            val posts = repository.getMyWittenPosts() // 데이터 로드
+            _posts.value = posts.ifEmpty { emptyList() } // 빈 리스트일 경우 빈 리스트로 설정
         }
     }
+
 
     // 내가 쓴 글 게시글 목록 로드
     fun loadMySavedPosts() {
         viewModelScope.launch {
-            val postList = repository.getMySavedPosts()
-            _posts.value = postList
+            val posts = repository.getMySavedPosts() // 데이터 로드
+            _posts.value = posts.ifEmpty { emptyList() } // 빈 리스트일 경우 빈 리스트로 설정
         }
     }
 

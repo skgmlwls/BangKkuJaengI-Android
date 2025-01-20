@@ -146,6 +146,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_social_post" />
 
+    <!-- 게시글 없음 안내 텍스트 -->
+    <TextView
+        android:id="@+id/tv_no_posts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="작성한 게시글이 없습니다"
+        android:layout_marginBottom="68dp"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/cl_tab_selection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 

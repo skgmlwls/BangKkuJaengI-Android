@@ -30,6 +30,8 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         SocialDiscoveryAdapter(this)
     }
 
+    private var isMyPostsSelected: Boolean = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -110,16 +112,19 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         }
     }
 
-
-    // "내가쓴글" 및 "저장됨" 탭 클릭 이벤트 설정
+    // 내가쓴글, 저장됨 탭 클릭 리스너
     private fun setupTabClickListeners() {
+        // 내가쓴글 탭 클릭
         binding.tvMyPosts.setOnClickListener {
+            isMyPostsSelected = true
             viewModel.loadMyWrittenPosts()
-            updateTabStyle(isMyPostsSelected = true)
+            updateTabStyle(isMyPostsSelected)
         }
+        // 저장됨 탭 클릭
         binding.tvSavedPosts.setOnClickListener {
+            isMyPostsSelected = false
             viewModel.loadMySavedPosts()
-            updateTabStyle(isMyPostsSelected = false)
+            updateTabStyle(isMyPostsSelected)
         }
     }
 
@@ -156,7 +161,22 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
 
         // 게시글 데이터 관찰
         viewModel.posts.observe(viewLifecycleOwner, Observer { posts ->
-            socialMyAdapter.submitList(posts)
+            // postAdapter.submitList(posts) // 게시글 리스트를 어댑터에 업데이트
+            if (posts.isNullOrEmpty()) {
+                binding.tvNoPosts.visibility = View.VISIBLE
+                binding.rvMyPosts.visibility = View.GONE
+                // "내가쓴글" 또는 "저장됨" 탭에 따라 다른 메시지 표시
+                // "내가쓴글" 또는 "저장됨" 탭에 따라 다른 메시지 표시
+                binding.tvNoPosts.text = if (isMyPostsSelected) {
+                    "작성한 게시글이 없습니다"
+                } else {
+                    "저장한 게시글이 없습니다"
+                }
+            } else {
+                binding.tvNoPosts.visibility = View.GONE
+                binding.rvMyPosts.visibility = View.VISIBLE
+                socialMyAdapter.submitList(posts)
+            }
         })
     }
 
