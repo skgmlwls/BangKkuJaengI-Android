@@ -37,7 +37,7 @@ data class Coupon(
     val morePrice : Int = 0,
     
     // 활성화 or 비활성화
-    val isActivity : Boolean = false
+    val isActivity : Boolean = true
 
 )
 
