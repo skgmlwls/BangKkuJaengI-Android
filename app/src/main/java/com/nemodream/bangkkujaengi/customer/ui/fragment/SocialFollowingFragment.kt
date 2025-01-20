@@ -127,6 +127,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
             binding.btnFollowingFollowing.strokeColor =
                 ColorStateList.valueOf(Color.parseColor("#818080")) // 테두리 색상
             binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께
+            binding.btnFollowingFollowing.setPadding(0,0,0,0) // 패딩
         } else {
             binding.btnFollowingFollowing.text = "팔로우"
             binding.btnFollowingFollowing.setTextColor(Color.parseColor("#FFFFFF")) // 글자색
@@ -136,6 +137,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
             binding.btnFollowingFollowing.strokeColor =
                 ColorStateList.valueOf(Color.parseColor("#000000")) // 테두리 색상
             binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께
+            binding.btnFollowingFollowing.setPadding(0,0,0,0) // 패딩
         }
     }
 
