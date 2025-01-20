@@ -42,6 +42,7 @@ class AdminCouponFragment: Fragment() {
     }
 
     private fun setupUI() {
+        viewModel.loadCoupon()
         with(binding) {
             rvAdminCouponList.adapter = couponAdapter
         }

@@ -15,16 +15,13 @@ import javax.inject.Inject
 class AdminCouponViewModel @Inject constructor(
     private val couponRepository: AdminCouponRepository,
 ): ViewModel() {
-    init {
-        loadCoupon()
-    }
 
     // 쿠폰 리스트
     private val _couponList = MutableLiveData<List<Coupon>>(emptyList())
     val couponList: LiveData<List<Coupon>> get() = _couponList
 
     // 쿠폰 로드하기
-    private fun loadCoupon() = viewModelScope.launch {
+    fun loadCoupon() = viewModelScope.launch {
         runCatching {
             couponRepository.loadCoupon()
         }.onSuccess {
