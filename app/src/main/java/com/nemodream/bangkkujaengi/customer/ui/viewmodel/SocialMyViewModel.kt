@@ -47,4 +47,11 @@ class SocialMyViewModel @Inject constructor(
         }
     }
 
+    fun updateNickname(newNickname: String) {
+        val currentProfile = _myProfile.value
+        if (currentProfile != null) {
+            _myProfile.value = currentProfile.copy(memberNickName = newNickname)
+        }
+    }
+
 }
