@@ -63,8 +63,16 @@ class SignUpViewModel @Inject constructor(
     private val _isSignUpButtonEnabled = MutableLiveData(false)
     val isSignUpButtonEnabled: LiveData<Boolean> = _isSignUpButtonEnabled
 
+    // 인증 버튼 상태 추가
+    private val _isVerificationButtonEnabled = MutableLiveData(false)
+    val isVerificationButtonEnabled: LiveData<Boolean> = _isVerificationButtonEnabled
+
+    private val _isVerificationCheckButtonEnabled = MutableLiveData(false)
+    val isVerificationCheckButtonEnabled: LiveData<Boolean> = _isVerificationCheckButtonEnabled
+
     private var isIdChecked = false
     private var isNicknameChecked = false
+    private var isVerificationChecked = false
 
     // 이름
     fun validateName() {
@@ -145,7 +153,7 @@ class SignUpViewModel @Inject constructor(
                 chkPassword.value == password.value &&
                 phoneNumber.value.orEmpty().length == 11 &&
                 verificationCode.value.orEmpty().length == 6 &&
-                isIdChecked && isNicknameChecked
+                isIdChecked && isNicknameChecked && isVerificationChecked
     }
 
     // 회원 데이터 저장
@@ -219,5 +227,22 @@ class SignUpViewModel @Inject constructor(
         _isNicknameCheckButtonEnabled.value = value.length >= 2
         // 닉네임 변경 시 중복 확인 다시 필요
         isNicknameChecked = false
+    }
+    // 전화번호 인증 요청 버튼 활성화 여부 결정
+    fun validateVerificationButton() {
+        val value = phoneNumber.value.orEmpty()
+        _isVerificationButtonEnabled.value = value.length == 11
+    }
+
+    // 인증 코드 확인 버튼 활성화 여부 결정
+    fun validateVerificationCheckButton() {
+        val value = verificationCode.value.orEmpty()
+        _isVerificationCheckButtonEnabled.value = value.length == 6
+    }
+
+    // 인증 확인 완료 처리
+    fun verifyCodeSuccess() {
+        isVerificationChecked = true
+        validateSignUpButton() // 가입 버튼 상태 업데이트
     }
 }

@@ -105,19 +105,29 @@ class SignUpActivity : AppCompatActivity() {
         // 아이디 중복 확인 버튼 상태 관찰
         signUpViewModel.isIdCheckButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpCheckId.isEnabled = isEnabled
-            binding.btnSignUpCheckId.alpha = if (isEnabled) 1f else 0.5f
+            // binding.btnSignUpCheckId.alpha = if (isEnabled) 1f else 0.5f
         }
 
         // 닉네임 중복 확인 버튼 상태 관찰
         signUpViewModel.isNicknameCheckButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpCheckNickname.isEnabled = isEnabled
-            binding.btnSignUpCheckNickname.alpha = if (isEnabled) 1f else 0.5f
+            // binding.btnSignUpCheckNickname.alpha = if (isEnabled) 1f else 0.5f
         }
 
         // 가입 버튼 상태 관찰
         signUpViewModel.isSignUpButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpSignup.isEnabled = isEnabled
-            binding.btnSignUpSignup.alpha = if (isEnabled) 1f else 0.5f
+            // binding.btnSignUpSignup.alpha = if (isEnabled) 1f else 0.5f
+        }
+
+        signUpViewModel.isVerificationButtonEnabled.observe(this) { isEnabled ->
+            binding.btnSignUpVerification.isEnabled = isEnabled
+            // binding.btnSignUpVerification.alpha = if (isEnabled) 1f else 0.5f
+        }
+
+        signUpViewModel.isVerificationCheckButtonEnabled.observe(this) { isEnabled ->
+            binding.btnSignUpCheckVerification.isEnabled = isEnabled
+            // binding.btnSignUpCheckVerification.alpha = if (isEnabled) 1f else 0.5f
         }
     }
 
@@ -153,23 +163,27 @@ class SignUpActivity : AppCompatActivity() {
         binding.tfSignUpPhoneNumber.editText?.addTextChangedListener { editable ->
             signUpViewModel.phoneNumber.value = editable.toString()
             signUpViewModel.validatePhoneNumber()
+            signUpViewModel.validateVerificationButton() // 인증 요청 버튼 활성화 상태 업데이트
             signUpViewModel.validateSignUpButton()
         }
         binding.tfSignUpVerificationCode.editText?.addTextChangedListener { editable ->
             signUpViewModel.verificationCode.value = editable.toString()
             signUpViewModel.validateVerificationCode()
+            signUpViewModel.validateVerificationCheckButton() // 인증 확인 버튼 활성화 상태 업데이트
             signUpViewModel.validateSignUpButton()
         }
         // 아이디 중복 확인 버튼 클릭 이벤트
         binding.btnSignUpCheckId.setOnClickListener {
             val inputId = binding.tfSignUpId.editText?.text.toString()
             signUpViewModel.checkIdAvailability(inputId)
+            binding.btnSignUpCheckId.isEnabled = false
         }
 
         // 닉네임 중복 확인 버튼 클릭 이벤트
         binding.btnSignUpCheckNickname.setOnClickListener {
             val inputNickname = binding.tfSignUpNickname.editText?.text.toString()
             signUpViewModel.checkNicknameAvailability(inputNickname)
+            binding.btnSignUpCheckNickname.isEnabled = false
         }
 
         // 가입하기 버튼 클릭 이벤트
@@ -227,6 +241,7 @@ class SignUpActivity : AppCompatActivity() {
             val code = binding.tfSignUpVerificationCode.editText?.text.toString()
             if (code.isNotEmpty() && storedVerificationId != null) {
                 verifyCode(code)
+                binding.btnSignUpCheckVerification.isEnabled = false
             } else {
                 showToast("인증 코드를 입력하거나 인증 요청을 다시 진행하세요.")
             }
@@ -285,8 +300,8 @@ class SignUpActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     showToast("전화번호 인증 성공!")
+                    signUpViewModel.verifyCodeSuccess() // 인증 성공 시 가입 버튼 활성화
                     Log.d("PhoneAuth", "Sign in successful")
-                    // 인증 성공 이후 추가 작업 (회원가입 처리 등)
                 } else {
                     showToast("전화번호 인증 실패.")
                     Log.w("PhoneAuth", "Sign in failed", task.exception)
