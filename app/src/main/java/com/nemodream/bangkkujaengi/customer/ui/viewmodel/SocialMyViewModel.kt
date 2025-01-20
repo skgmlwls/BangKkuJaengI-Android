@@ -38,4 +38,16 @@ class SocialMyViewModel @Inject constructor(
             _posts.value = postList
         }
     }
+
+    // 게시글 필터링 함수
+    fun filterPostsByType(type: String) {
+        val member = _myProfile.value ?: return
+        val allPosts = _posts.value ?: return
+
+        _posts.value = when (type) {
+            "MY_POSTS" -> allPosts.filter { it.nickname == member.memberNickName }
+            "SAVED_POSTS" -> member.savedPost
+            else -> allPosts
+        }
+    }
 }
