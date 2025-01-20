@@ -52,7 +52,7 @@ class PaymentProductAdapter(
         val rowPaymentRecyclerviewViewModel = RowPaymentRecyclerviewViewModel()
 
         // 옵저버 세팅 메소드 호출
-        setting_text_observe(rowPaymentRecyclerviewViewModel, holder)
+        setting_text_observe(rowPaymentRecyclerviewViewModel, holder, position)
 
         // 뷰모델 초기 값 세팅 메소드 호출
         setting_viewmodel_value(rowPaymentRecyclerviewViewModel, position)
@@ -107,13 +107,24 @@ class PaymentProductAdapter(
     // 옵저버 세팅 메소드
     fun setting_text_observe(
         rowPaymentRecyclerviewViewModel: RowPaymentRecyclerviewViewModel,
-        holder: PaymentProductViewHolder
+        holder: PaymentProductViewHolder,
+        position: Int
     ) {
 
         // 상품 이름 옵저버
         rowPaymentRecyclerviewViewModel.tv_row_payment_product_name.observe(viewLifecycleOwner) {
             holder.rowPaymentRecyclerviewBinding.tvRowPaymentProductName.text = it
         }
+
+        if (payment_product_list.items[position].color == "") {
+            holder.rowPaymentRecyclerviewBinding.tvRowPaymentProductOption.text =
+                "옵션 : 없음"
+        }
+        else {
+            holder.rowPaymentRecyclerviewBinding.tvRowPaymentProductOption.text =
+                "옵션 : " + payment_product_list.items[position].color
+        }
+
 
         // 상품 할인 전 가격 옵저버
         rowPaymentRecyclerviewViewModel.tv_row_payment_product_origin_price.observe(viewLifecycleOwner) {

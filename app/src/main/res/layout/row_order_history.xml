@@ -46,7 +46,7 @@
                     android:layout_gravity="center_vertical"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:text="배송 조회"
+                    android:text="주문 상세"
                     android:textSize="13dp"
                     />
             </LinearLayout>

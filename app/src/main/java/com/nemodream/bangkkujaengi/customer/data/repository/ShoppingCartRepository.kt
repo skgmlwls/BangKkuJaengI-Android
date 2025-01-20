@@ -203,30 +203,39 @@ class ShoppingCartRepository {
 
 
 
-        // 장바구니 아이템을 삭제하는 메소드
+        // 장바구니 아이템을 삭제하는 메소드 (userId 기준으로 조회)
         suspend fun delete_cart_item_by_product_id(user_id: String, product_id: String) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
-            val documentReference = collectionReference.document(user_id)
 
-            Log.d("tt", "${user_id}")
+            // 유저의 장바구니 데이터 가져오기
+            val result = collectionReference.whereEqualTo("userId", user_id).get().await()
 
-            // 기존 문서 데이터를 가져온다
-            val documentSnapshot = documentReference.get().await()
-            val shoppingCart = documentSnapshot.toObject(ShoppingCart::class.java)
-
-            // 삭제할 상품을 제외한 나머지 items 리스트 생성
-            val updatedItems = shoppingCart?.items?.filter {
-                it.productId != product_id
+            if (result.isEmpty) {
+                Log.d("delete_cart_item", "No cart found for user: $user_id")
+                return
             }
 
-            // Firestore의 "items" 배열을 업데이트
-            val updateMap = mapOf(
-                "items" to updatedItems
-            )
-            documentReference.update(updateMap).await()
+            // 첫 번째 장바구니 문서 가져오기 (단일 장바구니 가정)
+            val documentReference = result.documents.first().reference
+            val shoppingCart = result.documents.first().toObject(ShoppingCart::class.java)
+
+            if (shoppingCart != null) {
+                // 삭제할 상품을 제외한 새로운 items 리스트 생성
+                val updatedItems = shoppingCart.items.filter { it.productId != product_id }
+
+                // Firestore의 items 배열 업데이트
+                val updateMap = mapOf("items" to updatedItems)
+                documentReference.update(updateMap).await()
+
+                Log.d("delete_cart_item", "Product $product_id deleted for user: $user_id")
+            } else {
+                Log.d("delete_cart_item", "Cart data is null for user: $user_id")
+            }
         }
 
+
+        // 체크된 상품 목록 삭제
         suspend fun delete_cart_item_by_checked(user_id: String) {
             val firestore = FirebaseFirestore.getInstance()
             val collectionReference = firestore.collection("Cart")
