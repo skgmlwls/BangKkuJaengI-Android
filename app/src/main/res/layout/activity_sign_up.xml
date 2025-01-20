@@ -78,13 +78,12 @@
                             android:singleLine="true" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btn_sign_up_check_id"
-                        style="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:backgroundTint="#332828"
+                        android:enabled="false"
                         android:text="중복확인" />
                 </LinearLayout>
 
@@ -116,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:backgroundTint="#332828"
+                        android:enabled="true"
                         android:text="중복확인" />
                 </LinearLayout>
 
