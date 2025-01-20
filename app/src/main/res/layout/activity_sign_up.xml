@@ -23,7 +23,7 @@
             android:background="@android:color/transparent"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            app:navigationIcon="@drawable/arrow_back_24px"
+            app:navigationIcon="@drawable/ic_arrow_back"
             app:title="회원가입"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Large" />

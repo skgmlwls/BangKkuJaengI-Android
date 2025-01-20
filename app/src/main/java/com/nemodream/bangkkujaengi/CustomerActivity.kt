@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -28,12 +29,24 @@ class CustomerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        // 전달받은 데이터 처리
+        val isGuest = intent.getBooleanExtra("isGuest", true)
+        val documentId = intent.getStringExtra("documentId")
+
+        if (isGuest) {
+            Log.d("CustomerActivity", "비회원으로 이용 중")
+        } else {
+            Log.d("CustomerActivity", "회원으로 이용 중, 문서 ID: $documentId")
+        }
+
         val navController = setupNavHost()
         setupListeners(navController)
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.customer_container) as NavHostFragment
         setupBackPressHandler(navHostFragment)
+
     }
 
     /**

@@ -153,7 +153,7 @@ class SignUpViewModel @Inject constructor(
         val member = Member(
             memberName = name.value.orEmpty(),
             memberId = id.value.orEmpty(),
-            memberNickname = nickname.value.orEmpty(),
+            memberNickName = nickname.value.orEmpty(),
             memberPassword = password.value.orEmpty(),
             memberPhoneNumber = phoneNumber.value.orEmpty(),
             createAt = System.currentTimeMillis()

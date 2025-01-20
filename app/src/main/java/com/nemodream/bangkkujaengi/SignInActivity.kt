@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.nemodream.bangkkujaengi.customer.ui.fragment.findaccount.FindInfoActivity
+import com.nemodream.bangkkujaengi.customer.ui.fragment.findAccount.FindInfoActivity
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SignInViewModel
 import com.nemodream.bangkkujaengi.databinding.ActivitySignInBinding
 import dagger.hilt.android.AndroidEntryPoint
