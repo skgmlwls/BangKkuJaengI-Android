@@ -40,10 +40,13 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 초기설정
+        updateTabStyle(isMyPostsSelected = true)
+        viewModel.loadMyWrittenPosts()
+
         setupRecyclerView()
         observeViewModel()
         viewModel.loadMyProfile() // 프로필 데이터 로드
-        viewModel.loadPosts()     // 게시글 데이터 로드
         setupTabClickListeners() // 탭 클릭 리스너 설정
     }
 
@@ -55,11 +58,11 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
     // "내가쓴글" 및 "저장됨" 탭 클릭 이벤트 설정
     private fun setupTabClickListeners() {
         binding.tvMyPosts.setOnClickListener {
-            viewModel.filterPostsByType("MY_POSTS") // 내가 쓴 글 필터링
+            viewModel.loadMyWrittenPosts()
             updateTabStyle(isMyPostsSelected = true)
         }
         binding.tvSavedPosts.setOnClickListener {
-            viewModel.filterPostsByType("SAVED_POSTS") // 저장된 글 필터링
+            viewModel.loadMySavedPosts()
             updateTabStyle(isMyPostsSelected = false)
         }
     }
