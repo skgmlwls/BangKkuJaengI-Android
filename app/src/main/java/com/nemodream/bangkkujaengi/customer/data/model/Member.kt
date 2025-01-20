@@ -33,10 +33,16 @@ data class Member(
     // 팔로잉 수
     val followingCount:Int,
 
-    // 팔로잉 목록
-    val followingList: List<Member>,
-    // 쿠폰 문서 id 리스트
-    val couponDocumentId: List<String> = emptyList(),
     // 팔로워 수
     val followerCount:Int,
+
+    // 팔로잉 목록
+    val followingList: List<Member>,
+
+    // 저장한 게시글 리스트
+    val savedPost: List<Post> = emptyList(),
+
+    // 쿠폰 문서 id 리스트
+    val couponDocumentId: List<String> = emptyList(),
+
 )
