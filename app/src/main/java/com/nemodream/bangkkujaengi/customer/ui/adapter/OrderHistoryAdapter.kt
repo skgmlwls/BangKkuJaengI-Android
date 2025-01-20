@@ -48,6 +48,8 @@ class OrderHistoryAdapter(
 
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     // yyyyMMddHHmmss 형식의 날짜를 yyyy년 MM월 dd일 HH:mm:ss로 변환하는 메소드
     fun convertDateFormat(rawDate: String): String {
         return try {
@@ -63,10 +65,6 @@ class OrderHistoryAdapter(
             rawDate // 변환 실패 시 원본 반환
         }
     }
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 날짜에 맞는 항목을 따로 리스트에 넣는 함수
     fun setting_order_history_prodcut_list_by_date(

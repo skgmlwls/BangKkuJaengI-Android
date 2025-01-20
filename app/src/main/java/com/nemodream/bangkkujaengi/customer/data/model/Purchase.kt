@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 data class Purchase(
     val memberId: String = "",
     val productTitle : String = "",
+    val color : String = "",
     val images : String = "",
     val productId : String = "",
     val productCost : Int = 0,

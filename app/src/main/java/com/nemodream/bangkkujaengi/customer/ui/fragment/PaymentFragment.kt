@@ -134,6 +134,7 @@ class PaymentFragment : Fragment() {
                         val purchase = Purchase(
                             memberId = user_id,
                             productTitle = paymentViewModel.payment_product_data_list.value!![position].productName,
+                            color = it.color,
                             images = paymentViewModel.payment_product_data_list.value!![position].images[0],
                             productId = it.productId,
                             productCost = paymentViewModel.payment_product_data_list.value!![position].price,

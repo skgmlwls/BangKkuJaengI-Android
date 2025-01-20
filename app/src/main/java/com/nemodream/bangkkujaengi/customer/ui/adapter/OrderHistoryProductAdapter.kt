@@ -57,6 +57,14 @@ class OrderHistoryProductAdapter(
         holder.tvRowOrderHistoryProductProductName.text =
             orderHistoryProductViewModel.order_history_product_list.value!![position].productTitle
 
+        // 색깔 옵션
+        if (orderHistoryProductViewModel.order_history_product_list.value!![position].color == "") {
+            holder.tvRowOrderHistoryProductProductOption.visibility = View.GONE
+        } else {
+            holder.tvRowOrderHistoryProductProductOption.text =
+                "옵션 : " + orderHistoryProductViewModel.order_history_product_list.value!![position].color
+        }
+
         // 주문 상품 가격
         val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(
             orderHistoryProductViewModel.order_history_product_list.value!![position].totPrice
