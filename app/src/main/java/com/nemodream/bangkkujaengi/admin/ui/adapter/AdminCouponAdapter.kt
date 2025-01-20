@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.admin.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,7 +11,9 @@ import com.nemodream.bangkkujaengi.databinding.RowPaymentSelectCouponRecyclervie
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import com.nemodream.bangkkujaengi.utils.toFormattedDate
 
-class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
+class AdminCouponAdapter(
+    private val onCouponDeleteListener: OnCouponDeleteListener,
+): ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdminCouponViewHolder {
         return AdminCouponViewHolder(
@@ -19,6 +22,7 @@ class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponView
                 parent,
                 false
             ),
+            onCouponDelete = { position -> onCouponDeleteListener.onCouponDelete(getItem(position)) }
         )
     }
 
@@ -28,12 +32,18 @@ class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponView
 
     class AdminCouponViewHolder(
         private val binding: RowPaymentSelectCouponRecyclerviewBinding,
+        onCouponDelete: (position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.btnRowRowPaymentCouponDelete.setOnClickListener {
+                onCouponDelete(adapterPosition)
+            }
+        }
 
         fun bind(coupon: Coupon) {
             with(binding) {
                 tvRowPaymentCouponTitle.text = coupon.title
-                tvRowPaymentCouponPrice.text = coupon.salePrice.toCommaString()
+                tvRowPaymentCouponPrice.text = if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
                 tvRowPaymentCouponCondition.text = coupon.conditionDescription
                 tvRowPaymentCouponPeriod.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
             }
@@ -49,4 +59,8 @@ class CouponDiffCallback : DiffUtil.ItemCallback<Coupon>() {
     override fun areContentsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
         return oldItem == newItem
     }
+}
+
+interface OnCouponDeleteListener {
+    fun onCouponDelete(coupon: Coupon)
 }
