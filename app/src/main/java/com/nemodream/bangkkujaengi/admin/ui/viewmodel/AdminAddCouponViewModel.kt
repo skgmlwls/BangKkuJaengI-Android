@@ -49,7 +49,6 @@ class AdminAddCouponViewModel @Inject constructor(
                 minPrice.isNotBlank() &&
                 discount.isNotBlank()
         _isSubmitEnabled.value = isValid
-        Log.d("AdminAddCouponViewModel", "validateFields: $isValid")
     }
 
 
