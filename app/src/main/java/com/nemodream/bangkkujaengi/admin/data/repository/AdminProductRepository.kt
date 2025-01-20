@@ -69,4 +69,33 @@ class AdminProductRepository @Inject constructor(
     fun deleteProduct(productId: String) {
         firestore.collection("Product").document(productId).delete()
     }
+
+    suspend fun updateProduct(product: Product, newImageUris: List<Uri>): Boolean {
+        return try {
+            // 새 이미지들을 Storage에 업로드
+            val newImagePaths = newImageUris.mapIndexed { index, uri ->
+                val fileName = "product/${System.currentTimeMillis()}_${index}.jpg"
+                val imageRef = storage.reference.child(fileName)
+                imageRef.putFile(uri).await()
+                fileName
+            }
+
+            // 기존 이미지 경로와 새 이미지 경로를 합침
+            val allImagePaths = product.images + newImagePaths
+
+            // 업데이트된 Product 생성
+            val updatedProduct = product.copy(images = allImagePaths)
+
+            // Firestore 문서 업데이트
+            firestore.collection("Product")
+                .document(product.productId)
+                .set(updatedProduct)
+                .await()
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }

@@ -82,11 +82,11 @@ class AdminProductFragment : Fragment(), OnProductClickListener {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-//                val action =
-//                    AdminProductFragmentDirections.actionAdminProductFragmentToAdminEditProductFragment(
-//                        productId = product.productId
-//                    )
-//                findNavController().navigate(action)
+                val action =
+                    AdminProductFragmentDirections.actionAdminProductFragmentToAdminEditProductFragment(
+                        product
+                    )
+                findNavController().navigate(action)
                     true
                 }
                 R.id.menu_delete -> {
