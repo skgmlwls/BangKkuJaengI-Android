@@ -91,9 +91,9 @@ class FindPasswordFragment : Fragment() {
             }
         }
         // 로그인 화면으로 이동
-        binding.btnFindPwLogin.setOnClickListener {
-            requireActivity().finish()
-        }
+//        binding.btnFindPwLogin.setOnClickListener {
+//            requireActivity().finish()
+//        }
     }
 
     override fun onDestroyView() {

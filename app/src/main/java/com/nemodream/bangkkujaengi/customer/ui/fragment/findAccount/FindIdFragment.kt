@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.FindIdViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentFindIdBinding
+import com.nemodream.bangkkujaengi.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -45,6 +46,7 @@ class FindIdFragment : Fragment() {
                     text = "${name}님의 아이디 \n\n${userId}"
                     visibility = View.VISIBLE // TextView를 보이게 설정
                 }
+                binding.btnFindIdLogin.visibility = View.VISIBLE // 로그인 버튼 활성화
             }
         }
 
@@ -56,9 +58,11 @@ class FindIdFragment : Fragment() {
         }
     }
 
+
     private fun setupListeners() {
         // 아이디 찾기 버튼 클릭
         binding.btnFindIdFindId.setOnClickListener {
+            binding.root.hideKeyboard()
             val name = binding.tfFindIdName.editText?.text.toString()
             val phoneNumber = binding.tfFindIdPhoneNumber.editText?.text.toString()
 
@@ -72,6 +76,11 @@ class FindIdFragment : Fragment() {
         // 로그인 화면으로 이동
         binding.btnFindIdLogin.setOnClickListener {
             requireActivity().finish()
+        }
+
+        // 빈 공간 터치 시 키보드 숨김 처리
+        binding.root.setOnClickListener {
+            binding.root.hideKeyboard()
         }
     }
 
