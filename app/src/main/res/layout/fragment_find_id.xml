@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_find_id_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이름">
@@ -22,6 +23,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_find_id_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -33,7 +35,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_find_id_find_id"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -42,15 +44,22 @@
             android:text="아이디 찾기" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/tv_find_id_show_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_marginTop="30dp"
+            android:background="#DCD8D8"
+            android:padding="30dp"
+            android:text=" "
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_find_id_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
