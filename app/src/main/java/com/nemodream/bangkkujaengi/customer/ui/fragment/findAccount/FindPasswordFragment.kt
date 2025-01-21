@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentFindPasswordBinding
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.FindPasswordViewModel
+import com.nemodream.bangkkujaengi.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,11 +64,16 @@ class FindPasswordFragment : Fragment() {
 
         // 인증 성공 여부 처리
         viewModel.isVerified.observe(viewLifecycleOwner) { isVerified ->
-            binding.btnFindPwResetPw.isEnabled = isVerified
+            binding.btnFindPwResetPw.visibility = if (isVerified) View.VISIBLE else View.INVISIBLE
         }
     }
 
     private fun setupListeners() {
+        // 빈 공간 터치 시 키보드 숨김 처리
+        binding.root.setOnClickListener {
+            binding.root.hideKeyboard()
+        }
+
         // 전화번호 입력 시 인증 요청 버튼 활성화
         binding.tfFindPwPhoneNumber.editText?.addTextChangedListener {
             binding.btnFindPwVerification.isEnabled = it?.isNotEmpty() == true
@@ -87,6 +93,7 @@ class FindPasswordFragment : Fragment() {
 
         // 인증 확인 버튼 클릭
         binding.btnFindPwCheckVerification.setOnClickListener {
+            binding.root.hideKeyboard()
             val inputCode = binding.tfFindPwVerificationCode.editText?.text.toString()
 
             if (inputCode.isBlank()) {
