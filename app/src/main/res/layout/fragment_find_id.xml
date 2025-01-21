@@ -14,13 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:hint="이름"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true"
+        app:helperText=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 전화번호 입력 -->
@@ -28,7 +32,7 @@
         android:id="@+id/tf_find_id_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:hint="전화번호"
         app:endIconMode="clear_text"
         app:errorEnabled="true"

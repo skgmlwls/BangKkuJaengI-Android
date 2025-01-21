@@ -16,6 +16,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SignUpViewModel
 import com.nemodream.bangkkujaengi.databinding.ActivitySignUpBinding
+import com.nemodream.bangkkujaengi.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -133,6 +134,12 @@ class SignUpActivity : AppCompatActivity() {
 
     // 입력 리스너
     private fun setupListeners() {
+        // 빈 공간 터치 시 키보드 숨김 처리
+        binding.root.setOnClickListener {
+            binding.root.hideKeyboard()
+            binding.root.clearFocus() // 포커스 제거
+        }
+
         binding.tfSignUpName.editText?.addTextChangedListener { editable ->
             signUpViewModel.name.value = editable.toString()
             signUpViewModel.validateName()

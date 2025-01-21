@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ResetPasswordViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentResetPasswordBinding
+import com.nemodream.bangkkujaengi.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +48,11 @@ class ResetPasswordFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        // 빈 공간 터치 시 키보드 숨김 처리
+        binding.root.setOnClickListener {
+            binding.root.hideKeyboard()
+        }
+
         // 입력 필드 변화 감지
         binding.tfResetPwPw.editText?.addTextChangedListener { validateFields() }
         binding.tfResetPwChkPw.editText?.addTextChangedListener { validateFields() }

@@ -70,7 +70,6 @@ class FindPasswordViewModel @Inject constructor(
             _errorMessage.value = "인증번호가 올바르지 않습니다."
         }
     }
-
     private fun generateVerificationCode(): String {
         return Random.nextInt(100000, 999999).toString()
     }

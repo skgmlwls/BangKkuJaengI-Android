@@ -60,6 +60,11 @@ class FindIdFragment : Fragment() {
 
 
     private fun setupListeners() {
+        // 빈 공간 터치 시 키보드 숨김 처리
+        binding.root.setOnClickListener {
+            binding.root.hideKeyboard()
+        }
+
         // 아이디 찾기 버튼 클릭
         binding.btnFindIdFindId.setOnClickListener {
             binding.root.hideKeyboard()
@@ -78,10 +83,6 @@ class FindIdFragment : Fragment() {
             requireActivity().finish()
         }
 
-        // 빈 공간 터치 시 키보드 숨김 처리
-        binding.root.setOnClickListener {
-            binding.root.hideKeyboard()
-        }
     }
 
     override fun onDestroyView() {
