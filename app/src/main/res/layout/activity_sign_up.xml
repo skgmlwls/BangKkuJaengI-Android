@@ -182,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:backgroundTint="#332828"
-                        android:text="인증 요청" />
+                        android:text="인증요청" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -213,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:backgroundTint="#332828"
-                        android:text="인증 확인" />
+                        android:text="인증확인" />
                 </LinearLayout>
 
                 <Button

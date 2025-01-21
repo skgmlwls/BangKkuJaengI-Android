@@ -90,4 +90,52 @@ class MemberRepository @Inject constructor(
             null to null // 오류 발생 시
         }
     }
+
+    // 이름과 전화번호 확인
+    suspend fun findMemberIdByNameAndPhone(name: String, phoneNumber: String): String? {
+        return try {
+            val snapshot = firestore
+                .collection("Member")
+                .whereEqualTo("memberName", name)
+                .whereEqualTo("memberPhoneNumber", phoneNumber)
+                .get()
+                .await()
+
+            if (snapshot.isEmpty) null else snapshot.documents.first().getString("memberId")
+        } catch (e: Exception) {
+            null // 예외 발생 시 null 반환
+        }
+    }
+
+    // id와 전화번호 확인
+    suspend fun validateMemberIdAndPhone(memberId: String, phoneNumber: String): Boolean {
+        return try {
+            val snapshot = firestore
+                .collection("Member")
+                .whereEqualTo("memberId", memberId)
+                .whereEqualTo("memberPhoneNumber", phoneNumber)
+                .get()
+                .await()
+
+            !snapshot.isEmpty
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // 비밀번호 업데이트
+    suspend fun updatePassword(memberId: String, newPassword: String): Boolean {
+        return try {
+            Log.d("test100", "Updating password for memberId: $memberId")
+            val userRef = firestore.collection("Member").document(memberId)
+            userRef.update("memberPassword", newPassword).await()
+            true
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error updating password: ${e.message}")
+            false
+        }
+    }
+
+
+
 }
