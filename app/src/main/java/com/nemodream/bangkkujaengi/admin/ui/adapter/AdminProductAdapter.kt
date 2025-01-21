@@ -41,7 +41,7 @@ class AdminProductAdapter(
 
         fun bind(product: Product) {
             with(binding) {
-                ivAdminProductImage.loadImage(product.images.first())
+                ivAdminProductImage.loadImage(product.images.firstOrNull() ?: "")
                 tvAdminProductTitle.text = product.productName
                 tvAdminProductCount.text = "재고 ${product.productCount}"
             }
