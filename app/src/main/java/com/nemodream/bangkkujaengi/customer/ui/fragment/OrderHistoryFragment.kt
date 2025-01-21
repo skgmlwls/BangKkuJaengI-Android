@@ -65,6 +65,7 @@ class OrderHistoryFragment : Fragment() {
 
             fragmentOrderHistoryBinding.apply {
                 rvOrderHistoryList.adapter = OrderHistoryAdapter(
+                    this@OrderHistoryFragment,
                     orderHistoryViewModel
                 )
                 rvOrderHistoryList.layoutManager = LinearLayoutManager(context)
