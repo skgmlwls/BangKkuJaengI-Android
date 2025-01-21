@@ -19,6 +19,9 @@ class FindPasswordViewModel @Inject constructor(
     private val _isVerified = MutableLiveData<Boolean>()
     val isVerified: LiveData<Boolean> = _isVerified
 
+    private val _isVerificationCodeSent = MutableLiveData<Boolean>()
+    val isVerificationCodeSent: LiveData<Boolean> = _isVerificationCodeSent
+
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
@@ -33,17 +36,26 @@ class FindPasswordViewModel @Inject constructor(
     fun requestVerification(id: String, phoneNumber: String) {
         viewModelScope.launch {
             try {
-                val isValid = memberRepository.validateMemberIdAndPhone(id, phoneNumber)
-                if (isValid) {
+                val isValidId = memberRepository.getUserById(id).first != null
+                val isValidPhone = memberRepository.validateMemberIdAndPhone(id, phoneNumber)
+
+                if (!isValidId) {
+                    _errorMessage.value = "존재하지 않는 회원입니다."
+                    _isVerificationCodeSent.value = false
+                } else if (!isValidPhone) {
+                    _errorMessage.value = "회원 정보와 일치하지 않습니다."
+                    _isVerificationCodeSent.value = false
+                } else {
                     _memberId.value = id // memberId 설정
                     generatedCode = generateVerificationCode()
                     sendVerificationCodeToPhone(phoneNumber, generatedCode!!)
-                    _errorMessage.value = "인증번호가 발송되었습니다."
-                } else {
-                    _errorMessage.value = "입력한 정보와 일치하는 데이터가 없습니다."
+                    _isVerificationCodeSent.value = true
+                    _errorMessage.value = null
+                    _successMessage.value = "인증번호가 발송되었습니다."
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "오류가 발생했습니다. 다시 시도해주세요."
+                _isVerificationCodeSent.value = false
             }
         }
     }
@@ -65,7 +77,6 @@ class FindPasswordViewModel @Inject constructor(
 
     private fun sendVerificationCodeToPhone(phoneNumber: String, code: String) {
         // 실제로 SMS API를 호출하거나 테스트용 메시지를 출력
-        Log.d("test100", "인증번호 [$code]가 번호 [$phoneNumber]로 발송되었습니다.")
-        println("인증번호 [$code]가 번호 [$phoneNumber]로 발송되었습니다.")
+        Log.d("FindPasswordViewModel", "인증번호 [$code]가 번호 [$phoneNumber]로 발송되었습니다.")
     }
 }
