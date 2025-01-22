@@ -101,7 +101,7 @@
         android:id="@+id/orderHistoryFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragment"
         android:label="fragment_order_history"
-        tools:layout="@layout/fragment_order_history" >
+        tools:layout="@layout/fragment_order_history">
 
         <action
             android:id="@+id/action_orderHistoryFragment_to_navigation_order_detail"
@@ -118,7 +118,7 @@
             app:argType="string" />
         <argument
             android:name="purchaseDateTime"
-            app:argType="string"/>
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
@@ -146,8 +146,7 @@
 
         <action
             android:id="@+id/popUpto_paymentCompletedFragment_to_HomeFragment"
-            app:popUpTo="@id/navigation_home"
-            />
+            app:popUpTo="@id/navigation_home" />
     </fragment>
 
     <dialog
@@ -181,4 +180,10 @@
         android:id="@+id/socialWritePictureFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SocialWritePictureFragment"
         android:label="Social Write Picture Fragment" />
+
+    <fragment
+        android:id="@+id/navigation_my_page"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyPageFragment"
+        android:label="MyPageFragment"
+        tools:layout="@layout/fragment_my_page" />
 </navigation>
