@@ -21,6 +21,7 @@ class SocialGalleryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(photoUri: Uri) {
+            // Glide.with(context) 도 가능하다. 생성자로 context 받아왔기 때문이다.
             Glide.with(binding.root.context)
                 .load(photoUri)
                 .into(binding.ivPhoto)
