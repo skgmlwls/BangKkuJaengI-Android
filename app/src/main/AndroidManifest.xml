@@ -8,6 +8,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--갤러리 사진 가져오기 권한-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -15,6 +16,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+
 
     <application
         android:name=".App"
