@@ -17,11 +17,7 @@ class AdminProductViewModel @Inject constructor(
     private val _products = MutableLiveData<List<Product>>(emptyList())
     val products: LiveData<List<Product>> = _products
 
-    init {
-        loadProducts()
-    }
-
-    private fun loadProducts() = viewModelScope.launch {
+    fun loadProducts() = viewModelScope.launch {
         runCatching {
             adminProductRepository.getProducts()
         }.onSuccess { products ->

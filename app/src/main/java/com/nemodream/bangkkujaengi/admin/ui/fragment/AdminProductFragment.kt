@@ -48,6 +48,7 @@ class AdminProductFragment : Fragment(), OnProductClickListener {
     }
 
     private fun setupUI() {
+        viewModel.loadProducts()
         with(binding) {
             rvAdminProductList.adapter = productAdapter
         }
@@ -75,7 +76,6 @@ class AdminProductFragment : Fragment(), OnProductClickListener {
     }
 
     override fun onProductClick(product: Product, view: View) {
-        // view는 이제 메뉴 버튼이 됩니다
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.admin_product_menu)
 
