@@ -55,15 +55,9 @@ class SocialWritePictureFragment : Fragment() {
         }
     }
 
-    private fun setupCarousel() {
-        binding.rvSocialWritePictureSelectedPhotos.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = SocialCarouselAdapter(selectedPhotos)
-        }
-    }
-
+    // 선택된 사진 리스트를 업데이트
     private fun updateSelectedPhotos(photos: List<Uri>) {
-        selectedPhotos.clear()
+        selectedPhotos.clear() // 이거 없애면 캐러셀에 사진 추가 할 수 있음
         selectedPhotos.addAll(photos)
 
         // Placeholder 숨기기 및 Carousel 표시
@@ -72,5 +66,12 @@ class SocialWritePictureFragment : Fragment() {
         binding.rvSocialWritePictureSelectedPhotos.visibility = View.VISIBLE
 
         binding.rvSocialWritePictureSelectedPhotos.adapter?.notifyDataSetChanged()
+    }
+
+    private fun setupCarousel() {
+        binding.rvSocialWritePictureSelectedPhotos.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = SocialCarouselAdapter(selectedPhotos)
+        }
     }
 }
