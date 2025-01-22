@@ -1,41 +1,61 @@
 package com.nemodream.bangkkujaengi.customer.ui.adapter
 
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.databinding.ItemSocialGalleryPhotoBinding
 
-class SocialGalleryAdapter(private val photoList: List<Uri>) :
-    RecyclerView.Adapter<SocialGalleryAdapter.SocialGalleryViewHolder>() {
+class SocialGalleryAdapter(
+    private val photoList: List<Uri>,
+    private val context: Context // Context를 어댑터에 전달받음
+) : RecyclerView.Adapter<SocialGalleryAdapter.SocialGalleryViewHolder>() {
+
+    private val selectedPhotos = mutableListOf<Uri>() // 선택된 사진들을 저장하는 리스트
+    private val maxSelectionLimit = 10 // 최대 선택 가능 수
 
     inner class SocialGalleryViewHolder(private val binding: ItemSocialGalleryPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        // photoUri : 표시할 이미지의 URI
         fun bind(photoUri: Uri) {
-            // Glide 라이브러리 : 이미지를 ImageView에 비동기적으로 로드
             Glide.with(binding.root.context)
-                // photoUri를 통해 이미지를 로드
                 .load(photoUri)
-                // 이미지를 ivPhoto에 표시
                 .into(binding.ivPhoto)
 
-            // 사진 클릭 이벤트
+            // 선택 동작 처리
+            updateSelectionState(photoUri)
+
             binding.root.setOnClickListener {
-                val isSelected = binding.selectionCircle.isSelected
-                binding.selectionCircle.isSelected = !isSelected // 선택 상태 토글
+                if (selectedPhotos.contains(photoUri)) {
+                    // 이미 선택된 경우 선택 해제
+                    selectedPhotos.remove(photoUri)
+                } else {
+                    if (selectedPhotos.size >= maxSelectionLimit) {
+                        // 선택 가능 수 초과 시 Toast 메시지 표시
+                        Toast.makeText(context, "사진은 10개까지 선택 가능합니다", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    // 선택 추가
+                    selectedPhotos.add(photoUri)
+                }
+                // 선택 상태 갱신
+                updateSelectionState(photoUri)
             }
+        }
+
+        private fun updateSelectionState(photoUri: Uri) {
+            val isSelected = selectedPhotos.contains(photoUri)
+            binding.selectionCircle.isSelected = isSelected // 선택 상태 반영
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SocialGalleryViewHolder {
         val binding = ItemSocialGalleryPhotoBinding.inflate(
             LayoutInflater.from(parent.context),
-            // RecyclerView의 부모 뷰
             parent,
-            // 루트 뷰를 즉시 부모 뷰에 추가하지 않는다
             false
         )
         return SocialGalleryViewHolder(binding)
@@ -46,4 +66,6 @@ class SocialGalleryAdapter(private val photoList: List<Uri>) :
     }
 
     override fun getItemCount(): Int = photoList.size
+
+    fun getSelectedPhotos(): List<Uri> = selectedPhotos // 선택된 사진 리스트 반환
 }
