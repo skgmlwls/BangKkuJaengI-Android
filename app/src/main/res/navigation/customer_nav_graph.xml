@@ -109,7 +109,25 @@
         android:id="@+id/orderHistoryFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragment"
         android:label="fragment_order_history"
-        tools:layout="@layout/fragment_order_history" />
+        tools:layout="@layout/fragment_order_history" >
+
+        <action
+            android:id="@+id/action_orderHistoryFragment_to_navigation_order_detail"
+            app:destination="@id/orderDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.OrderDetailsFragment"
+        android:label="fragment_order_details"
+        tools:layout="@layout/fragment_order_details">
+
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="purchaseDateTime"
+            app:argType="string"/>
+    </fragment>
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment"

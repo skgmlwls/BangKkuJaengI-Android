@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 data class Purchase(
     val memberId: String = "",
     val productTitle : String = "",
+    val color : String = "",
     val images : String = "",
     val productId : String = "",
     val productCost : Int = 0,
@@ -16,6 +17,8 @@ data class Purchase(
     val purchaseInvoiceNumber : Long  = 0,
     val purchaseQuantity : Int = 0,
     val Delete: Boolean = false,
+    val purchaseDateTime: String = "",
+    val deliveryCost: Int = 0,
 )
 
 enum class PurchaseState() {

@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PaymentFragment : Fragment() {
@@ -131,12 +132,17 @@ class PaymentFragment : Fragment() {
                         val tot_price = ((originalPrice * (1 - (discountRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
                         ////////////////////////////////////////////////////////////////////////////
 
+                        // Timestamp를 Date로 변환 후 포맷 적용
+                        val timeStampFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+                        val formattedTime = timeStampFormat.format(time_stamp.toDate())
+
                         val purchase = Purchase(
                             memberId = user_id,
                             productTitle = paymentViewModel.payment_product_data_list.value!![position].productName,
+                            color = it.color,
                             images = paymentViewModel.payment_product_data_list.value!![position].images[0],
                             productId = it.productId,
-                            productCost = paymentViewModel.payment_product_data_list.value!![position].price,
+                            productCost = paymentViewModel.payment_product_data_list.value!![position].price * it.quantity,
                             couponSalePrice = paymentViewModel.tv_payment_coupon_sale_price_text.value!!,
                             saleRate = paymentViewModel.payment_product_data_list.value!![position].saleRate,
                             totPrice = tot_price,
@@ -144,7 +150,9 @@ class PaymentFragment : Fragment() {
                             purchaseState = PurchaseState.READY_TO_SHIP.name,
                             purchaseInvoiceNumber = 0,
                             purchaseQuantity = it.quantity,
-                            Delete = false
+                            Delete = false,
+                            purchaseDateTime = formattedTime,
+                            deliveryCost = paymentViewModel.tv_payment_tot_delivery_cost_text.value!!
                         )
 
                         purchase_product.add(purchase)
@@ -271,6 +279,7 @@ class PaymentFragment : Fragment() {
         }
     }
 
+    // 쿠폰 사용하기 버튼
     fun setting_button() {
 
         fragmentPaymentBinding.apply {

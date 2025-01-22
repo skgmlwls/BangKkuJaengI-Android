@@ -111,12 +111,12 @@ class PaymentRepository {
                         couponDocumentIds.addAll(it)
                     }
                 }
-
+                Log.d("FirestoreError2", "couponDocumentIds: $couponDocumentIds")
                 // 결과 반환
                 couponDocumentIds
             } catch (e: Exception) {
                 // 예외 발생 시 로그 출력 및 빈 리스트 반환
-                Log.e("FirestoreError", "Error fetching couponDocumentId: ${e.message}")
+                Log.e("FirestoreError2", "Error fetching couponDocumentId: ${e.message}")
                 emptyList()
             }
         }
@@ -130,7 +130,7 @@ class PaymentRepository {
             val couponList = mutableListOf<Coupon>()
 
             try {
-                val result = collectionReference.whereEqualTo("isActivity", true).get().await()
+                val result = collectionReference.whereEqualTo("activity", true).get().await()
                 Log.d("coupon", "Fetched documents: ${result.documents.size}")
 
                 for (document in result.documents) {
