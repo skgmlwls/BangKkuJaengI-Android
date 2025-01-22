@@ -13,7 +13,6 @@ import com.nemodream.bangkkujaengi.utils.toFormattedDate
 class AdminCouponAdapter(
     private val onCouponDeleteListener: OnCouponDeleteListener,
 ): ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
-class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponViewHolder>(CouponDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdminCouponViewHolder {
         return AdminCouponViewHolder(
@@ -39,13 +38,12 @@ class AdminCouponAdapter: ListAdapter<Coupon, AdminCouponAdapter.AdminCouponView
                 onCouponDelete(adapterPosition)
             }
         }
-    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(coupon: Coupon) {
             with(binding) {
                 tvRowPaymentCouponTitle.text = coupon.title
-                tvRowPaymentCouponPrice.text = if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
-                tvRowPaymentCouponPrice.text = coupon.salePrice.toCommaString()
+                tvRowPaymentCouponPrice.text =
+                    if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
                 tvRowPaymentCouponCondition.text = coupon.conditionDescription
                 tvRowPaymentCouponPeriod.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
             }

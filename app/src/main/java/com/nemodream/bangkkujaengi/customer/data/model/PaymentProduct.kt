@@ -7,6 +7,7 @@ data class PaymentProduct (
 
 data class PaymentItems(
     var productId: String = "",
+    var color: String = "",
     var quantity: Int = 0,
     var checked: Boolean = false
 )

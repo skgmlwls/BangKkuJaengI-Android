@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155452610614",
+    "project_id": "nemodream-test",
+    "storage_bucket": "nemodream-test.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155452610614:android:e6504cd1562acdceaca097",
+        "android_client_info": {
+          "package_name": "com.nemodream.bangkkujaengi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC388gym7JTLed6SIFAO3mLZfCRyWUxLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
