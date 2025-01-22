@@ -57,6 +57,7 @@ class AdminProductRepository @Inject constructor(
      * Firebase Firestore에서 상품 데이터를 모두 가져온다.
      */
     suspend fun getProducts(): List<Product> = firestore.collection("Product")
+        .whereEqualTo("delete", false)
         .get()
         .await()
         .map { document ->
@@ -67,7 +68,10 @@ class AdminProductRepository @Inject constructor(
 
     // productId를 받아 해당 상품을 삭제한다.
     fun deleteProduct(productId: String) {
-        firestore.collection("Product").document(productId).delete()
+        // 해당 productId를 찾아 delete를 true로 변경
+        firestore.collection("Product")
+            .document(productId)
+            .update("delete", true)
     }
 
     suspend fun updateProduct(product: Product, newImageUris: List<Uri>): Boolean {

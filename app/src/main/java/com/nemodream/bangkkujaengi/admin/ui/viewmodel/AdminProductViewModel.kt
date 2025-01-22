@@ -32,7 +32,9 @@ class AdminProductViewModel @Inject constructor(
             adminProductRepository.deleteProduct(productId)
         }.onSuccess {
             // 삭제된 데이터를 리스트에서 수정한다.
-            _products.value = _products.value?.filter { it.productId != productId }
+            // delete가 true 만 필터링
+            val updatedProducts = _products.value?.filter { it.productId != productId } ?: emptyList()
+            _products.value = updatedProducts
         }.onFailure {
             it.printStackTrace()
         }
