@@ -10,9 +10,11 @@
         android:id="@+id/cv_row_payment_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#FFFFFF"
         android:clickable="true"
         android:checkable="true"
+        android:layout_margin="10dp"
+        android:backgroundTint="#FFFFFF"
+        app:cardElevation="5dp"
         >
 
         <LinearLayout

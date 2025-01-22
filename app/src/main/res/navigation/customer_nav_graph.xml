@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/orderHistoryFragment">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -119,7 +119,15 @@
         android:id="@+id/orderDetailsFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.OrderDetailsFragment"
         android:label="fragment_order_details"
-        tools:layout="@layout/fragment_order_details" />
+        tools:layout="@layout/fragment_order_details">
+
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="purchaseDateTime"
+            app:argType="string"/>
+    </fragment>
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PaymentFragment"

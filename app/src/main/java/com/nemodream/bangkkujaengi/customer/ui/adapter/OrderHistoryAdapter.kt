@@ -47,7 +47,8 @@ class OrderHistoryAdapter(
             orderHistoryViewModel.order_history_date_list.value!![position].toString()
         )
 
-        setting_btn_order_history_details(holder.rowOrderHistoryBinding)
+        // 주문 상세 버튼 이벤트 세팅
+        setting_btn_order_history_details(holder.rowOrderHistoryBinding, orderHistoryViewModel, position)
 
         // 날짜에 맞는 항목을 따로 리스트에 넣는 함수
         setting_order_history_prodcut_list_by_date(orderHistoryViewModel, orderHistoryProductViewModel, position)
@@ -60,9 +61,16 @@ class OrderHistoryAdapter(
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 주문 상세 버튼 이벤트 세팅
-    fun setting_btn_order_history_details(rowOrderHistoryBinding : RowOrderHistoryBinding) {
+    fun setting_btn_order_history_details(
+        rowOrderHistoryBinding : RowOrderHistoryBinding,
+        orderHistoryViewModel: OrderHistoryViewModel,
+        position: Int
+    ) {
         rowOrderHistoryBinding.btnOrderHistoryDetails.setOnClickListener {
-            val action = OrderHistoryFragmentDirections.actionOrderHistoryFragmentToNavigationOrderDetail()
+            val action = OrderHistoryFragmentDirections.actionOrderHistoryFragmentToNavigationOrderDetail(
+                orderHistoryViewModel.order_history_product_list.value!![position].memberId,
+                orderHistoryViewModel.order_history_date_list.value!![position].toString()
+            )
             findNavController(orderHistoryFragment).navigate(action)
         }
     }

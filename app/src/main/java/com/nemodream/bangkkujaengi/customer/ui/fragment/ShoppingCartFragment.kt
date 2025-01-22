@@ -97,7 +97,7 @@ class ShoppingCartFragment : Fragment() {
             val formattedPrice = "+ " + NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
             fragmentShoppingCartBinding.tvShoppingCartTotDeliveryCost.text = formattedPrice
         }
-        
+
         // 총 합 금액  업데이트
         shoppingCartViewModel.tv_shopping_cart_tot_sum_price_text.observe(viewLifecycleOwner){
             val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
@@ -109,12 +109,12 @@ class ShoppingCartFragment : Fragment() {
 
     // 버튼 기능 메소드 - 구매 하기
     fun fn_btn_shopping_cart_buy() {
-        
+
         // 구매하기 버튼 텍스트 옵저버
         shoppingCartViewModel.btn_shopping_cart_buy_text.observe(viewLifecycleOwner){
             fragmentShoppingCartBinding.btnShoppingCartBuy.text = it
         }
-        
+
         fragmentShoppingCartBinding.btnShoppingCartBuy.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 val work1 = async(Dispatchers.IO) {
@@ -134,6 +134,7 @@ class ShoppingCartFragment : Fragment() {
         }
     }
 
+    // 데이터 추가 테스트 버튼
     fun fn_test_button() {
         fragmentShoppingCartBinding.btnShoppingCartItemAdd.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
@@ -191,7 +192,7 @@ class ShoppingCartFragment : Fragment() {
                 }
             }
 
-            Log.d("asd", "${cart_user_id}")
+            Log.d("asd", "${cart_data_list}")
 
             // 장바구니 데이터에서 가져온 상품 document_id를 통해 상품정보를 가져온다
             val work2 = async(Dispatchers.IO) {
