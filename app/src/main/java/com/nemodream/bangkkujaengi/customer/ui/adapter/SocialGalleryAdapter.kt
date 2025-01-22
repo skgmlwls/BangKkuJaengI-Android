@@ -15,7 +15,6 @@ class SocialGalleryAdapter(
 ) : RecyclerView.Adapter<SocialGalleryAdapter.SocialGalleryViewHolder>() {
 
     private val selectedPhotos = mutableListOf<Uri>() // 선택된 사진들을 저장하는 리스트
-    private val maxSelectionLimit = 10 // 최대 선택 가능 수
 
     inner class SocialGalleryViewHolder(private val binding: ItemSocialGalleryPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -34,7 +33,7 @@ class SocialGalleryAdapter(
                     // 이미 선택된 경우 선택 해제
                     selectedPhotos.remove(photoUri)
                 } else {
-                    if (selectedPhotos.size >= maxSelectionLimit) {
+                    if (selectedPhotos.size >= 10) {
                         // 선택 가능 수 초과 시 Toast 메시지 표시
                         Toast.makeText(context, "사진은 10개까지 선택 가능합니다", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener

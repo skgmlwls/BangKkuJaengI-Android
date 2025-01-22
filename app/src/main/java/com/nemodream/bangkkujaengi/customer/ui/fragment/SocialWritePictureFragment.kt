@@ -1,13 +1,15 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
-import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingAllBinding
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
 
 class SocialWritePictureFragment : Fragment() {
@@ -15,35 +17,60 @@ class SocialWritePictureFragment : Fragment() {
     private var _binding: FragmentSocialWritePictureBinding? = null
     private val binding get() = _binding!!
 
-    // 프래그먼트의 뷰를 생성하는 메서드
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    private val selectedPhotos = mutableListOf<Uri>()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSocialWritePictureBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    // 뷰가 생성된 후 초기화 작업을 수행하는 메서드
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        setupCarousel()
+
+        // BottomSheet에서 전달된 선택된 사진 데이터를 수신
+        childFragmentManager.setFragmentResultListener("selectedPhotos", this) { _, bundle ->
+            val photos = bundle.getParcelableArrayList<Uri>("photos")
+            if (!photos.isNullOrEmpty()) {
+                updateSelectedPhotos(photos)
+            }
+        }
     }
 
-    // 프래그먼트가 파괴될 때 Binding 해제
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    // 리스너 설정
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
                 findNavController().popBackStack(R.id.navigation_social, false)
             }
             btnAddPicture.setOnClickListener {
-                val socialWritePictureBottomSheetFragment = SocialWritePictureBottomSheetFragment()
-                socialWritePictureBottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
+                val bottomSheetFragment = SocialWritePictureBottomSheetFragment()
+                bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
             }
         }
+    }
+
+    private fun setupCarousel() {
+        binding.rvSocialWritePictureSelectedPhotos.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = SocialCarouselAdapter(selectedPhotos)
+        }
+    }
+
+    private fun updateSelectedPhotos(photos: List<Uri>) {
+        selectedPhotos.clear()
+        selectedPhotos.addAll(photos)
+
+        // Placeholder 숨기기 및 Carousel 표시
+        binding.viewSocialWritePicturePlaceholder.visibility = View.GONE
+        binding.tvSocialWritePicturePlaceholder.visibility = View.GONE
+        binding.rvSocialWritePictureSelectedPhotos.visibility = View.VISIBLE
+
+        binding.rvSocialWritePictureSelectedPhotos.adapter?.notifyDataSetChanged()
     }
 }
