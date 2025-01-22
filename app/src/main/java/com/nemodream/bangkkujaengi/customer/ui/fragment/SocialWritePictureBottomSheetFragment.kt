@@ -74,6 +74,9 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
         binding.btnCompleteSelection.setOnClickListener {
             val selectedPhotos = adapter.getSelectedPhotos()
             if (selectedPhotos.isNotEmpty()) {
+                // setFragmentResult(requestKey: String, result: Bundle)
+                // requestKey : 결과를 식별하는 고유 키
+                // result : 전달할 데이터가 담긴 Bundle. key-value 형태로 담아서 전달.
                 parentFragmentManager.setFragmentResult(
                     "selectedPhotos",
                     Bundle().apply { putParcelableArrayList("photos", ArrayList(selectedPhotos)) }
