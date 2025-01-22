@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Product
@@ -437,6 +438,14 @@ class ShoppingCartAdapter(
                 work1.await()
 
                 rowShoppingCartViewModel.cb_row_shopping_cart_product_select_checked.value = false
+
+                rowShoppingCartViewModel.tv_row_shopping_cart_product_sale_percent.value = 0
+                // 원가 (할인 전 가격)
+                rowShoppingCartViewModel.tv_row_shopping_cart_product_origin_price.value = 0
+                // 판매가 (할인 후 가격)
+                rowShoppingCartViewModel.tv_row_shopping_cart_product_sale_price.value = 0
+                // 수량
+                rowShoppingCartViewModel.tv_row_shopping_cart_product_cnt.value = 0
 
                 shoppingCartFragment.refresh_recyclerview_shopping_cart()
             }

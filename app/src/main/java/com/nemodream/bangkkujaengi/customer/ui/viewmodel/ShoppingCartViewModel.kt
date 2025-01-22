@@ -17,6 +17,9 @@ class ShoppingCartViewModel() : ViewModel() {
     // 구매하기 버튼 텍스트
     var btn_shopping_cart_buy_text = MutableLiveData<String>("구매하기")
 
+    // 체크된 상품 갯수
+    var checked_cnt = MutableLiveData<Int>(0)
+
     // 총 상품 가격
     var tot_price = 0
     // 총 할인 가격
