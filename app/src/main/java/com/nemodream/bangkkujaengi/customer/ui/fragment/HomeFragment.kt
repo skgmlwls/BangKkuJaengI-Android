@@ -97,12 +97,19 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
         }
 
         viewModel.promotionLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.promotionShimmerLayout.root.visibility = View.VISIBLE
-                binding.rvPromotion.visibility = View.GONE
-            } else {
-                binding.promotionShimmerLayout.root.visibility = View.GONE
-                binding.rvPromotion.visibility = View.VISIBLE
+            with(binding) {
+                when (isLoading) {
+                    true -> {
+                        shimmerLayout.startShimmer()
+                        promotionShimmerLayout.root.visibility = View.VISIBLE
+                        rvPromotion.visibility = View.GONE
+                    }
+                    false -> {
+                        shimmerLayout.startShimmer()
+                        promotionShimmerLayout.root.visibility = View.GONE
+                        rvPromotion.visibility = View.VISIBLE
+                    }
+                }
             }
         }
 
