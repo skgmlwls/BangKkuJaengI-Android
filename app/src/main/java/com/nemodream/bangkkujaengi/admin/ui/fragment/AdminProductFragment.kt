@@ -40,8 +40,6 @@ class AdminProductFragment : Fragment(), OnProductClickListener {
         observeViewModel()
     }
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -72,6 +70,11 @@ class AdminProductFragment : Fragment(), OnProductClickListener {
     private fun observeViewModel() {
         viewModel.products.observe(viewLifecycleOwner) { products ->
             productAdapter.submitList(products)
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.adminProductProgress.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.rvAdminProductList.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 

@@ -19,16 +19,24 @@ class AdminProductViewModel @Inject constructor(
     private val _products = MutableLiveData<List<Product>>(emptyList())
     val products: LiveData<List<Product>> = _products
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun loadProducts() = viewModelScope.launch {
+        _isLoading.value = true
         runCatching {
-            val products = adminProductRepository.getProducts()
-            val productsWithUrls = products.map { product ->
+            adminProductRepository.getProducts().map { product ->
                 val imageUrls = product.images.map { path ->
                     adminProductRepository.getImageUrl(path)
                 }
                 product.copy(images = imageUrls)
             }
+        }.onSuccess { productsWithUrls ->
             _products.value = productsWithUrls
+            _isLoading.value = false
+        }.onFailure {
+            it.printStackTrace()
+            _isLoading.value = false
         }
     }
 
