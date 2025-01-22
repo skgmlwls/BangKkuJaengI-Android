@@ -24,7 +24,8 @@ class SocialGalleryAdapter(private val photoList: List<Uri>) :
 
             // 사진 클릭 이벤트
             binding.root.setOnClickListener {
-                // 선택 동작 처리 (예: 선택된 사진 강조 표시)
+                val isSelected = binding.selectionCircle.isSelected
+                binding.selectionCircle.isSelected = !isSelected // 선택 상태 토글
             }
         }
     }
