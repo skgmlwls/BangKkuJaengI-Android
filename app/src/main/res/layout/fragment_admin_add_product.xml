@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="20dp"
-            android:hint="상품명"
+            android:hint="상품설명"
             app:endIconMode="clear_text"
             app:expandedHintEnabled="true"
             app:hintAnimationEnabled="false"
@@ -119,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:minHeight="120dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
