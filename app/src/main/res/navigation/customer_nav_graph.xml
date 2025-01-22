@@ -171,4 +171,5 @@
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyPageFragment"
         android:label="MyPageFragment"
         tools:layout="@layout/fragment_my_page" />
+
 </navigation>
