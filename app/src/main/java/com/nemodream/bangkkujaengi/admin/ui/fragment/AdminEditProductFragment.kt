@@ -35,7 +35,7 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
     private val binding get() = _binding!!
 
     private val args: AdminEditProductFragmentArgs by navArgs()
-    private val product by lazy { args.product }
+    private val productId by lazy { args.product.productId }
 
     private val viewModel: AdminEditProductViewModel by viewModels()
     private val imageAdapter: AdminProductImageAdapter by lazy { AdminProductImageAdapter(this) }
@@ -68,8 +68,8 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadProduct(productId)
         setupUI()
-        viewModel.initializeProductData(product)
         setupListeners()
         setupTextChangeListeners()
         observeViewModel()
@@ -80,15 +80,9 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
             rvAdminProductEditImage.adapter = imageAdapter
             rvProductEditColor.adapter = colorAdapter
             tfAdminProductEditDiscountPrice.editText?.isEnabled = false
-
-            tfAdminProductEditTitle.editText?.setText(product.productName)
-            tfAdminProductEditDescription.editText?.setText(product.description)
-            tfAdminProductEditCategory.editText?.setText(product.category.getTabTitle())
-            tfAdminProductEditSubCategory.editText?.setText(product.subCategory.title)
-            tfAdminProductEditPrice.editText?.setText(product.price.toString())
-            tfAdminProductEditDiscountRate.editText?.setText(product.saleRate.toString())
-            tfAdminProductEditCount.editText?.setText(product.productCount.toString())
         }
+
+
     }
 
     private fun setupListeners() {
@@ -104,7 +98,6 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
             btnProductEditSubmit.setOnClickListener {
                 btnProductEditSubmit.isEnabled = false
                 viewModel.updateProduct(
-                    productId = product.productId,
                     title = tfAdminProductEditTitle.editText?.text.toString(),
                     description = tfAdminProductEditDescription.editText?.text.toString(),
                     price = tfAdminProductEditPrice.editText?.text.toString(),
@@ -187,6 +180,18 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
                         requireContext().showToast("상품 수정에 실패했습니다")
                         binding.btnProductEditSubmit.isEnabled = true
                     }
+                }
+            }
+
+            viewModel.product.observe(viewLifecycleOwner) { product ->
+                with(binding) {
+                    tfAdminProductEditTitle.editText?.setText(product.productName)
+                    tfAdminProductEditDescription.editText?.setText(product.description)
+                    tfAdminProductEditCategory.editText?.setText(product.category.getTabTitle())
+                    tfAdminProductEditSubCategory.editText?.setText(product.subCategory.title)
+                    tfAdminProductEditPrice.editText?.setText(product.price.toString())
+                    tfAdminProductEditDiscountRate.editText?.setText(product.saleRate.toString())
+                    tfAdminProductEditCount.editText?.setText(product.productCount.toString())
                 }
             }
         }

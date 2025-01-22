@@ -47,7 +47,7 @@ class AdminProductRepository @Inject constructor(
     /*
     * Firebase Firestore에서 데이터를 가져혼다.
     * */
-    private suspend fun getImageUrl(imagePath: String) = storage.reference
+    suspend fun getImageUrl(imagePath: String) = storage.reference
         .child(imagePath)
         .downloadUrl
         .await()
@@ -61,9 +61,7 @@ class AdminProductRepository @Inject constructor(
         .get()
         .await()
         .map { document ->
-            val product = document.toObject(Product::class.java)
-            val imageUrls = product.images.map { path -> getImageUrl(path) }
-            product.copy(images = imageUrls)
+            document.toObject(Product::class.java)  // 상대 경로만 포함된 Product 반환
         }
 
     // productId를 받아 해당 상품을 삭제한다.
@@ -102,4 +100,12 @@ class AdminProductRepository @Inject constructor(
             false
         }
     }
+
+    suspend fun getProduct(productId: String): Product =
+        firestore.collection("Product")
+            .document(productId)
+            .get()
+            .await()
+            .toObject(Product::class.java)
+            ?: throw IllegalStateException("Product not found")
 }

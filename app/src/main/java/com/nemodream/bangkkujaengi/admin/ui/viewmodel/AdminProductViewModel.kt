@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.admin.data.repository.AdminProductRepository
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,11 +21,14 @@ class AdminProductViewModel @Inject constructor(
 
     fun loadProducts() = viewModelScope.launch {
         runCatching {
-            adminProductRepository.getProducts()
-        }.onSuccess { products ->
-            _products.value = products
-        }.onFailure {
-            it.printStackTrace()
+            val products = adminProductRepository.getProducts()
+            val productsWithUrls = products.map { product ->
+                val imageUrls = product.images.map { path ->
+                    adminProductRepository.getImageUrl(path)
+                }
+                product.copy(images = imageUrls)
+            }
+            _products.value = productsWithUrls
         }
     }
 

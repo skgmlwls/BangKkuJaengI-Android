@@ -20,6 +20,9 @@ import javax.inject.Inject
 class AdminEditProductViewModel @Inject constructor(
     private val adminProductRepository: AdminProductRepository,
 ) : ViewModel() {
+    private val _product = MutableLiveData<Product>()
+    val product: LiveData<Product> = _product
+
     private val _storageImages = MutableLiveData<List<String>>(emptyList())
     private val _newImageUris = MutableLiveData<List<Uri>>(emptyList())
 
@@ -29,7 +32,7 @@ class AdminEditProductViewModel @Inject constructor(
     private val _colors = MutableLiveData<List<String>>(emptyList())
     val colors: LiveData<List<String>> = _colors
 
-    private val _isSubmitEnabled = MutableLiveData(false)
+    private val _isSubmitEnabled = MutableLiveData(true)
     val isSubmitEnabled: LiveData<Boolean> = _isSubmitEnabled
 
     private val _discountPrice = MutableLiveData("")
@@ -51,8 +54,25 @@ class AdminEditProductViewModel @Inject constructor(
 
     private val _lastValidationFields = MutableLiveData<ValidationFields>()
 
-    fun initializeProductData(product: Product) {
+    fun loadProduct(productId: String) = viewModelScope.launch {
+        runCatching {
+            adminProductRepository.getProduct(productId)
+        }.onSuccess { product ->
+            _product.value = product
+            initializeProductData(product)
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
+
+
+    private fun initializeProductData(product: Product) = viewModelScope.launch {
+        val imageUrls = product.images.map { path ->
+            Uri.parse(adminProductRepository.getImageUrl(path))
+        }
+        _displayImages.value = imageUrls
         _storageImages.value = product.images
+
         _colors.value = product.colors
         _category.value = product.category
         _subCategory.value = product.subCategory
@@ -60,8 +80,9 @@ class AdminEditProductViewModel @Inject constructor(
             product.price.toString(),
             product.saleRate.toString()
         )
-        updateDisplayImages()
+        validateCurrentFields()
     }
+
 
     fun addNewImages(newUris: List<Uri>) {
         val currentUris = _newImageUris.value?.toMutableList() ?: mutableListOf()
@@ -120,24 +141,26 @@ class AdminEditProductViewModel @Inject constructor(
     }
 
     fun updateProduct(
-        productId: String,
         title: String,
         description: String,
         price: String,
         discountRate: String,
         count: String
-    ) = viewModelScope.launch(Dispatchers.IO) {
+    ) = viewModelScope.launch {
+        val currentProduct = _product.value ?: return@launch
+
         runCatching {
-            val product = createProductData(
-                productId,
-                title,
-                description,
-                price,
-                discountRate,
-                count
+            val updatedProduct = createProductData(
+                productId = currentProduct.productId,
+                title = title,
+                description = description,
+                price = price,
+                discountRate = discountRate,
+                count = count
             )
+
             adminProductRepository.updateProduct(
-                product,
+                updatedProduct,
                 _newImageUris.value ?: emptyList()
             )
         }.onSuccess { success ->
