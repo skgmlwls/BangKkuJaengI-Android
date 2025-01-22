@@ -127,6 +127,7 @@
         <argument
             android:name="purchaseDateTime"
             app:argType="string" />
+
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
