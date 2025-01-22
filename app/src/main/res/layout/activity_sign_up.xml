@@ -79,14 +79,16 @@
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_check_id"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="13dp"
-                android:enabled="false"
+                android:enabled="true"
                 android:text="중복확인"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/button_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tf_sign_up_id"
                 app:layout_constraintTop_toBottomOf="@id/tf_sign_up_name" />
@@ -111,15 +113,16 @@
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_check_nickname"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
-                android:backgroundTint="#332828"
                 android:enabled="true"
                 android:text="중복확인"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/button_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tf_sign_up_nickname"
                 app:layout_constraintTop_toBottomOf="@id/tf_sign_up_id" />
@@ -188,14 +191,15 @@
                     android:maxLength="11" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_verification"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
-                android:backgroundTint="#332828"
                 android:text="인증요청"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/button_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tf_sign_up_phone_number"
                 app:layout_constraintTop_toBottomOf="@id/tf_sign_up_pw_check" />
@@ -221,27 +225,29 @@
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_check_verification"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
-                android:backgroundTint="#332828"
                 android:text="인증확인"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/button_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tf_sign_up_verification_code"
                 app:layout_constraintTop_toBottomOf="@id/tf_sign_up_phone_number" />
 
             <!-- Sign Up Button -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_signup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:backgroundTint="#332828"
                 android:enabled="true"
                 android:text="가입하기"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/button_background"
                 app:layout_constraintTop_toBottomOf="@id/tf_sign_up_verification_code"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />

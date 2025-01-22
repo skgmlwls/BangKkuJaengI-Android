@@ -14,10 +14,10 @@
         android:layout_width="0dp"
         android:layout_height="220dp"
         android:layout_marginTop="100dp"
-        app:srcCompat="@drawable/ic_symbol"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_symbol" />
 
     <!-- App Name -->
     <TextView
@@ -29,9 +29,9 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/img_sign_in_logo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/img_sign_in_logo" />
 
     <!-- App Description -->
     <TextView
@@ -41,9 +41,9 @@
         android:layout_marginTop="10dp"
         android:text="소개"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_app_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_app_name" />
 
     <!-- User ID Input -->
     <com.google.android.material.textfield.TextInputLayout
@@ -53,9 +53,9 @@
         android:layout_marginTop="50dp"
         android:hint="아이디"
         app:endIconMode="clear_text"
-        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_app_description"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_app_description">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -72,9 +72,9 @@
         android:layout_marginTop="10dp"
         android:hint="비밀번호"
         app:endIconMode="password_toggle"
-        app:layout_constraintTop_toBottomOf="@id/tf_sign_in_user_id"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tf_sign_in_user_id">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -123,33 +123,34 @@
         app:layout_constraintTop_toBottomOf="@id/tf_sign_in_user_pw" />
 
     <!-- Login Button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_sign_in_login"
-        style="@style/Widget.Material3.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:backgroundTint="#332728"
+        android:background="@drawable/button_background"
+        android:enabled="true"
         android:text="로그인"
-        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_ask"
+        android:textColor="@drawable/button_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_ask" />
 
     <!-- Kakao Login Button -->
     <Button
         android:id="@+id/btn_sign_in_kakao_login"
-        style="@style/Widget.Material3.Button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="10dp"
         android:backgroundTint="#FDE200"
         android:text="카카오 로그인"
         android:textColor="#332728"
+        app:cornerRadius="6dp"
         app:icon="@drawable/ic_symbol"
         app:iconTint="#332728"
-        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_login"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_login" />
 
     <!-- Guest Login -->
     <TextView
@@ -160,8 +161,8 @@
         android:text="비회원으로 이용하기"
         android:textAlignment="center"
         android:textColor="#666060"
-        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_kakao_login"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_kakao_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
