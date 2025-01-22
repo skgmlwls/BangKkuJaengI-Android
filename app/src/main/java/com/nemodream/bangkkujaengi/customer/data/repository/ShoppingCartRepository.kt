@@ -67,8 +67,8 @@ class ShoppingCartRepository {
             }
 
             product_list.forEach {
-                Log.d("test200", "getting_prodcut_by_product_document_id: ${it["product_document_id"]}")
-                Log.d("test200", "getting_prodcut_by_product_document_id: ${it["product_data"]}")
+                Log.d("cccc", "getting_prodcut_by_product_document_id: ${it["product_document_id"]}")
+                Log.d("cccc", "getting_prodcut_by_product_document_id: ${it["product_data"]}")
             }
 
             return product_list
@@ -81,7 +81,7 @@ class ShoppingCartRepository {
             val collectionReference = firestore.collection("Cart")
             val result = collectionReference.whereEqualTo("userId", user_id).get().await()
 
-            val product_id_list = listOf("hJbgpcQCZMAvXqILdPqv", "S3oCzDi7Jk82IAAgkC8g", "9taEx4u4B4EIT0kcwC6Z")
+            val product_id_list = listOf("AxXC1DVb8zsE92nyit8N", "L0JpdVtcyvEkbHMM0Oms", "NI7Dn3p4s1wgzwO7DKWq", "e4L8vI6zDw9iQdObqqIo", "qHwOL6xAsO5JOTdLlBd2")
 
             // 장바구니가 이미 존재하는지 확인
             if (result.isEmpty) {

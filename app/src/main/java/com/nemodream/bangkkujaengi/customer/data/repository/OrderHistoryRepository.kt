@@ -40,6 +40,38 @@ class OrderHistoryRepository {
             }
         }
 
+        // userId와 purchaseDate로 주문 내역 가져오는 메소드
+        suspend fun getting_order_history_list_by_userId_purchaseDate(
+            user_id: String,
+            purchase_date: String
+        ): List<Purchase> {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Purchase")
+
+            return try {
+                val querySnapshot = collectionReference
+                    .whereEqualTo("memberId", user_id) // memberId로 필터링
+                    .whereEqualTo("purchaseDateTime", purchase_date) // purchaseDateTime으로 필터링
+                    .get()
+                    .await()
+
+                // 결과를 Purchase 객체 리스트로 변환
+                val orderHistoryList = querySnapshot.documents.mapNotNull { document ->
+                    document.toObject(Purchase::class.java)
+                }
+
+                orderHistoryList.forEach {
+                    Log.d("OrderHistory2", "Filtered order history: $it")
+                }
+
+                orderHistoryList
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error fetching filtered order history: ${e.message}", e)
+                emptyList()
+            }
+        }
+
+
     }
 
 }
