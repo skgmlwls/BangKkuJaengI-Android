@@ -5,16 +5,9 @@
 
     <ImageView
         android:id="@+id/ivPhoto"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:scaleType="centerCrop"
         android:background="@android:color/darker_gray"/>
 
-    <!-- 선택 상태를 표시할 뷰 (예: 체크박스나 오버레이) -->
-    <View
-        android:id="@+id/overlaySelected"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"
-        android:visibility="gone" />
 </FrameLayout>
