@@ -39,7 +39,7 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun loadGalleryPhotos(context: Context) {
         val photoList = fetchGalleryPhotos(context)
-        val adapter = SocialGalleryAdapter(photoList)
+        val adapter = SocialGalleryAdapter(photoList, context)
 
         // 3열의 그리드 형태로 이미지를 표시
         binding.recyclerViewGallery.layoutManager = GridLayoutManager(context, 3)
