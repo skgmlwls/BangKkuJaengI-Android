@@ -28,6 +28,7 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 갤러리의 이미지를 로드하고 화면에 표시
         loadGalleryPhotos(requireContext())
     }
 
@@ -40,14 +41,18 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
         val photoList = fetchGalleryPhotos(context)
         val adapter = SocialGalleryAdapter(photoList)
 
+        // 3열의 그리드 형태로 이미지를 표시
         binding.recyclerViewGallery.layoutManager = GridLayoutManager(context, 3)
         binding.recyclerViewGallery.adapter = adapter
     }
 
+    // 갤러리에서 이미지를 쿼리하고, 각 이미지의 URI를 리스트로 반환
     private fun fetchGalleryPhotos(context: Context): List<Uri> {
         val photoList = mutableListOf<Uri>()
         val contentResolver: ContentResolver = context.contentResolver
+        // 갤러리 콘텐츠 URI
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        // _ID 필드만 가져온다
         val projection = arrayOf(MediaStore.Images.Media._ID)
 
         val cursor = contentResolver.query(
