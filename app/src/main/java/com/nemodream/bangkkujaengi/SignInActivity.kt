@@ -50,7 +50,12 @@ class SignInActivity : AppCompatActivity() {
             if (id.isEmpty() || password.isEmpty()) {
                 showToast("아이디와 비밀번호를 모두 입력해주세요.")
             } else {
-                signInViewModel.signIn(id, password)
+                // 관리자 계정 확인
+                if (id == "admin" && password == "admin*") {
+                    navigateToAdminActivity() // AdminActivity로 이동
+                } else {
+                    signInViewModel.signIn(id, password) // 일반 사용자 로그인
+                }
             }
         }
 
@@ -85,6 +90,13 @@ class SignInActivity : AppCompatActivity() {
             putExtra("isGuest", isGuest)
             putExtra("documentId", documentId)
         }
+        startActivity(intent)
+        finish() // 현재 로그인 화면 종료
+    }
+
+    private fun navigateToAdminActivity() {
+        // AdminActivity로 이동
+        val intent = Intent(this, AdminActivity::class.java)
         startActivity(intent)
         finish() // 현재 로그인 화면 종료
     }
