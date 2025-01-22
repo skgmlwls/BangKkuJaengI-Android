@@ -49,13 +49,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 아이디 찾기 버튼 -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_find_id_find_id"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#332828"
         android:text="아이디 찾기"
+        android:textColor="@drawable/button_text_color"
+        android:background="@drawable/button_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tf_find_id_phone_number" />
 
@@ -64,10 +65,8 @@
         android:id="@+id/tv_find_id_show_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:background="#DCD8D8"
+        android:background="@color/gray_button_background"
         android:padding="30dp"
         android:text=" "
         android:textAlignment="center"
@@ -79,12 +78,13 @@
         app:layout_constraintTop_toBottomOf="@id/btn_find_id_find_id" />
 
     <!-- 로그인 버튼 -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_find_id_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#332828"
+        android:background="@drawable/button_background"
         android:text="로그인하러 가기"
+        android:textColor="@drawable/button_text_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
