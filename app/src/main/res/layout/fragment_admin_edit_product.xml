@@ -140,6 +140,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_category"
+                style="@style/AppPopupTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
@@ -149,7 +150,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_admin_product_edit_sub_category"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
@@ -165,6 +165,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_sub_category"
+                style="@style/AppPopupTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"

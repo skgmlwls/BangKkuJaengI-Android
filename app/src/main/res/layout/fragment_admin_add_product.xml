@@ -142,6 +142,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_category"
+                style="@style/AppPopupTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
@@ -167,6 +168,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_sub_category"
+                style="@style/AppPopupTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
