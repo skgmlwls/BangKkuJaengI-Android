@@ -256,8 +256,7 @@
             app:hintEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tf_admin_product_edit_discount_price"
-            app:suffixText="₩">
+            app:layout_constraintTop_toBottomOf="@id/tf_admin_product_edit_discount_price">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
