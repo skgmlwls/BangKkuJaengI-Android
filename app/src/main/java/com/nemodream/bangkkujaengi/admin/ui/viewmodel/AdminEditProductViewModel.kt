@@ -150,6 +150,13 @@ class AdminEditProductViewModel @Inject constructor(
         validateCurrentFields()
     }
 
+    fun getCategories(): List<CategoryType> =
+        CategoryType.entries.filter { it != CategoryType.ALL }
+
+    fun getSubCategories(categoryType: CategoryType): List<SubCategoryType> =
+        SubCategoryType.getSubCategories(categoryType)
+            .filter { !it.title.contains("전체") }
+
     fun updateProduct(
         title: String,
         description: String,

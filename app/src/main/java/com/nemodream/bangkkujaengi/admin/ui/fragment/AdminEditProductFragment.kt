@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.admin.ui.fragment
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -8,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -18,16 +18,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductColorAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OnImageCancelClickListener
 import com.nemodream.bangkkujaengi.admin.ui.custom.CustomTextFieldDialog
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminEditProductViewModel
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
-import com.nemodream.bangkkujaengi.customer.data.model.Product
-import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminEditProductBinding
+import com.nemodream.bangkkujaengi.utils.createDropDownAdapter
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +35,7 @@ import kotlinx.coroutines.launch
 class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
     private var _binding: FragmentAdminEditProductBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
     private val args: AdminEditProductFragmentArgs by navArgs()
     private val productId by lazy { args.product.productId }
@@ -59,6 +58,11 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
         if (uris.isNotEmpty()) {
             viewModel.addNewImages(uris)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
     }
 
     override fun onCreateView(
@@ -206,19 +210,12 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
     }
 
     private fun setupCategoryAndSubCategoryDropdown() {
-        // Category Dropdown 설정
-        val categoryTitles = CategoryType.entries.map { it.getTabTitle() }
-        val categoryAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.item_dropdown_category,
-            categoryTitles
-        )
+        val categories = viewModel.getCategories()
 
         binding.autoCompleteCategory.apply {
-            setAdapter(categoryAdapter)
+            setAdapter(appContext.createDropDownAdapter(categories.map { it.getTabTitle() }))
             setOnItemClickListener { _, _, position, _ ->
-                // 선택한 카테고리를 Enum으로 가져옴
-                val selectedCategory = CategoryType.entries[position]
+                val selectedCategory = categories[position]
                 viewModel.setCategory(selectedCategory)
                 updateSubCategoryDropdown(selectedCategory)
                 validateFields()
@@ -228,22 +225,13 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
 
     private fun updateSubCategoryDropdown(categoryType: CategoryType) {
         clearSubCategory()
-        val subCategoryList = SubCategoryType.getSubCategories(categoryType)
-        val subCategoryTitles = subCategoryList.map { it.title }
+        val subCategories = viewModel.getSubCategories(categoryType)
 
         binding.autoCompleteSubCategory.apply {
-            // 어댑터 설정
-            val subCategoryAdapter = ArrayAdapter(
-                requireContext(),
-                R.layout.item_dropdown_category,
-                subCategoryTitles
-            )
-            setAdapter(subCategoryAdapter)
-            isEnabled = subCategoryTitles.isNotEmpty()
-
+            setAdapter(appContext.createDropDownAdapter(subCategories.map { it.title }))
+            isEnabled = subCategories.isNotEmpty()
             setOnItemClickListener { _, _, position, _ ->
-                val selectedSubCategory = subCategoryList[position]
-                viewModel.setSubCategory(selectedSubCategory)
+                viewModel.setSubCategory(subCategories[position])
                 validateFields()
             }
         }
