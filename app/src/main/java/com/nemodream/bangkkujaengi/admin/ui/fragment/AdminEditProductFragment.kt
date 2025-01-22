@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -17,12 +18,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductColorAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminProductImageAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OnImageCancelClickListener
 import com.nemodream.bangkkujaengi.admin.ui.custom.CustomTextFieldDialog
 import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminEditProductViewModel
+import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminEditProductBinding
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +77,7 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
         setupListeners()
         setupTextChangeListeners()
         observeViewModel()
+        setupCategoryAndSubCategoryDropdown()
     }
 
     private fun setupUI() {
@@ -187,14 +192,70 @@ class AdminEditProductFragment: Fragment(), OnImageCancelClickListener {
                 with(binding) {
                     tfAdminProductEditTitle.editText?.setText(product.productName)
                     tfAdminProductEditDescription.editText?.setText(product.description)
-                    tfAdminProductEditCategory.editText?.setText(product.category.getTabTitle())
-                    tfAdminProductEditSubCategory.editText?.setText(product.subCategory.title)
+
+                    autoCompleteCategory.setText(product.category.getTabTitle(), false)
+                    updateSubCategoryDropdown(product.category)
+                    autoCompleteSubCategory.setText(product.subCategory.title, false)
+
                     tfAdminProductEditPrice.editText?.setText(product.price.toString())
                     tfAdminProductEditDiscountRate.editText?.setText(product.saleRate.toString())
                     tfAdminProductEditCount.editText?.setText(product.productCount.toString())
                 }
             }
         }
+    }
+
+    private fun setupCategoryAndSubCategoryDropdown() {
+        // Category Dropdown 설정
+        val categoryTitles = CategoryType.entries.map { it.getTabTitle() }
+        val categoryAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.item_dropdown_category,
+            categoryTitles
+        )
+
+        binding.autoCompleteCategory.apply {
+            setAdapter(categoryAdapter)
+            setOnItemClickListener { _, _, position, _ ->
+                // 선택한 카테고리를 Enum으로 가져옴
+                val selectedCategory = CategoryType.entries[position]
+                viewModel.setCategory(selectedCategory)
+                updateSubCategoryDropdown(selectedCategory)
+                validateFields()
+            }
+        }
+    }
+
+    private fun updateSubCategoryDropdown(categoryType: CategoryType) {
+        clearSubCategory()
+        val subCategoryList = SubCategoryType.getSubCategories(categoryType)
+        val subCategoryTitles = subCategoryList.map { it.title }
+
+        binding.autoCompleteSubCategory.apply {
+            // 어댑터 설정
+            val subCategoryAdapter = ArrayAdapter(
+                requireContext(),
+                R.layout.item_dropdown_category,
+                subCategoryTitles
+            )
+            setAdapter(subCategoryAdapter)
+            isEnabled = subCategoryTitles.isNotEmpty()
+
+            setOnItemClickListener { _, _, position, _ ->
+                val selectedSubCategory = subCategoryList[position]
+                viewModel.setSubCategory(selectedSubCategory)
+                validateFields()
+            }
+        }
+    }
+
+    private fun clearSubCategory() {
+        binding.autoCompleteSubCategory.apply {
+            setText("")
+            isEnabled = false
+        }
+        viewModel.setSubCategory(null)
+        validateFields()
     }
 
     private fun validateFields() {

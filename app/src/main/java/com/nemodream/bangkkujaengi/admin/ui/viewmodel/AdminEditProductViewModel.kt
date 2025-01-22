@@ -140,6 +140,16 @@ class AdminEditProductViewModel @Inject constructor(
         validateCurrentFields()
     }
 
+    fun setCategory(category: CategoryType) {
+        _category.value = category
+        validateCurrentFields()
+    }
+
+    fun setSubCategory(subCategory: SubCategoryType?) {
+        _subCategory.value = subCategory
+        validateCurrentFields()
+    }
+
     fun updateProduct(
         title: String,
         description: String,
