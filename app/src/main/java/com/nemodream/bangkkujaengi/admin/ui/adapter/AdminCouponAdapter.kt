@@ -1,6 +1,5 @@
 package com.nemodream.bangkkujaengi.admin.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -43,7 +42,8 @@ class AdminCouponAdapter(
         fun bind(coupon: Coupon) {
             with(binding) {
                 tvRowPaymentCouponTitle.text = coupon.title
-                tvRowPaymentCouponPrice.text = if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
+                tvRowPaymentCouponPrice.text =
+                    if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
                 tvRowPaymentCouponCondition.text = coupon.conditionDescription
                 tvRowPaymentCouponPeriod.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
             }

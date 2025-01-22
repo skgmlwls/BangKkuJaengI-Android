@@ -30,4 +30,5 @@ class AdminCouponRepository @Inject constructor(
     fun deleteCoupon(coupon: Coupon) {
         firestore.collection("Coupon").document(coupon.documentId).delete()
     }
+
 }
