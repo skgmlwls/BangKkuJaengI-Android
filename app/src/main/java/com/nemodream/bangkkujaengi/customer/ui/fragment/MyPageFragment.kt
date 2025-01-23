@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
 
 class MyPageFragment : Fragment() {
@@ -27,6 +28,7 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
+        setupListeners()
     }
 
     override fun onDestroyView() {
@@ -45,6 +47,15 @@ class MyPageFragment : Fragment() {
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
                 tvMyPageLoginSubTitle.text = this
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        with(binding) {
+            viewMyPageLogin.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToSignInActivity()
+                findNavController().navigate(action)
             }
         }
     }
