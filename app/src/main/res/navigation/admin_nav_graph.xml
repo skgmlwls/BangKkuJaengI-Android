@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_adminHomeFragment_to_adminCouponFragment"
             app:destination="@id/adminCouponFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminOrderFragment"
+            app:destination="@+id/adminOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminAddProductFragment"
@@ -28,9 +31,6 @@
         <action
             android:id="@+id/action_adminProductFragment_to_adminAddProductFragment"
             app:destination="@id/adminAddProductFragment" />
-        <action
-            android:id="@+id/action_adminProductFragment_to_adminEditProductFragment"
-            app:destination="@id/adminEditProductFragment" />
     </fragment>
     <fragment
         android:id="@+id/adminCouponFragment"
@@ -45,11 +45,7 @@
         android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminAddCouponFragment"
         android:label="AdminAddCouponFragment" />
     <fragment
-        android:id="@+id/adminEditProductFragment"
-        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminEditProductFragment"
-        android:label="AdminEditProductFragment" >
-        <argument
-            android:name="product"
-            app:argType="com.nemodream.bangkkujaengi.customer.data.model.Product" />
-    </fragment>
+        android:id="@+id/adminOrderFragment"
+        android:name="com.nemodream.bangkkujaengi.admin.ui.fragment.AdminOrderFragment"
+        android:label="AdminOrderFragment" />
 </navigation>
