@@ -31,8 +31,15 @@ class NonMemberOrderFragment: Fragment() {
     }
 
     private fun setupListeners() {
-        binding.toolbarNonMemberInquiry.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        with(binding) {
+            toolbarNonMemberInquiry.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            btnSignUp.setOnClickListener {
+                val action = NonMemberOrderFragmentDirections.actionNavigationNonMemberOrderToSignUpActivity()
+                findNavController().navigate(action)
+            }
         }
     }
 
