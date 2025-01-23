@@ -59,7 +59,7 @@ class MemberRepository @Inject constructor(
         return try {
             val snapshot = firestore
                 .collection("Member")
-                .whereEqualTo("memberNickname", nickname)
+                .whereEqualTo("memberNickName", nickname)
                 .get()
                 .await()
 
