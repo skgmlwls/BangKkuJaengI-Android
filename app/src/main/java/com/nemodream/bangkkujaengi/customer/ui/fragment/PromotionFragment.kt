@@ -56,6 +56,22 @@ class PromotionFragment: Fragment(), ProductClickListener {
             toolbarPromotion.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
+
+            toolbarPromotion.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_search -> {
+                        val action = PromotionFragmentDirections.actionNavigationPromotionToNavigationSearch()
+                        findNavController().navigate(action)
+                        true
+                    }
+                    R.id.menu_cart -> {
+                        val action = PromotionFragmentDirections.actionNavigationPromotionToNavigationCart()
+                        findNavController().navigate(action)
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
     }
 
@@ -74,6 +90,13 @@ class PromotionFragment: Fragment(), ProductClickListener {
 
         viewModel.sortText.observe(viewLifecycleOwner) { text ->
             binding.chipPromotionSort.text = text
+        }
+
+        viewModel.productLoading.observe(viewLifecycleOwner) { isLoading ->
+            with(binding) {
+                shimmerLayout.root.visibility = if (isLoading) View.VISIBLE else View.GONE
+                rvPromotionList.visibility = if (isLoading) View.GONE else View.VISIBLE
+            }
         }
     }
 

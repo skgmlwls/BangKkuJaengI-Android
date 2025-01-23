@@ -137,7 +137,7 @@ class PromotionRepository @Inject constructor(
             purchaseCount = getLong("purchaseCount")?.toInt() ?: 0,
             reviewCount = getLong("reviewCount")?.toInt() ?: 0,
             viewCount = getLong("viewCount")?.toInt() ?: 0,
-            createdAt = getTimestamp("createdAt")?.seconds ?: 0L,
+            createdAt = getLong("createdAt") ?: 0L,
         )
     }
 

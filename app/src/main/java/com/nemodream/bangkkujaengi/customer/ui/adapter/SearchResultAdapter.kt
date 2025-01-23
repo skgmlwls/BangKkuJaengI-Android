@@ -11,15 +11,18 @@ import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.toCommaString
 
 class SearchResultAdapter(
+    private val productClickListener: ProductClickListener,
 ) : ListAdapter<Product, SearchResultAdapter.SearchResultViewHolder>(
     SearchResultDiffCallBack()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
-        val binding =
-            ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SearchResultViewHolder(
-            binding,
+            ItemProductBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            ),
+            onProductClickListener = { position -> productClickListener.onProductClick(getItem(position)) }
         )
     }
 
@@ -29,7 +32,13 @@ class SearchResultAdapter(
 
     class SearchResultViewHolder(
         private val binding: ItemProductBinding,
+        private val onProductClickListener: (position: Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                onProductClickListener(adapterPosition)
+            }
+        }
 
         fun bind(product: Product) {
             with(binding) {
@@ -41,7 +50,7 @@ class SearchResultAdapter(
     }
 }
 
-class SearchResultDiffCallBack: DiffUtil.ItemCallback<Product>() {
+class SearchResultDiffCallBack : DiffUtil.ItemCallback<Product>() {
     override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem.productId == newItem.productId
     }
