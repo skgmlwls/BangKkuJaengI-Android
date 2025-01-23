@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
@@ -16,7 +15,6 @@ class SocialWritePictureFragment : Fragment() {
 
     private var _binding: FragmentSocialWritePictureBinding? = null
     private val binding get() = _binding!!
-
     private val selectedPhotos = mutableListOf<Uri>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -27,7 +25,7 @@ class SocialWritePictureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
-        setupCarousel()
+        setupViewPager()
 
         // BottomSheet에서 전달된 선택된 사진 데이터를 수신
         childFragmentManager.setFragmentResultListener("selectedPhotos", this) { _, bundle ->
@@ -83,6 +81,32 @@ class SocialWritePictureFragment : Fragment() {
         }
     }
 
+    private fun setupViewPager() {
+        binding.vpSocialWritePictureCarousel.apply {
+            adapter = SocialCarouselAdapter(selectedPhotos) { position, x, y ->
+                openWriteTagBottomSheet(position, x, y)
+            }
+        }
+    }
+
+    // 선택된 사진 리스트를 업데이트
+    private fun updateSelectedPhotos(photos: List<Uri>) {
+        selectedPhotos.clear()
+        selectedPhotos.addAll(photos)
+
+        // Placeholder 숨기기 및 Carousel 표시
+        binding.viewSocialWritePicturePlaceholder.visibility = View.GONE
+        binding.tvSocialWritePicturePlaceholder.visibility = View.GONE
+        binding.vpSocialWritePictureCarousel.visibility = View.VISIBLE
+
+        // 버튼 상태 업데이트
+        binding.btnAddPicture.visibility = View.GONE
+        binding.btnModifyItem.visibility = View.VISIBLE
+        binding.btnWritePictureNext.visibility = View.VISIBLE
+
+        binding.vpSocialWritePictureCarousel.adapter?.notifyDataSetChanged()
+    }
+
     // 사진 선택 바텀시트 올리기
     private fun openWritePictureBottomSheet() {
         val bottomSheetFragment = SocialWritePictureBottomSheetFragment().apply {
@@ -93,31 +117,7 @@ class SocialWritePictureFragment : Fragment() {
         bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
     }
 
-    // 태그 선택 바텀시트 올리기
-    private fun openWriteTagBottomSheet() {}
-
-    // 선택된 사진 리스트를 업데이트
-    private fun updateSelectedPhotos(photos: List<Uri>) {
-        selectedPhotos.clear() // 이거 없애면 캐러셀에 사진 추가 할 수 있음
-        selectedPhotos.addAll(photos)
-
-        // Placeholder 숨기기 및 Carousel 표시
-        binding.viewSocialWritePicturePlaceholder.visibility = View.GONE
-        binding.tvSocialWritePicturePlaceholder.visibility = View.GONE
-        binding.rvSocialWritePictureSelectedPhotos.visibility = View.VISIBLE
-
-        // 버튼 상태 업데이트
-        binding.btnAddPicture.visibility = View.GONE
-        binding.btnModifyItem.visibility = View.VISIBLE
-        binding.btnWritePictureNext.visibility = View.VISIBLE
-
-        binding.rvSocialWritePictureSelectedPhotos.adapter?.notifyDataSetChanged()
-    }
-
-    private fun setupCarousel() {
-        binding.rvSocialWritePictureSelectedPhotos.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = SocialCarouselAdapter(selectedPhotos)
-        }
+    private fun openWriteTagBottomSheet(position: Int, x: Float, y: Float) {
+        // 태그 추가 로직
     }
 }
