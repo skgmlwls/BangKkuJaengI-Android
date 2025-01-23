@@ -25,6 +25,9 @@ class PromotionViewModel @Inject constructor(
     private var currentTitle: String = ""
     private var currentSortType: SortType = SortType.LATEST
 
+    private val _productLoading = MutableLiveData(false)
+    val productLoading: LiveData<Boolean> = _productLoading
+
     fun getPromotionByTitle(title: String) {
         currentTitle = title
         // 프로모션 타입에 따른 기본 정렬
@@ -49,12 +52,15 @@ class PromotionViewModel @Inject constructor(
     }
 
     private fun getPromotionProducts(title: String, sortType: SortType) = viewModelScope.launch {
+        _productLoading.value = true
         runCatching {
             promotionRepository.getPromotionByTitle(title, sortType)
         }.onSuccess {
             _promotion.value = it
+            _productLoading.value = false
         }.onFailure {
             it.printStackTrace()
+            _productLoading.value = false
         }
     }
 }
