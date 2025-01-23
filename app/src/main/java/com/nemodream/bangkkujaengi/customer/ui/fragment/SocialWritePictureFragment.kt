@@ -43,16 +43,43 @@ class SocialWritePictureFragment : Fragment() {
         _binding = null
     }
 
+//    private fun setupListeners() {
+//        with(binding) {
+//            toolbarSocial.setNavigationOnClickListener {
+//                findNavController().popBackStack(R.id.navigation_social, false)
+//            }
+//            btnAddPicture.setOnClickListener {
+//                val bottomSheetFragment = SocialWritePictureBottomSheetFragment()
+//                bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
+//            }
+//        }
+//    }
+
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
                 findNavController().popBackStack(R.id.navigation_social, false)
             }
             btnAddPicture.setOnClickListener {
-                val bottomSheetFragment = SocialWritePictureBottomSheetFragment()
-                bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
+                openBottomSheet()
+            }
+            btnModifyItem.setOnClickListener {
+                openBottomSheet()
+            }
+            btnNext.setOnClickListener {
+                // SocialWriteTagFragment로 이동
+                // findNavController().navigate(R.id.action_socialWritePictureFragment_to_socialWriteTagFragment)
             }
         }
+    }
+
+    private fun openBottomSheet() {
+        val bottomSheetFragment = SocialWritePictureBottomSheetFragment().apply {
+            arguments = Bundle().apply {
+                putParcelableArrayList("selectedPhotos", ArrayList(selectedPhotos))
+            }
+        }
+        bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
     }
 
     // 선택된 사진 리스트를 업데이트
@@ -64,6 +91,11 @@ class SocialWritePictureFragment : Fragment() {
         binding.viewSocialWritePicturePlaceholder.visibility = View.GONE
         binding.tvSocialWritePicturePlaceholder.visibility = View.GONE
         binding.rvSocialWritePictureSelectedPhotos.visibility = View.VISIBLE
+
+        // 버튼 상태 업데이트
+        binding.btnAddPicture.visibility = View.GONE
+        binding.btnModifyItem.visibility = View.VISIBLE
+        binding.btnNext.visibility = View.VISIBLE
 
         binding.rvSocialWritePictureSelectedPhotos.adapter?.notifyDataSetChanged()
     }

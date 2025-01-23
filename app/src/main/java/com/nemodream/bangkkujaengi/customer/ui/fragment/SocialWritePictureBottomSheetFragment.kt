@@ -29,6 +29,11 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         loadGalleryPhotos(requireContext())
         setupListeners()
+
+        // 기존 선택된 사진 로드
+        arguments?.getParcelableArrayList<Uri>("selectedPhotos")?.let { selected ->
+            adapter.getSelectedPhotos()
+        }
     }
 
     override fun onDestroyView() {
