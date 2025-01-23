@@ -210,5 +210,14 @@
         android:id="@+id/navigation_non_member_order"
         android:name="com.nemodream.bangkkujaengi.customer.ui.adapter.NonMemberOrderFragment"
         tools:layout="@layout/fragment_non_member_order"
-        android:label="NonMemberOrderFragment" />
+        android:label="NonMemberOrderFragment" >
+        <action
+            android:id="@+id/action_navigation_non_member_order_to_signUpActivity"
+            app:destination="@id/signUpActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/signUpActivity"
+        android:name="com.nemodream.bangkkujaengi.SignUpActivity"
+        android:label="activity_sign_up"
+        tools:layout="@layout/activity_sign_up" />
 </navigation>
