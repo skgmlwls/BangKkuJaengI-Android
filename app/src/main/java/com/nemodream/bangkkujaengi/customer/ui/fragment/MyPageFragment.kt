@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
 
 class MyPageFragment : Fragment() {
@@ -56,6 +57,23 @@ class MyPageFragment : Fragment() {
             viewMyPageLogin.setOnClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToSignInActivity()
                 findNavController().navigate(action)
+            }
+
+            tvMyPageNonMemberInquiry.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationNonMemberOrder()
+                findNavController().navigate(action)
+            }
+
+            // 메뉴 선택
+            toolbarMyPage.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_cart -> {
+                        val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationCart()
+                        findNavController().navigate(action)
+                        true
+                    }
+                    else -> false
+                }
             }
         }
     }
