@@ -35,6 +35,9 @@ class CategoryProductViewModel @Inject constructor(
     private val _sortText = MutableLiveData<String>()
     val sortText: LiveData<String> = _sortText
 
+    private val _productLoading = MutableLiveData(false)
+    val productLoading: LiveData<Boolean> = _productLoading
+
     init {
         updateSortText(SortType.PURCHASE) // 기본으로 구매 많은 순
     }
@@ -85,6 +88,8 @@ class CategoryProductViewModel @Inject constructor(
     * 실패 시: 에러 로깅 후 빈 목록으로 설정
     * */
     private fun fetchProducts() = viewModelScope.launch {
+        _productLoading.value = true
+        _products.value = emptyList()
         runCatching {
             _categoryType.value?.let { category ->
                 _selectedSubCategory.value?.let { subCategory ->
@@ -97,9 +102,11 @@ class CategoryProductViewModel @Inject constructor(
             products?.let {
                 _products.value = it
             }
+            _productLoading.value = false
         }.onFailure { throwable ->
             Log.e("CategoryProductViewModel", "상품 정보를 가져오지 못했습니다", throwable)
             _products.value = emptyList()
+            _productLoading.value = false
         }
     }
 
