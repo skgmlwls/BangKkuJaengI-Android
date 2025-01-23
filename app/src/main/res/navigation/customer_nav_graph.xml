@@ -84,7 +84,11 @@
         android:id="@+id/navigation_search"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_product_detail"
+            app:destination="@id/navigation_product_detail" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_cart"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.ShoppingCartFragment"

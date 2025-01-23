@@ -10,8 +10,10 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.SearchHistory
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnItemClickListener
+import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SearchHistoryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SearchResultAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SearchViewModel
@@ -21,14 +23,14 @@ import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), OnItemClickListener {
+class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var appContext: Context
     private val viewModel: SearchViewModel by viewModels()
     private val searchAdapter: SearchHistoryAdapter by lazy { SearchHistoryAdapter(this) }
-    private val searchResultAdapter: SearchResultAdapter by lazy { SearchResultAdapter() }
+    private val searchResultAdapter: SearchResultAdapter by lazy { SearchResultAdapter(this) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -145,5 +147,10 @@ class SearchFragment : Fragment(), OnItemClickListener {
 
     override fun onDeleteClick(search: SearchHistory) {
         viewModel.deleteSearch(search)
+    }
+
+    override fun onProductClick(product: Product) {
+        val action = SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
     }
 }
