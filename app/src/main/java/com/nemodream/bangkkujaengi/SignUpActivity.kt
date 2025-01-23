@@ -1,7 +1,11 @@
 package com.nemodream.bangkkujaengi
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.WindowManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -9,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -95,40 +100,43 @@ class SignUpActivity : AppCompatActivity() {
             val (isAvailable, message) = result
             Log.d("nickname", "아이디 사용 가능: $isAvailable, 메시지: $message")
             showToast(message)
+            // 중복된 아이디 있으면 버튼 활성화
+            if(!isAvailable){
+                binding.btnSignUpCheckId.isEnabled = true
+            }
         }
 
         signUpViewModel.nicknameResult.observe(this) { result ->
             val (isAvailable, message) = result
             Log.d("nickname", "닉네임 사용 가능: $isAvailable, 메시지: $message")
             showToast(message)
+            // 중복된 닉네임일 때 버튼 다시 활성화
+            if (!isAvailable) {
+                binding.btnSignUpCheckNickname.isEnabled = true
+            }
         }
 
         // 아이디 중복 확인 버튼 상태 관찰
         signUpViewModel.isIdCheckButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpCheckId.isEnabled = isEnabled
-            // binding.btnSignUpCheckId.alpha = if (isEnabled) 1f else 0.5f
         }
 
         // 닉네임 중복 확인 버튼 상태 관찰
         signUpViewModel.isNicknameCheckButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpCheckNickname.isEnabled = isEnabled
-            // binding.btnSignUpCheckNickname.alpha = if (isEnabled) 1f else 0.5f
         }
 
         // 가입 버튼 상태 관찰
         signUpViewModel.isSignUpButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpSignup.isEnabled = isEnabled
-            // binding.btnSignUpSignup.alpha = if (isEnabled) 1f else 0.5f
         }
 
         signUpViewModel.isVerificationButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpVerification.isEnabled = isEnabled
-            // binding.btnSignUpVerification.alpha = if (isEnabled) 1f else 0.5f
         }
 
         signUpViewModel.isVerificationCheckButtonEnabled.observe(this) { isEnabled ->
             binding.btnSignUpCheckVerification.isEnabled = isEnabled
-            // binding.btnSignUpCheckVerification.alpha = if (isEnabled) 1f else 0.5f
         }
     }
 
@@ -234,21 +242,18 @@ class SignUpActivity : AppCompatActivity() {
             val formattedPhoneNumber = formatPhoneNumberToE164(rawPhoneNumber)
             if (isValidPhoneNumber(formattedPhoneNumber)) {
                 startPhoneNumberVerification(formattedPhoneNumber)
-                binding.btnSignUpVerification.isEnabled = false
-                binding.btnSignUpVerification.postDelayed({
-                    binding.btnSignUpVerification.isEnabled = true
-                }, 60000) // 60초 후 버튼 활성화
             } else {
-                showToast("전화번호를 올바르게 입력하세요. 예: 01012345678")
+                showToast("전화번호를 올바르게 입력하세요.")
             }
         }
+
 
         // 인증 코드 확인 버튼
         binding.btnSignUpCheckVerification.setOnClickListener {
             val code = binding.tfSignUpVerificationCode.editText?.text.toString()
             if (code.isNotEmpty() && storedVerificationId != null) {
+                binding.btnSignUpCheckVerification.isEnabled = false // 버튼 비활성화
                 verifyCode(code)
-                binding.btnSignUpCheckVerification.isEnabled = false
             } else {
                 showToast("인증 코드를 입력하거나 인증 요청을 다시 진행하세요.")
             }
@@ -263,11 +268,14 @@ class SignUpActivity : AppCompatActivity() {
             .setActivity(this) // 현재 액티비티
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // 자동 인증 완료 시 처리
                     signInWithPhoneAuthCredential(credential)
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    showToast("인증 실패: ${e.message}")
+                    // 인증번호 전송 실패 시
+                    binding.btnSignUpVerification.isEnabled = true // 버튼 활성화
+                    showToast("인증번호 전송 실패")
                     Log.w("PhoneAuth", "Verification failed", e)
                 }
 
@@ -275,16 +283,27 @@ class SignUpActivity : AppCompatActivity() {
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
+                    // 인증번호 전송 성공
                     storedVerificationId = verificationId
                     resendToken = token
-                    showToast("인증 코드가 전송되었습니다.")
+                    showToast("인증번호가 전송되었습니다.")
                     Log.d("PhoneAuth", "Code sent: $verificationId")
+
+                    // 60초 동안 버튼 비활성화 후 다시 활성화
+                    binding.btnSignUpVerification.postDelayed({
+                        binding.btnSignUpVerification.isEnabled = true
+                    }, 60000)
                 }
             })
             .build()
 
+        // 인증 요청
         PhoneAuthProvider.verifyPhoneNumber(options)
+
+        // 버튼 비활성화
+        binding.btnSignUpVerification.isEnabled = false
     }
+
 
     // 인증 코드 확인
     private fun verifyCode(code: String) {
@@ -292,6 +311,8 @@ class SignUpActivity : AppCompatActivity() {
             val credential = PhoneAuthProvider.getCredential(storedVerificationId!!, code)
             signInWithPhoneAuthCredential(credential)
         } else {
+            // 인증 요청이 없었다면 버튼 활성화
+            binding.btnSignUpCheckVerification.isEnabled = true
             showToast("인증 요청을 먼저 진행해주세요.")
         }
     }
@@ -301,15 +322,18 @@ class SignUpActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    // 인증 성공 처리
                     showToast("전화번호 인증 성공!")
                     signUpViewModel.verifyCodeSuccess() // 인증 성공 시 가입 버튼 활성화
-                    Log.d("PhoneAuth", "Sign in successful")
                 } else {
-                    showToast("전화번호 인증 실패.")
+                    // 인증 실패 시 버튼 활성화
+                    binding.btnSignUpCheckVerification.isEnabled = true
+                    showToast("전화번호 인증 실패: ${task.exception?.message}")
                     Log.w("PhoneAuth", "Sign in failed", task.exception)
                 }
             }
     }
+
 
     // 전화번호 형식 검증
     private fun isValidPhoneNumber(phoneNumber: String): Boolean {
@@ -326,6 +350,23 @@ class SignUpActivity : AppCompatActivity() {
         } else {
             countryCode + cleanedNumber
         }
+    }
+
+    // 모든 터치 이벤트를 처리
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) { // 터치가 발생했을 때
+            val view = currentFocus // 현재 포커스를 가진 뷰 가져오기
+            if (view is EditText) { // 현재 포커스가 EditText라면
+                val outRect = Rect()
+                view.getGlobalVisibleRect(outRect) // EditText의 화면 영역
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    // 터치가 EditText 영역 밖에서 발생
+                    view.clearFocus() // EditText 포커스 해제
+                    view.hideKeyboard() // 키보드 숨기기
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event) // 이벤트를 계속 전달
     }
 
     private fun showToast(message: String) {
