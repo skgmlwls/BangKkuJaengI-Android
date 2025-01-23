@@ -68,4 +68,10 @@ class SocialGalleryAdapter(
     override fun getItemCount(): Int = photoList.size
 
     fun getSelectedPhotos(): List<Uri> = selectedPhotos // 선택된 사진 리스트 반환
+
+    fun setSelectedPhotos(selected: List<Uri>) {
+        selectedPhotos.clear()
+        selectedPhotos.addAll(selected)
+        notifyDataSetChanged()
+    }
 }

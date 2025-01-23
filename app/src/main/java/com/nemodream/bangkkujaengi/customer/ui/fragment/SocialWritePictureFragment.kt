@@ -43,18 +43,6 @@ class SocialWritePictureFragment : Fragment() {
         _binding = null
     }
 
-//    private fun setupListeners() {
-//        with(binding) {
-//            toolbarSocial.setNavigationOnClickListener {
-//                findNavController().popBackStack(R.id.navigation_social, false)
-//            }
-//            btnAddPicture.setOnClickListener {
-//                val bottomSheetFragment = SocialWritePictureBottomSheetFragment()
-//                bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
-//            }
-//        }
-//    }
-
     private fun setupListeners() {
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {

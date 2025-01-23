@@ -32,7 +32,7 @@ class SocialWritePictureBottomSheetFragment : BottomSheetDialogFragment() {
 
         // 기존 선택된 사진 로드
         arguments?.getParcelableArrayList<Uri>("selectedPhotos")?.let { selected ->
-            adapter.getSelectedPhotos()
+            adapter.setSelectedPhotos(selected) // 수정된 부분
         }
     }
 
