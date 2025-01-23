@@ -1,7 +1,11 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -99,17 +103,23 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
             }
 
             viewModel.searchResults.observe(viewLifecycleOwner) { searchResults ->
-                if (viewModel.isLoading.value == true) return@observe
-
                 rvSearchHistoryList.visibility = View.GONE
                 groupRecentSearches.visibility = View.GONE
 
                 if (searchResults.isEmpty()) {
                     layoutResultEmpty.root.visibility = View.VISIBLE
                     rvSearchResultList.visibility = View.GONE
+                    tvSearchResultLabel.visibility = View.GONE
                 } else {
                     layoutResultEmpty.root.visibility = View.GONE
                     rvSearchResultList.visibility = View.VISIBLE
+                    tvSearchResultLabel.apply {
+                        text = setupSearchResultText(
+                            etSearchTrack.editText?.text.toString(),
+                            searchResults.size
+                        )
+                        visibility = View.VISIBLE
+                    }
                 }
                 searchResultAdapter.submitList(searchResults)
             }
@@ -156,6 +166,15 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
         viewModel.getProductsByProductName(binding.etSearchTrack.editText?.text.toString())
     }
 
+    private fun setupSearchResultText(query: String, resultCount: Int): SpannableStringBuilder {
+        return SpannableStringBuilder().apply {
+            append(query, StyleSpan(Typeface.BOLD), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            append("에 대한 검색 결과 ")
+            append(resultCount.toString(), StyleSpan(Typeface.BOLD), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            append("건")
+        }
+    }
+
     override fun onItemClick(item: SearchHistory) {
         val query = item.query
         binding.etSearchTrack.editText?.setText(query)
@@ -168,8 +187,7 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        val action =
-            SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
+        val action = SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
     }
 }

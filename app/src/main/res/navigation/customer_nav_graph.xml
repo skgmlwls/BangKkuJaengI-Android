@@ -87,6 +87,7 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_navigation_search_to_navigation_product_detail"
+            app:popUpTo="@id/navigation_home"
             app:destination="@id/navigation_product_detail" />
     </fragment>
     <fragment
