@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,12 +23,15 @@ class SearchViewModel @Inject constructor(
     private val _searchResults = MutableLiveData<List<Product>>()
     val searchResults: LiveData<List<Product>> get() = _searchResults
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     init {
         loadSearchHistory()
     }
 
     // 검색 기록 불러오기
-    fun loadSearchHistory() = viewModelScope.launch {
+    private fun loadSearchHistory() = viewModelScope.launch {
         runCatching {
             repository.getAllSearchHistory()
         }.onSuccess {
@@ -73,12 +77,16 @@ class SearchViewModel @Inject constructor(
 
     // 검색 결과 가져오기
     fun getProductsByProductName(productName: String) = viewModelScope.launch {
+        _isLoading.value = true
         runCatching {
             repository.getProductsByKeyword(productName)
         }.onSuccess {
             _searchResults.value = it
+            Log.d("SearchViewModel", "검색 결과: $it")
+            _isLoading.value = false
         }.onFailure {
             it.printStackTrace()
+            _isLoading.value = false
         }
     }
 
