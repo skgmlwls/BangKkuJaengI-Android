@@ -64,6 +64,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
 
     private fun setupUI() {
         binding.rvCategoryProductList.adapter = adapter
+        binding.rvCategoryProductList.itemAnimator = null
     }
 
     private fun observeViewModel() {
@@ -73,6 +74,13 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
 
         viewModel.sortText.observe(viewLifecycleOwner) { sortText ->
             binding.chipPromotionSort.text = sortText
+        }
+
+        viewModel.productLoading.observe(viewLifecycleOwner) { isLoading ->
+            with(binding) {
+                shimmerCategoryProduct.root.visibility = if (isLoading) View.VISIBLE else View.GONE
+                rvCategoryProductList.visibility = if (isLoading) View.GONE else View.VISIBLE
+            }
         }
     }
 
@@ -102,6 +110,11 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
             when (menuItem.itemId) {
                 R.id.menu_search -> {
                     val action = CategoryProductFragmentDirections.actionNavigationCategoryToNavigationSearch()
+                    findNavController().navigate(action)
+                    true
+                }
+                R.id.menu_cart -> {
+                    val action = CategoryProductFragmentDirections.actionNavigationCategoryToNavigationCart()
                     findNavController().navigate(action)
                     true
                 }
