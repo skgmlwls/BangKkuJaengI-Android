@@ -44,6 +44,7 @@ class FindPasswordFragment : Fragment() {
         viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                viewModel.clearErrorMessage() // 메시지 초기화
             }
         }
 
@@ -51,6 +52,7 @@ class FindPasswordFragment : Fragment() {
         viewModel.successMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                viewModel.clearSuccessMessage() // 메시지 초기화
             }
         }
 
@@ -66,6 +68,16 @@ class FindPasswordFragment : Fragment() {
         viewModel.isVerified.observe(viewLifecycleOwner) { isVerified ->
             binding.btnFindPwResetPw.visibility = if (isVerified) View.VISIBLE else View.INVISIBLE
         }
+
+        // 인증 요청 버튼 활성화 상태 관찰
+        viewModel.isVerificationButtonEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            binding.btnFindPwVerification.isEnabled = isEnabled
+        }
+
+        // 인증 확인 버튼 활성화 상태 관찰
+        viewModel.isVerificationCheckButtonEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            binding.btnFindPwCheckVerification.isEnabled = isEnabled
+        }
     }
 
     private fun setupListeners() {
@@ -74,9 +86,22 @@ class FindPasswordFragment : Fragment() {
             binding.root.hideKeyboard()
         }
 
-        // 전화번호 입력 시 인증 요청 버튼 활성화
-        binding.tfFindPwPhoneNumber.editText?.addTextChangedListener {
-            binding.btnFindPwVerification.isEnabled = it?.isNotEmpty() == true
+        // 아이디 입력 감지
+        binding.tfFindPwId.editText?.addTextChangedListener { text ->
+            viewModel.idInput.value = text?.toString()
+            viewModel.updateButtonStates()
+        }
+
+        // 전화번호 입력 감지
+        binding.tfFindPwPhoneNumber.editText?.addTextChangedListener { text ->
+            viewModel.phoneNumberInput.value = text?.toString()
+            viewModel.updateButtonStates()
+        }
+
+        // 인증번호 입력 감지
+        binding.tfFindPwVerificationCode.editText?.addTextChangedListener { text ->
+            viewModel.verificationCodeInput.value = text?.toString()
+            viewModel.updateVerificationCheckButtonState()
         }
 
         // 인증 요청 버튼 클릭
@@ -93,7 +118,6 @@ class FindPasswordFragment : Fragment() {
 
         // 인증 확인 버튼 클릭
         binding.btnFindPwCheckVerification.setOnClickListener {
-            binding.root.hideKeyboard()
             val inputCode = binding.tfFindPwVerificationCode.editText?.text.toString()
 
             if (inputCode.isBlank()) {
