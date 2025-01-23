@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="비밀번호"
-                app:endIconMode="clear_text"
+                app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 app:helperText=" "
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,6 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="@string/digit_value"
+                    android:inputType="text|textPassword"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
