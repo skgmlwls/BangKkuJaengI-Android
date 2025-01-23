@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
@@ -12,10 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
+import com.nemodream.bangkkujaengi.utils.showToast
 
 class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +82,19 @@ class MyPageFragment : Fragment() {
                     }
                     else -> false
                 }
+            }
+
+            tvMyPageSetting.setOnClickListener {
+                appContext.showToast("준비중입니다.")
+            }
+            tvMyPageContact.setOnClickListener {
+                appContext.showToast("준비중입니다.")
+            }
+            tvMyPageCenter.setOnClickListener {
+                appContext.showToast("준비중입니다.")
+            }
+            tvMyPageNotice.setOnClickListener {
+                appContext.showToast("준비중입니다.")
             }
         }
     }
