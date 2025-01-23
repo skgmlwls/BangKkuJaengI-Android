@@ -84,6 +84,17 @@ class MyPageFragment : Fragment() {
                 }
             }
 
+
+            myPageOrder.root.setOnClickListener {  }
+            myPageReview.root.setOnClickListener {  }
+            myPageCoupon.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationMyCoupon("")
+                findNavController().navigate(action)
+            }
+            myPageReserve.root.setOnClickListener {  }
+            myPageBookmark.root.setOnClickListener {  }
+
+
             tvMyPageSetting.setOnClickListener {
                 appContext.showToast("준비중입니다.")
             }
