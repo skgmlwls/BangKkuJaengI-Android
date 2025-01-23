@@ -190,5 +190,50 @@
         android:id="@+id/navigation_my_page"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyPageFragment"
         android:label="MyPageFragment"
-        tools:layout="@layout/fragment_my_page" />
+        tools:layout="@layout/fragment_my_page" >
+        <action
+            android:id="@+id/action_navigation_my_page_to_signInActivity"
+            app:destination="@id/signInActivity" />
+        <action
+            android:id="@+id/action_navigation_my_page_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_my_page_to_navigation_non_member_order"
+            app:destination="@id/navigation_non_member_order" />
+        <action
+            android:id="@+id/action_navigation_my_page_to_navigation_my_coupon"
+            app:destination="@id/navigation_my_coupon" />
+    </fragment>
+    <activity
+        android:id="@+id/signInActivity"
+        android:name="com.nemodream.bangkkujaengi.SignInActivity"
+        android:label="activity_sign_in"
+        tools:layout="@layout/activity_sign_in" />
+    <fragment
+        android:id="@+id/navigation_non_member_order"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.adapter.NonMemberOrderFragment"
+        tools:layout="@layout/fragment_non_member_order"
+        android:label="NonMemberOrderFragment" >
+        <action
+            android:id="@+id/action_navigation_non_member_order_to_signUpActivity"
+            app:destination="@id/signUpActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/signUpActivity"
+        android:name="com.nemodream.bangkkujaengi.SignUpActivity"
+        android:label="activity_sign_up"
+        tools:layout="@layout/activity_sign_up" />
+    <fragment
+        android:id="@+id/navigation_my_coupon"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyCouponFragment"
+        tools:layout="@layout/fragment_my_coupon"
+        android:label="MyCouponFragment" >
+
+        <argument
+            android:name="memberId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_my_coupon_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+    </fragment>
 </navigation>
