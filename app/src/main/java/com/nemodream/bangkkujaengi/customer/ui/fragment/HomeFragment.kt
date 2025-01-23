@@ -119,8 +119,6 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     * 화면 UI 배치 관련 함수 모음
     * */
     private fun setupLayout() {
-        viewModel.loadBannerItems()
-        viewModel.loadPromotions()
         setupHomeBannerUI()
         binding.rvPromotion.adapter = promotionAdapter
     }

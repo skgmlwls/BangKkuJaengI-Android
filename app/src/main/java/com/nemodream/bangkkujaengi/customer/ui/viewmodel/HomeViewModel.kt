@@ -31,8 +31,13 @@ class HomeViewModel @Inject constructor(
     private val _promotionLoading = MutableLiveData(true)
     val promotionLoading: LiveData<Boolean> = _promotionLoading
 
+    init {
+        loadBannerItems()
+        loadPromotions()
+    }
+
     // 홈 화면 배너 리스트 불러오기
-    fun loadBannerItems() = viewModelScope.launch {
+    private fun loadBannerItems() = viewModelScope.launch {
         _bannerLoading.value = true
         runCatching {
             homeRepository.getBanners()
@@ -45,7 +50,7 @@ class HomeViewModel @Inject constructor(
     }
 
     // 홈 화면 프로모션 데이터 불러오기
-    fun loadPromotions() = viewModelScope.launch {
+    private fun loadPromotions() = viewModelScope.launch {
         _promotionLoading.value = true
         runCatching {
             homeRepository.getPromotionSections()
