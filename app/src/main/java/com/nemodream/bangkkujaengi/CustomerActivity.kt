@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -31,14 +32,17 @@ class CustomerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // 전달받은 데이터 처리
-        val isGuest = intent.getBooleanExtra("isGuest", true)
-        val documentId = intent.getStringExtra("documentId")
+        // SharedPreferences에서 사용자 상태 로드
+        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val userType = sharedPreferences.getString("userType", "guest") // 기본값: guest
+        val documentId = sharedPreferences.getString("documentId", null)
 
-        if (isGuest) {
-            Log.d("CustomerActivity", "비회원으로 이용 중")
-        } else {
-            Log.d("CustomerActivity", "회원으로 이용 중, 문서 ID: $documentId")
+        // 사용자 상태 로그 출력
+        when (userType) {
+            "admin" -> Log.d("login", "관리자로 이용 중")
+            "member" -> Log.d("login", "회원으로 이용 중, 문서 ID: $documentId")
+            "guest" -> Log.d("login", "비회원으로 이용 중")
+            else -> Log.d("login", "알 수 없는 사용자 상태")
         }
 
         val navController = setupNavHost()
