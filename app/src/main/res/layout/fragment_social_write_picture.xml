@@ -84,7 +84,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_social_carousel_photo"/>
 
-    <!-- 버튼 -->
+    <!-- 게시글 내용 작성(제목) -->
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/tf_write_title"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:hint="제목을 입력하세요"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_social_write_picture_selected_photos" />
+
+    <!-- 게시글 내용 작성(내용) -->
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/tf_write_content"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:hint="방을 간단하게 소개해 주세요"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_write_title" />
+
+    <!-- 사진 추가 버튼 -->
     <Button
         android:id="@+id/btn_add_picture"
         android:layout_width="320dp"
@@ -113,15 +135,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- 다음 버튼 -->
+    <!-- 사진 추가 화면에서 다음 버튼 -->
     <Button
-        android:id="@+id/btn_next"
+        android:id="@+id/btn_write_picture_next"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
         android:backgroundTint="#332828"
         android:textColor="@color/white"
         android:text="다음"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- 태그 추가 화면에서 다음 버튼 -->
+    <Button
+        android:id="@+id/btn_write_tag_next"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:backgroundTint="#332828"
+        android:textColor="@color/white"
+        android:text="다음"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- 게시 버튼 -->
+    <Button
+        android:id="@+id/btn_post"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:backgroundTint="#332828"
+        android:textColor="@color/white"
+        android:text="게시"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
