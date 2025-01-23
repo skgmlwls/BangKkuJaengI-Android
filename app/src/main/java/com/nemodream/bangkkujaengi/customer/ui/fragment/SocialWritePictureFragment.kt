@@ -43,17 +43,58 @@ class SocialWritePictureFragment : Fragment() {
         _binding = null
     }
 
+    // 리스너 모음
     private fun setupListeners() {
         with(binding) {
+            // 툴바의 뒤로가기 아이콘
             toolbarSocial.setNavigationOnClickListener {
                 findNavController().popBackStack(R.id.navigation_social, false)
             }
+
+            // "사진 추가" 버튼
             btnAddPicture.setOnClickListener {
-                val bottomSheetFragment = SocialWritePictureBottomSheetFragment()
-                bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
+                openWritePictureBottomSheet()
+            }
+
+            // "항목 수정" 버튼
+            btnModifyItem.setOnClickListener {
+                openWritePictureBottomSheet()
+            }
+
+            // 게시된 사진 클릭 리스너
+            // 클릭하면..
+            // 사진에서 클릭된 위치값 저장 함수 호출
+            // openWriteTagBottomSheet() 바텀시트 올리기 함수 호출
+
+            // 사진 추가 화면에서 "다음" 버튼
+            btnWritePictureNext.setOnClickListener {
+                binding.btnWritePictureNext.visibility = View.GONE
+                binding.btnModifyItem.visibility = View.GONE
+                binding.btnWriteTagNext.visibility = View.VISIBLE
+            }
+
+            // 태그 추가 화면에서 "다음" 버튼
+            btnWriteTagNext.setOnClickListener {
+                binding.btnWriteTagNext.visibility = View.GONE
+                binding.tfWriteTitle.visibility = View.VISIBLE
+                binding.tfWriteContent.visibility = View.VISIBLE
+                binding.btnPost.visibility = View.VISIBLE
             }
         }
     }
+
+    // 사진 선택 바텀시트 올리기
+    private fun openWritePictureBottomSheet() {
+        val bottomSheetFragment = SocialWritePictureBottomSheetFragment().apply {
+            arguments = Bundle().apply {
+                putParcelableArrayList("selectedPhotos", ArrayList(selectedPhotos))
+            }
+        }
+        bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
+    }
+
+    // 태그 선택 바텀시트 올리기
+    private fun openWriteTagBottomSheet() {}
 
     // 선택된 사진 리스트를 업데이트
     private fun updateSelectedPhotos(photos: List<Uri>) {
@@ -64,6 +105,11 @@ class SocialWritePictureFragment : Fragment() {
         binding.viewSocialWritePicturePlaceholder.visibility = View.GONE
         binding.tvSocialWritePicturePlaceholder.visibility = View.GONE
         binding.rvSocialWritePictureSelectedPhotos.visibility = View.VISIBLE
+
+        // 버튼 상태 업데이트
+        binding.btnAddPicture.visibility = View.GONE
+        binding.btnModifyItem.visibility = View.VISIBLE
+        binding.btnWritePictureNext.visibility = View.VISIBLE
 
         binding.rvSocialWritePictureSelectedPhotos.adapter?.notifyDataSetChanged()
     }
