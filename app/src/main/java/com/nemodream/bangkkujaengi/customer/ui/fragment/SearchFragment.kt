@@ -65,35 +65,53 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
 
     private fun observeViewModel() {
         with(binding) {
-            viewModel.searchHistory.observe(viewLifecycleOwner) { searchHistory ->
-                when(searchHistory.isEmpty()) {
-                    true -> { // 최근 검색이 없을 때
-                        tvSearchHistoryLabel.visibility = View.GONE
-                        tvClearAll.visibility = View.GONE
-                        groupRecentSearches.visibility = View.GONE
-                    }
-                    false -> {
-                        groupRecentSearches.visibility = View.VISIBLE
+            viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+                if (isLoading) {
+                    shimmerLayout.root.visibility = View.VISIBLE
+                    rvSearchResultList.visibility = View.GONE
+                    rvSearchHistoryList.visibility = View.GONE
+                    groupRecentSearches.visibility = View.GONE
+                    layoutResultEmpty.root.visibility = View.GONE
+                } else {
+                    shimmerLayout.root.visibility = View.GONE
+                    if (viewModel.searchResults.value?.isNotEmpty() == true) {
+                        rvSearchResultList.visibility = View.VISIBLE
+                        searchResultAdapter.submitList(viewModel.searchResults.value)
+                    } else {
+                        rvSearchHistoryList.visibility = View.VISIBLE
                     }
                 }
-                searchAdapter.submitList(searchHistory)
+            }
+
+            viewModel.searchHistory.observe(viewLifecycleOwner) { searchHistory ->
+                if (viewModel.isLoading.value == true) return@observe
+
+                if (searchHistory.isEmpty()) {
+                    tvSearchHistoryLabel.visibility = View.GONE
+                    tvClearAll.visibility = View.GONE
+                    groupRecentSearches.visibility = View.GONE
+                    layoutHistoryEmpty.root.visibility = View.VISIBLE
+                } else {
+                    groupRecentSearches.visibility = View.VISIBLE
+                    layoutHistoryEmpty.root.visibility = View.GONE
+                    searchAdapter.submitList(searchHistory)
+                }
             }
 
             viewModel.searchResults.observe(viewLifecycleOwner) { searchResults ->
-                groupRecentSearches.visibility = View.GONE
-                rvSearchHistoryList.visibility = View.GONE
+                if (viewModel.isLoading.value == true) return@observe
 
-                when(searchResults.isEmpty()) {
-                    true -> {
-                        rvSearchResultList.visibility = View.GONE
-                        layoutResultEmpty.root.visibility = View.VISIBLE
-                    }
-                    false -> {
-                        rvSearchResultList.visibility = View.VISIBLE
-                        layoutResultEmpty.root.visibility = View.GONE
-                        searchResultAdapter.submitList(searchResults)
-                    }
+                rvSearchHistoryList.visibility = View.GONE
+                groupRecentSearches.visibility = View.GONE
+
+                if (searchResults.isEmpty()) {
+                    layoutResultEmpty.root.visibility = View.VISIBLE
+                    rvSearchResultList.visibility = View.GONE
+                } else {
+                    layoutResultEmpty.root.visibility = View.GONE
+                    rvSearchResultList.visibility = View.VISIBLE
                 }
+                searchResultAdapter.submitList(searchResults)
             }
         }
     }
@@ -150,7 +168,8 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        val action = SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
+        val action =
+            SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
     }
 }
