@@ -3,7 +3,6 @@ package com.nemodream.bangkkujaengi
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -88,7 +87,9 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun navigateToCustomerActivity() {
-        val intent = Intent(this, CustomerActivity::class.java)
+        val intent = Intent(this, CustomerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         startActivity(intent)
         finish() // 현재 로그인 화면 종료
     }
