@@ -14,6 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/admin_order_toolbar_menu"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="방꾸쟁이 주문 관리"
         app:titleTextAppearance="@style/AppToolbarTitleStyle" />
