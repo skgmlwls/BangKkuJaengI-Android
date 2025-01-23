@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +53,7 @@ class SignInActivity : AppCompatActivity() {
             } else {
                 // 관리자 계정 확인
                 if (id == "admin" && password == "admin*") {
+                    saveLoginState("admin", id)
                     navigateToAdminActivity() // AdminActivity로 이동
                 } else {
                     signInViewModel.signIn(id, password) // 일반 사용자 로그인
@@ -61,8 +63,8 @@ class SignInActivity : AppCompatActivity() {
 
         // 비회원으로 이용하기 버튼 클릭 시 CustomerActivity로 이동
         binding.tvSignInGuestLogin.setOnClickListener {
-            Log.d("SignInActivity", "비회원으로 이용하기")
-            navigateToCustomerActivity(isGuest = true, documentId = null)
+            saveLoginState("guest", null)
+            navigateToCustomerActivity()
         }
 
         // 아이디/비밀번호 찾기 버튼 클릭 시 FindInfoFragment로 이동
@@ -77,19 +79,16 @@ class SignInActivity : AppCompatActivity() {
         signInViewModel.loginResult.observe(this) { result ->
             val (success, message, documentId) = result
             if (success) {
-                Log.d("SignInActivity", "회원 로그인 성공, 문서 ID: $documentId")
-                navigateToCustomerActivity(isGuest = false, documentId = documentId)
+                saveLoginState("member", documentId)
+                navigateToCustomerActivity()
             } else {
                 showToast(message)
             }
         }
     }
 
-    private fun navigateToCustomerActivity(isGuest: Boolean, documentId: String?) {
-        val intent = Intent(this, CustomerActivity::class.java).apply {
-            putExtra("isGuest", isGuest)
-            putExtra("documentId", documentId)
-        }
+    private fun navigateToCustomerActivity() {
+        val intent = Intent(this, CustomerActivity::class.java)
         startActivity(intent)
         finish() // 현재 로그인 화면 종료
     }
@@ -100,6 +99,15 @@ class SignInActivity : AppCompatActivity() {
         startActivity(intent)
         finish() // 현재 로그인 화면 종료
     }
+
+    private fun saveLoginState(userType: String, documentId: String?) {
+        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userType", userType)
+        editor.putString("documentId", documentId) // 회원 ID
+        editor.apply()
+    }
+
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
