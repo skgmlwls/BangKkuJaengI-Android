@@ -143,6 +143,14 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     * */
     private fun setupListeners() {
         with(binding) {
+            categoryAll.root.setOnClickListener {
+                val action =
+                    HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(
+                        CategoryType.ALL
+                    )
+                findNavController().navigate(action)
+            }
+
             categoryFurniture.root.setOnClickListener {
                 val action =
                     HomeFragmentDirections.actionNavigationHomeToCategoryProductFragment(
