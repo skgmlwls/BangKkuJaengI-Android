@@ -9,18 +9,21 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponReceiveClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyCouponBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyCouponFragment: Fragment() {
+class MyCouponFragment: Fragment(), CouponReceiveClickListener {
     private var _binding: FragmentMyCouponBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: MyCouponViewModel by viewModels()
-    private val couponAdapter: CouponAdapter by lazy { CouponAdapter() }
+    private val couponAdapter: CouponAdapter by lazy { CouponAdapter(this) }
 
     private val args: MyCouponFragmentArgs by navArgs()
     private val memberId: String by lazy { args.memberId }
@@ -46,8 +49,12 @@ class MyCouponFragment: Fragment() {
         _binding = null
     }
 
+    override fun onCouponReceiveClick(coupon: Coupon) {
+        viewModel.receiveCoupon(requireContext().getUserId(), coupon)
+    }
+
     private fun setupUI() {
-        viewModel.getCouponList()
+        viewModel.getCouponList(requireContext().getUserId())
         with(binding) {
             rvMyCouponList.adapter = couponAdapter
         }
