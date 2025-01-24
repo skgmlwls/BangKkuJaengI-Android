@@ -82,7 +82,7 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
                         rvSearchResultList.visibility = View.VISIBLE
                         searchResultAdapter.submitList(viewModel.searchResults.value)
                     } else {
-                        rvSearchHistoryList.visibility = View.VISIBLE
+                        rvSearchHistoryList.visibility = View.GONE
                     }
                 }
             }
@@ -108,6 +108,7 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
 
                 if (searchResults.isEmpty()) {
                     layoutResultEmpty.root.visibility = View.VISIBLE
+                    rvSearchHistoryList.visibility = View.GONE
                     rvSearchResultList.visibility = View.GONE
                     tvSearchResultLabel.visibility = View.GONE
                 } else {
