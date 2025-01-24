@@ -3,6 +3,7 @@ package com.nemodream.bangkkujaengi.admin.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.admin.data.model.OrderState
 
@@ -10,6 +11,10 @@ class AdminOrderViewModel : ViewModel() {
 
     private val _orders = MutableLiveData<List<Order>>()
     val orders: LiveData<List<Order>> get() = _orders
+
+    private val selectedOrders = mutableSetOf<String>()
+    private val _headerCheckboxState = MutableLiveData<Int>()
+    val headerCheckboxState: LiveData<Int> get() = _headerCheckboxState
 
     fun loadOrders(state: OrderState) {
         // 상태별 샘플 데이터 로드
@@ -37,7 +42,42 @@ class AdminOrderViewModel : ViewModel() {
             )
         }
 
-        // 데이터 갱신
+        // 데이터 초기화
         _orders.value = sampleOrders
+    }
+
+    fun isOrderSelected(orderNumber: String): Boolean {
+        return selectedOrders.contains(orderNumber)
+    }
+
+    fun updateOrderSelection(orderNumber: String, isChecked: Boolean) {
+        if (isChecked) selectedOrders.add(orderNumber) else selectedOrders.remove(orderNumber)
+        updateCheckboxState()
+    }
+
+    fun toggleSelectAllOrders(selectAll: Boolean) {
+        val currentOrders = _orders.value ?: return
+        selectedOrders.clear()
+
+        if (selectAll) {
+            currentOrders.forEach { selectedOrders.add(it.orderNumber) }
+        }
+        updateCheckboxState()
+
+        // LiveData로 선택된 항목 업데이트를 트리거
+        _orders.value = currentOrders.toList() // 강제로 LiveData 업데이트
+    }
+
+
+    private fun updateCheckboxState() {
+        val currentOrders = _orders.value ?: return
+        val selectedCount = selectedOrders.size
+        val totalCount = currentOrders.size
+
+        _headerCheckboxState.value = when {
+            selectedCount == 0 -> MaterialCheckBox.STATE_UNCHECKED
+            selectedCount == totalCount -> MaterialCheckBox.STATE_CHECKED
+            else -> MaterialCheckBox.STATE_INDETERMINATE
+        }
     }
 }
