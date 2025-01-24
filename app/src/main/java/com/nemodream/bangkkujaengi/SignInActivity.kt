@@ -29,7 +29,6 @@ class SignInActivity : AppCompatActivity() {
 
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupListeners()
         observeViewModel()
     }
