@@ -2,12 +2,14 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
 
@@ -27,12 +29,23 @@ class SocialWritePictureFragment : Fragment() {
         setupListeners()
         setupViewPager()
 
-        // BottomSheet에서 전달된 선택된 사진 데이터를 수신
+        // PictureBottomSheet에서 전달된 선택된 사진 데이터를 수신
         childFragmentManager.setFragmentResultListener("selectedPhotos", this) { _, bundle ->
             val photos = bundle.getParcelableArrayList<Uri>("photos")
             if (!photos.isNullOrEmpty()) {
                 updateSelectedPhotos(photos)
             }
+        }
+
+        // TagBottomSheet에서 전달된 상품 데이터 수신
+        childFragmentManager.setFragmentResultListener("productWithTagData", this) { _, bundle ->
+            val product = bundle.getParcelable<Product>("selectedProduct")
+            val position = bundle.getInt("photoPosition", -1)
+            val xCoord = bundle.getFloat("xCoord", 0f)
+            val yCoord = bundle.getFloat("yCoord", 0f)
+
+            // 전달받은 데이터를 로그로 확인 (필요에 따라 추가 처리)
+            Log.d("SocialWritePictureFragment", "Product: $product, Position: $position, X: $xCoord, Y: $yCoord")
         }
     }
 

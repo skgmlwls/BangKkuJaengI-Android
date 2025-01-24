@@ -148,10 +148,13 @@ class SocialWriteTagBottomSheetFragment : BottomSheetDialogFragment(), OnItemCli
     override fun onDeleteClick(search: SearchHistory) {}
 
     override fun onProductClick(product: Product) {
-//        parentFragmentManager.setFragmentResult(
-//            "selectedProduct",
-//            Bundle().apply { putParcelableArrayList("product", ArrayList()) }
-//        )
+        val resultData = Bundle().apply {
+            putParcelable("selectedProduct", product)
+            putInt("photoPosition", photoPosition)
+            putFloat("xCoord", xCoord)
+            putFloat("yCoord", yCoord)
+        }
+        parentFragmentManager.setFragmentResult("productWithTagData", resultData)
         dismiss()
     }
 }
