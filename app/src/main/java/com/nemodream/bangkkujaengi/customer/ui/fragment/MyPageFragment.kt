@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
+import com.nemodream.bangkkujaengi.utils.getUserType
 import com.nemodream.bangkkujaengi.utils.showToast
 
 class MyPageFragment : Fragment() {
@@ -46,7 +47,21 @@ class MyPageFragment : Fragment() {
     }
 
     private fun setupUI() {
+        val userType = appContext.getUserType()
+
         with(binding) {
+            // 멤버 타입에 따라 화면을 나눈다.
+            when(userType) {
+                "member" -> {
+                    groupMyPageNonMember.visibility = View.INVISIBLE
+                    groupMyPageMember.visibility = View.VISIBLE
+                }
+                "guest" -> {
+                    groupMyPageNonMember.visibility = View.VISIBLE
+                    groupMyPageMember.visibility = View.INVISIBLE
+                }
+            }
+
             // '3000원'을 텍스트 스타일을 볼드체로 변경
             SpannableString(tvMyPageLoginSubTitle.text).apply {
                 setSpan(
