@@ -84,6 +84,7 @@ class SocialWritePictureFragment : Fragment() {
     private fun setupViewPager() {
         binding.vpSocialWritePictureCarousel.apply {
             adapter = SocialCarouselAdapter(selectedPhotos) { position, x, y ->
+                // 사진 클릭 시 태그 추가 BottomSheet 열기
                 openWriteTagBottomSheet(position, x, y)
             }
         }
@@ -117,7 +118,15 @@ class SocialWritePictureFragment : Fragment() {
         bottomSheetFragment.show(childFragmentManager, "SocialWritePictureBottomSheetFragment")
     }
 
+    // 태그 추가 바텀시트 올리기
     private fun openWriteTagBottomSheet(position: Int, x: Float, y: Float) {
-        // 태그 추가 로직
+        val bottomSheetFragment = SocialWriteTagBottomSheetFragment().apply {
+            arguments = Bundle().apply {
+                putInt("photoPosition", position)
+                putFloat("xCoord", x)
+                putFloat("yCoord", y)
+            }
+        }
+        bottomSheetFragment.show(childFragmentManager, "SocialWriteTagBottomSheetFragment")
     }
 }
