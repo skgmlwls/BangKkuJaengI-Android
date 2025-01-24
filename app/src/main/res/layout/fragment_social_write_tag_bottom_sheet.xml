@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp">
 
@@ -21,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/background_gray_50"
+        android:layout_marginEnd="65dp"
+        android:background="@drawable/background_gray_300"
         app:cursorColor="@color/gray_300"
         app:endIconMode="clear_text"
         app:hintAnimationEnabled="false"
@@ -46,18 +47,17 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorSize="36dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_search_track" />
-
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorSize="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search_track" />
 
 
     <ImageButton
@@ -75,15 +75,15 @@
 
     <!-- 검색어와 결과 수 -->
     <TextView
-        android:id="@+id/tv_search_result_count"
+        android:id="@+id/tv_search_result_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="15dp"
-        android:text="‘아무튼 조명’에 대한 검색 결과 32건"
-        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_search_track" />
+        app:layout_constraintTop_toBottomOf="@id/et_search_track"
+        tools:text="아무튼 조명에 대한 검색결과 00건" />
+
 
     <!-- Grid RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -94,9 +94,30 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_search_result_count"
+        app:layout_constraintTop_toBottomOf="@id/tv_search_result_label"
         app:layout_constraintVertical_bias="0.0"
         app:spanCount="2"
         tools:listitem="@layout/item_product" />
 
+    <include
+        android:id="@+id/shimmer_layout"
+        layout="@layout/layout_product_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search_track" />
+
+    <include
+        android:id="@+id/layout_result_empty"
+        layout="@layout/layout_result_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search_track" />
 </androidx.constraintlayout.widget.ConstraintLayout>
