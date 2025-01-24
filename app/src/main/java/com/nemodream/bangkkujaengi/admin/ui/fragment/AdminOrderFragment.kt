@@ -1,13 +1,19 @@
 package com.nemodream.bangkkujaengi.admin.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderBinding
+import com.nemodream.bangkkujaengi.utils.showSnackBar
+import com.nemodream.bangkkujaengi.utils.showToast
 
 class AdminOrderFragment : Fragment() {
 
@@ -34,6 +40,22 @@ class AdminOrderFragment : Fragment() {
         binding.toolbarAdminOrder.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_refresh -> {
+                // 새로고침 아이템 클릭 시 동작 처리
+                context?.showToast("새로고침")
+                refreshContent()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun refreshContent() {
+
     }
 
     private fun setupViewPagerAndTabs() {
