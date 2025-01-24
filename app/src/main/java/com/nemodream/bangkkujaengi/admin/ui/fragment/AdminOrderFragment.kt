@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderBinding
@@ -33,6 +34,7 @@ class AdminOrderFragment : Fragment() {
 
         setupViewPagerAndTabs()
         navigateBack()
+        settingToolbarMenuClickListener()
     }
 
     // 뒤로가기
@@ -42,20 +44,18 @@ class AdminOrderFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_refresh -> {
-                // 새로고침 아이템 클릭 시 동작 처리
-                context?.showToast("새로고침")
-                refreshContent()
-                return true
+    private fun settingToolbarMenuClickListener() {
+        // 툴바 메뉴 클릭 리스너 설정
+        val toolbar = view?.findViewById<MaterialToolbar>(R.id.toolbar_admin_order)
+        toolbar?.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_refresh -> {
+                    Toast.makeText(requireContext(), "새로고침 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
             }
         }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun refreshContent() {
-
     }
 
     private fun setupViewPagerAndTabs() {
