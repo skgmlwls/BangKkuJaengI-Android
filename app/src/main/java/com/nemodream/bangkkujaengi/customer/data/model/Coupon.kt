@@ -45,8 +45,10 @@ data class Coupon(
     @PropertyName("activity") val isActivity : Boolean = true,
 
     // 사용 여뷰 확인
-    @PropertyName("use") val isUse: Boolean = true,
+    @PropertyName("use") val isUse: Boolean = false,
 
+    // 보유중
+    @PropertyName("hold") val isHold: Boolean = false,
 ): Parcelable
 
 enum class CouponType(val number: Int, val str: String) {
