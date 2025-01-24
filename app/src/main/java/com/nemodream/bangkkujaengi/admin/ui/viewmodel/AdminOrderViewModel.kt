@@ -13,8 +13,18 @@ class AdminOrderViewModel : ViewModel() {
     val orders: LiveData<List<Order>> get() = _orders
 
     private val selectedOrders = mutableSetOf<String>()
+
     private val _headerCheckboxState = MutableLiveData<Int>()
     val headerCheckboxState: LiveData<Int> get() = _headerCheckboxState
+
+    // 선택된 항목 수 LiveData
+    private val _selectedItemCount = MutableLiveData<Int>()
+    val selectedItemCount: LiveData<Int> get() = _selectedItemCount
+
+    init {
+        // 초기값 설정
+        _selectedItemCount.value = 0
+    }
 
     fun loadOrders(state: OrderState) {
         // 상태별 샘플 데이터 로드
@@ -46,12 +56,23 @@ class AdminOrderViewModel : ViewModel() {
         _orders.value = sampleOrders
     }
 
+    fun handleNextState(order: Order) {
+        // 다음 상태 처리 로직 (예: API 호출)
+        // 필요시 LiveData를 업데이트
+    }
+
+    fun handleCancel(order: Order) {
+        // 취소 처리 로직 (예: API 호출)
+        // 필요시 LiveData를 업데이트
+    }
+
     fun isOrderSelected(orderNumber: String): Boolean {
         return selectedOrders.contains(orderNumber)
     }
 
     fun updateOrderSelection(orderNumber: String, isChecked: Boolean) {
         if (isChecked) selectedOrders.add(orderNumber) else selectedOrders.remove(orderNumber)
+        _selectedItemCount.value = selectedOrders.size
         updateCheckboxState()
     }
 
@@ -62,12 +83,16 @@ class AdminOrderViewModel : ViewModel() {
         if (selectAll) {
             currentOrders.forEach { selectedOrders.add(it.orderNumber) }
         }
+        _selectedItemCount.value = selectedOrders.size
         updateCheckboxState()
 
         // LiveData로 선택된 항목 업데이트를 트리거
         _orders.value = currentOrders.toList() // 강제로 LiveData 업데이트
     }
 
+    fun getSelectedOrders(): List<Order> {
+        return _orders.value?.filter { selectedOrders.contains(it.orderNumber) } ?: emptyList()
+    }
 
     private fun updateCheckboxState() {
         val currentOrders = _orders.value ?: return

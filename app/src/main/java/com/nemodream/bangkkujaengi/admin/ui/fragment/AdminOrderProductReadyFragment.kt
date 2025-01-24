@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.admin.data.model.OrderState
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OrderViewType
+import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderProductReadyBinding
 
 // 상품 준비
@@ -50,7 +51,18 @@ class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
     }
 
     override fun handleNextState(order: Order) {
-        Toast.makeText(requireContext(), "${order.productName} 배송으로 이동", Toast.LENGTH_SHORT).show()
+        val context = requireContext()
+        CustomDialog(
+            context = context,
+            message = "선택한 상품 \"${order.productName}\"을 배송하시겠습니까?",
+            confirmText = "확인",
+            cancelText = "취소",
+            onConfirm = {
+                // ViewModel에 상태 변경 요청
+                viewModel.handleNextState(order)
+            },
+            onCancel = {}
+        ).show()
     }
 
     override fun handleCancel(order: Order) {
