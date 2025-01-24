@@ -105,8 +105,9 @@ class SocialWriteTagBottomSheetFragment : BottomSheetDialogFragment(), OnItemCli
 
     private fun setupListeners() {
         with(binding) {
-
             btnSearchTrack.setOnClickListener {
+                layoutEnterTagProduct.root.visibility = View.GONE
+                tvSearchResultLabel.visibility = View.GONE
                 performSearch()
                 etSearchTrack.clearFocus()
                 it.hideKeyboard()
