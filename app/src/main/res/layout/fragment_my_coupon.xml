@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_my_coupon_image"
-        tools:listitem="@layout/row_payment_coupon_recyclerview" />
+        tools:listitem="@layout/item_coupon_list" />
 
     <include
         android:id="@+id/shimmer_my_coupon"
