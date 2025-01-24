@@ -79,3 +79,8 @@ fun Context.getUserType(): String {
     val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
     return sharedPreferences.getString("userType", "guest") ?: "guest"
 }
+
+fun Context.getUserId(): String {
+    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("documentId", "") ?: ""
+}
