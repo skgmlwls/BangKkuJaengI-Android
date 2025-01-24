@@ -11,6 +11,7 @@
         android:id="@+id/cb_row_pc_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:buttonTint="@color/brown_800"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -8,6 +8,8 @@ import android.widget.Toast
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.admin.data.model.OrderState
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OrderViewType
+import com.nemodream.bangkkujaengi.admin.ui.custom.CustomCanceledDialog
+import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderPaymentCompletedBinding
 
 // 결제완료
@@ -50,12 +52,33 @@ class AdminOrderPaymentCompletedFragment : BaseAdminOrderFragment() {
     }
 
     override fun handleNextState(order: Order){
-        Toast.makeText(requireContext(), "${order.productName} 상태가 '상품 준비중'으로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+        val context = requireContext()
+        CustomDialog(
+            context = context,
+            message = "결제 완료된 상품을 준비 상태로 변경하시겠습니까?",
+            confirmText = "확인",
+            cancelText = "취소",
+            onConfirm = {
+                // ViewModel에 상태 변경 요청
+                viewModel.handleNextState(order)
+            },
+            onCancel = {}
+        ).show()
     }
 
     override fun handleCancel(order: Order) {
-        Toast.makeText(requireContext(), "${order.productName} 주문이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+        val reasons = listOf("재고 부족", "가격 오류", "주문 정보 오류", "결제 오류", "기타")
 
+        CustomCanceledDialog(
+            context = requireContext(),
+            message = "결제 완료된 상품의 주문을 취소하시겠습니까?",
+            reasons = reasons,
+            onConfirm = {
+                // ViewModel에 취소 요청
+                viewModel.handleCancel(order)
+            },
+            onCancel = { }
+        ).show()
     }
 
 }
