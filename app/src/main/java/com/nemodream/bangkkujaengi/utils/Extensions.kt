@@ -74,3 +74,8 @@ fun Context.createDropDownAdapter(items: List<String>): ArrayAdapter<String> =
         R.layout.item_dropdown_category,
         items
     )
+
+fun Context.getUserType(): String {
+    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("userType", "guest") ?: "guest"
+}
