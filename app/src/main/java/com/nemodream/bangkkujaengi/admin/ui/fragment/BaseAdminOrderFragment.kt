@@ -3,6 +3,7 @@ package com.nemodream.bangkkujaengi.admin.ui.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.HorizontalScrollView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -106,6 +107,35 @@ abstract class BaseAdminOrderFragment : Fragment() {
             visibility = if (deliveryDateHeader != null) View.VISIBLE else View.GONE
         }
     }
+
+    protected open fun setupHeaderTextAndActions(
+        cancelSelectionTextView: TextView,
+        prepareSelectionTextView: TextView,
+        headerCheckbox: MaterialCheckBox
+    ) {
+        when (viewType) {
+            OrderViewType.PAYMENT_COMPLETED -> {
+                cancelSelectionTextView.visibility = View.VISIBLE
+                prepareSelectionTextView.visibility = View.VISIBLE
+                prepareSelectionTextView.text = "선택준비"
+                headerCheckbox.isEnabled = true
+            }
+            OrderViewType.PRODUCT_READY -> {
+                cancelSelectionTextView.visibility = View.VISIBLE
+                prepareSelectionTextView.visibility = View.VISIBLE
+                prepareSelectionTextView.text = "선택배송"
+                headerCheckbox.isEnabled = true
+            }
+            OrderViewType.SHIPPING,
+            OrderViewType.PURCHASE_CONFIRMED,
+            OrderViewType.CANCELED -> {
+                cancelSelectionTextView.visibility = View.GONE
+                prepareSelectionTextView.visibility = View.GONE
+                headerCheckbox.isEnabled = false
+            }
+        }
+    }
+
 
     abstract fun handleNextState(order: Order)
 

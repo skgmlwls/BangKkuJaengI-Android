@@ -41,6 +41,11 @@ class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
         setupRecyclerView(binding.recyclerViewProductReady)
         setupHeaderCheckbox(binding.layoutHeader.cbOrderPcHeader, binding.recyclerViewProductReady)
         setupScrollSync(headerScrollView = binding.layoutHeader.scrOrderPcHeader, recyclerScrollView = binding.scrollableRecyclerView)
+        setupHeaderTextAndActions(
+            cancelSelectionTextView = binding.layoutHeader.tvOrderPcCancelSelection,
+            prepareSelectionTextView = binding.layoutHeader.tvOrderPcPrepareSelection,
+            headerCheckbox = binding.layoutHeader.cbOrderPcHeader
+        )
         viewModel.loadOrders(orderState)
     }
 

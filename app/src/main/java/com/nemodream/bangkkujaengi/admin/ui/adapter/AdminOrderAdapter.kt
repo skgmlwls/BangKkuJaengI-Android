@@ -29,9 +29,25 @@ class AdminOrderAdapter(
         with(holder.binding) {
             // 기존 리스너 제거 및 상태 초기화
             cbRowPcSelect.setOnCheckedChangeListener(null)
-            cbRowPcSelect.isChecked = order.orderNumber?.let { isOrderSelected(it) } ?: false
+
+            // 체크박스 활성화 여부 설정
+            val isCheckboxEnabled = when (viewType) {
+                OrderViewType.SHIPPING,
+                OrderViewType.PURCHASE_CONFIRMED,
+                OrderViewType.CANCELED -> false
+                else -> true
+            }
+            cbRowPcSelect.isEnabled = isCheckboxEnabled
+            cbRowPcSelect.isChecked = if (isCheckboxEnabled) {
+                order.orderNumber?.let { isOrderSelected(it) } ?: false
+            } else {
+                false
+            }
+
             cbRowPcSelect.setOnCheckedChangeListener { _, isChecked ->
-                order.orderNumber?.let { onOrderCheckedChange(it, isChecked) }
+                if (isCheckboxEnabled) {
+                    order.orderNumber?.let { onOrderCheckedChange(it, isChecked) }
+                }
             }
 
             // 필드 설정
