@@ -96,3 +96,8 @@ fun Fragment.clearFocusOnTouchOutside(event: MotionEvent) {
     val activity = this.activity ?: return
     activity.clearFocusOnTouchOutside(event)
 }
+
+fun Context.getUserType(): String {
+    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("userType", "guest") ?: "guest"
+}
