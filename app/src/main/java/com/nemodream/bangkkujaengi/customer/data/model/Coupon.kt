@@ -42,7 +42,10 @@ data class Coupon(
     val morePrice : Int = 0,
     
     // 활성화 or 비활성화
-    @PropertyName("activity") val isActivity : Boolean = true
+    @PropertyName("activity") val isActivity : Boolean = true,
+
+    // 사용 여뷰 확인
+    @PropertyName("use") val isUse: Boolean = true,
 
 ): Parcelable
 
