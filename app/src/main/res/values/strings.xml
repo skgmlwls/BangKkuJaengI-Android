@@ -7,6 +7,7 @@
     <string name="label_shopping_cart_expected_price">예상 금액</string>
     <string name="label_payment">상품 결제</string>
     <string name="label_order_details">상품 상세</string>
+    <string name="label_shipping_status">배송 현황</string>
     <string name="underlined_text_select_delete"><u>선택 삭제</u></string>
     <string name="underlined_text_delivery_check"><u>배송 조회</u></string>
     <string name="underlined_text_delete"><u>삭제</u></string>

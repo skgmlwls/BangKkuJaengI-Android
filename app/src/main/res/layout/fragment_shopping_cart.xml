@@ -222,7 +222,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
-                android:backgroundTint="#332828"
                 android:text="구매하기 (1)" />
 
             <Button

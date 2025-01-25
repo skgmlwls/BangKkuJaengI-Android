@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Coupon(
     // 쿠폰 문서 ID
-    val documentId: String = "",
+    val couponDocumentId: String = "",
     
     // 쿠폰 아이디
     val id : String = "",

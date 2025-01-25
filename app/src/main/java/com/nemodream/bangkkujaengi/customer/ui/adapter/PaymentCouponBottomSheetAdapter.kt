@@ -1,14 +1,11 @@
 package com.nemodream.bangkkujaengi.customer.ui.adapter
 
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.data.model.CouponType
-import com.nemodream.bangkkujaengi.customer.data.model.Promotion
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.PaymentCouponBottomSheetViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.RowPaymentCouponRecyclerviewViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentPaymentCouponBottomeSheetBinding
@@ -66,7 +63,7 @@ class PaymentCouponBottomSheetAdapter(
         select_single_coupon(holder, paymentCouponBottomSheetViewModel, position)
 
 
-        if (paymentCouponBottomSheetViewModel.checked_document_id.value == coupon_list[position].documentId) {
+        if (paymentCouponBottomSheetViewModel.checked_document_id.value == coupon_list[position].couponDocumentId) {
             holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = true
         }
 
@@ -158,7 +155,7 @@ class PaymentCouponBottomSheetAdapter(
             holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = isChecked
             if (isChecked) {
                 paymentCouponBottomSheetViewModel.checked_position.value = position
-                paymentCouponBottomSheetViewModel.checked_document_id.value = coupon_list[position].documentId
+                paymentCouponBottomSheetViewModel.checked_document_id.value = coupon_list[position].couponDocumentId
             } else {
                 paymentCouponBottomSheetViewModel.checked_position.value = null
             }

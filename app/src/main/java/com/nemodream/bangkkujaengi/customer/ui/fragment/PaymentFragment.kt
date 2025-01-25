@@ -78,6 +78,8 @@ class PaymentFragment : Fragment() {
     ): View? {
         fragmentPaymentBinding = FragmentPaymentBinding.inflate(inflater, container, false)
 
+        // 툴바 세팅
+        setting_toolbar()
         // 유저 아이디 세팅
         getting_user_id()
         // 리사이클러뷰 설정
@@ -103,6 +105,18 @@ class PaymentFragment : Fragment() {
         setting_btn_payment_make_payment()
 
         return fragmentPaymentBinding.root
+    }
+
+    // 툴바 세팅
+    fun setting_toolbar() {
+        fragmentPaymentBinding.tbPayment.apply {
+            // 툴바에 뒤로가기 버튼 아이콘 생성
+            setNavigationIcon(R.drawable.ic_arrow_back)
+            // 툴바 뒤로가기 버튼의 이벤트
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
     }
 
     // 결제 하기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
@@ -152,7 +166,10 @@ class PaymentFragment : Fragment() {
                             purchaseQuantity = it.quantity,
                             Delete = false,
                             purchaseDateTime = formattedTime,
-                            deliveryCost = paymentViewModel.tv_payment_tot_delivery_cost_text.value!!
+                            deliveryCost = paymentViewModel.tv_payment_tot_delivery_cost_text.value!!,
+                            receiverName = fragmentPaymentBinding.tilPaymentName.editText?.text.toString(),
+                            receiverAddr = fragmentPaymentBinding.tilPaymentAddress.editText?.text.toString(),
+                            receiverPhone = fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.text.toString()
                         )
 
                         purchase_product.add(purchase)

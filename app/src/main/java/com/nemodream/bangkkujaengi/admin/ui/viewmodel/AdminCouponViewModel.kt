@@ -38,7 +38,7 @@ class AdminCouponViewModel @Inject constructor(
             couponRepository.deleteCoupon(coupon)
         }.onSuccess {
             // 삭제 되었다면 현재 리스트에서 해당 쿠폰 삭제
-            _couponList.value = _couponList.value?.filter { it.documentId != coupon.documentId }
+            _couponList.value = _couponList.value?.filter { it.couponDocumentId != coupon.couponDocumentId }
         }.onFailure { e ->
         }
     }

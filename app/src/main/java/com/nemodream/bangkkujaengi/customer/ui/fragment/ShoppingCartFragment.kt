@@ -1,5 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
@@ -73,7 +76,14 @@ class ShoppingCartFragment : Fragment() {
 
     // 툴바 세팅 메소드
     fun setting_toolbar() {
-
+        fragmentShoppingCartBinding.tbShoppingCart.apply {
+            // 툴바에 뒤로가기 버튼 아이콘 생성
+            setNavigationIcon(R.drawable.ic_arrow_back)
+            // 툴바 뒤로가기 버튼의 이벤트
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
     }
 
     // 초기 총 상품 가격 요약 텍스트 세팅 메소드
@@ -102,6 +112,29 @@ class ShoppingCartFragment : Fragment() {
         shoppingCartViewModel.tv_shopping_cart_tot_sum_price_text.observe(viewLifecycleOwner){
             val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(it) + " 원"
             fragmentShoppingCartBinding.tvShoppingCartTotSumPrice.text = formattedPrice
+        }
+
+        shoppingCartViewModel.checked_cnt.observe(viewLifecycleOwner) {
+            shoppingCartViewModel.btn_shopping_cart_buy_text.value = "구매하기 (${it})"
+            Log.d("check_cnt", "${it}")
+
+            if (it == 0) {
+                fragmentShoppingCartBinding.btnShoppingCartBuy.apply {
+                    isEnabled = false
+                    backgroundTintList = ColorStateList.valueOf(Color.parseColor("#52332828"))
+                    setTextColor(Color.parseColor("#ffffff"))
+                    // backgroundTintList = ColorStateList.valueOf(Color.parseColor("#52332828"))
+                }
+            }
+            else {
+                fragmentShoppingCartBinding.btnShoppingCartBuy.apply {
+                    isEnabled = true
+                    backgroundTintList = ColorStateList.valueOf(Color.parseColor("#332828"))
+                    setTextColor(Color.parseColor("#ffffff"))
+                    // backgroundTintList = ColorStateList.valueOf(Color.parseColor("#52332828"))
+                }
+            }
+
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,6 +167,8 @@ class ShoppingCartFragment : Fragment() {
         }
     }
 
+    // 임시 버튼 /////////////////////////////////////////////////////////////////////////////////////
+
     // 데이터 추가 테스트 버튼
     fun fn_test_button() {
         fragmentShoppingCartBinding.btnShoppingCartItemAdd.setOnClickListener {
@@ -152,6 +187,8 @@ class ShoppingCartFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // recycelrview 업데이트 메소드
     fun refresh_recyclerview_shopping_cart() {
@@ -192,6 +229,13 @@ class ShoppingCartFragment : Fragment() {
                 }
             }
 
+            cart_data_list.items.forEach {
+                if (it.checked == true) {
+                    shoppingCartViewModel.checked_cnt.value =
+                        shoppingCartViewModel.checked_cnt.value!!.plus(1)
+                }
+            }
+
             Log.d("asd", "${cart_data_list}")
 
             // 장바구니 데이터에서 가져온 상품 document_id를 통해 상품정보를 가져온다
@@ -214,7 +258,7 @@ class ShoppingCartFragment : Fragment() {
             setting_recyclerview()
 
             // 버튼 텍스트 업데이트
-            shoppingCartViewModel.btn_shopping_cart_buy_text.value = "구매하기 (${cart_product_data_list.size})"
+            shoppingCartViewModel.btn_shopping_cart_buy_text.value = "구매하기 (${shoppingCartViewModel.checked_cnt.value})"
 
             // 로딩바 비활성화
             fragmentShoppingCartBinding.pdShoppingCartProductListLoading.visibility = View.GONE
