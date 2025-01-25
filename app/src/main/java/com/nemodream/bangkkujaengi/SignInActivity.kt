@@ -3,6 +3,7 @@ package com.nemodream.bangkkujaengi
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -22,6 +23,8 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        checkLoginState()
 
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -109,6 +112,30 @@ class SignInActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    private fun checkLoginState() {
+        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val userType = sharedPreferences.getString("userType", null) // 저장된 사용자 유형
+        val documentId = sharedPreferences.getString("documentId", null) // 저장된 사용자 ID
+
+        when {
+            userType == null -> {
+                Log.d("SignInActivity", "이전 로그인 정보 없음: 비회원 상태")
+                // 비회원 상태, 로그인 화면 유지
+            }
+            userType == "member" && documentId != null -> {
+                Log.d("SignInActivity", "이전 로그인 정보: 회원 (documentId=$documentId)")
+                navigateToCustomerActivity()
+            }
+            userType == "admin" -> {
+                Log.d("SignInActivity", "이전 로그인 정보: 관리자")
+                navigateToAdminActivity()
+            }
+            else -> {
+                Log.d("SignInActivity", "로그인 정보가 올바르지 않음: userType=$userType, documentId=$documentId")
+                // 로그인 화면 유지
+            }
+        }
+    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
