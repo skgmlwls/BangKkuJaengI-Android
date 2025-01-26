@@ -43,7 +43,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "This is a test post",
                 imageList = listOf("https://example.com/image1.jpg"),
                 savedCount = 5,
-                commentCount = 3
+                commentCount = 3,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "2",
@@ -53,7 +54,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Another test post",
                 imageList = listOf("https://example.com/image2.jpg"),
                 savedCount = 10,
-                commentCount = 8
+                commentCount = 8,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "3",
@@ -63,7 +65,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 2,
-                commentCount = 1
+                commentCount = 1,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "4",
@@ -73,7 +76,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "5",
@@ -83,7 +87,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 0,
-                commentCount = 1
+                commentCount = 1,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "6",
@@ -93,7 +98,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "7",
@@ -103,7 +109,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "8",
@@ -113,7 +120,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "9",
@@ -123,7 +131,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
         )
         // 현재 로그인 유저 닉네임으로 필터링
@@ -141,7 +150,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "This is a test post",
                 imageList = listOf("https://example.com/image1.jpg"),
                 savedCount = 5,
-                commentCount = 3
+                commentCount = 3,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "2",
@@ -151,7 +161,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Another test post",
                 imageList = listOf("https://example.com/image2.jpg"),
                 savedCount = 10,
-                commentCount = 8
+                commentCount = 8,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "3",
@@ -161,7 +172,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 2,
-                commentCount = 1
+                commentCount = 1,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "4",
@@ -171,7 +183,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "5",
@@ -181,7 +194,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 0,
-                commentCount = 1
+                commentCount = 1,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "6",
@@ -191,7 +205,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "7",
@@ -201,7 +216,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "8",
@@ -211,7 +227,8 @@ class SocialMyRepository @Inject constructor() {
                 content = "Third test post",
                 imageList = listOf("https://example.com/image3.jpg"),
                 savedCount = 9,
-                commentCount = 0
+                commentCount = 0,
+                productTagPinList = listOf()
             ),
         )
         // 현재 로그인 유저 닉네임으로 필터링

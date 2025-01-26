@@ -163,7 +163,8 @@ class SocialFollowingRepository @Inject constructor(){
                 content = "게시글 내용 11",
                 imageList = listOf("https://example.com/post1_img11.jpg"),
                 savedCount = 10,
-                commentCount = 5
+                commentCount = 5,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "post22",
@@ -173,7 +174,8 @@ class SocialFollowingRepository @Inject constructor(){
                 content = "게시글 내용 22",
                 imageList = listOf("https://example.com/post2_img11.jpg"),
                 savedCount = 15,
-                commentCount = 8
+                commentCount = 8,
+                productTagPinList = listOf()
             ),
             Post(
                 id = "post32",
@@ -183,7 +185,8 @@ class SocialFollowingRepository @Inject constructor(){
                 content = "게시글 내용 33",
                 imageList = listOf("https://example.com/post2_img11.jpg"),
                 savedCount = 15,
-                commentCount = 8
+                commentCount = 8,
+                productTagPinList = listOf()
             )
         )
         // 특정 회원의 닉네임으로 필터링
