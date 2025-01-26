@@ -5,11 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -18,7 +16,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentFindPasswordBinding
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.FindPasswordViewModel
-import com.nemodream.bangkkujaengi.utils.hideKeyboard
+import com.nemodream.bangkkujaengi.utils.clearFocusOnTouchOutside
+import com.nemodream.bangkkujaengi.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -46,6 +45,12 @@ class FindPasswordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
+
+        view.setOnTouchListener { _, event ->
+            clearFocusOnTouchOutside(event) // Fragment 확장 함수 호출
+            false // 다른 터치 이벤트도 처리되도록 false 반환
+        }
+
         setupObservers()
         setupListeners()
     }
@@ -54,7 +59,7 @@ class FindPasswordFragment : Fragment() {
         // 에러 메시지 처리
         viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                requireContext().showSnackBar(binding.root, it)
                 viewModel.clearErrorMessage() // 메시지 초기화
             }
         }
@@ -62,7 +67,7 @@ class FindPasswordFragment : Fragment() {
         // 성공 메시지 처리
         viewModel.successMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                requireContext().showSnackBar(binding.root, it)
                 viewModel.clearSuccessMessage() // 메시지 초기화
             }
         }
@@ -79,11 +84,9 @@ class FindPasswordFragment : Fragment() {
             if (isVerified) {
                 binding.btnFindPwResetPw.visibility = View.VISIBLE
                 binding.btnFindPwResetPw.isEnabled = true
-                Log.d("FindPasswordFragment", "비밀번호 재설정 버튼 활성화")
             } else {
                 binding.btnFindPwResetPw.visibility = View.INVISIBLE
                 binding.btnFindPwResetPw.isEnabled = false
-                Log.d("FindPasswordFragment", "비밀번호 재설정 버튼 비활성화")
             }
         }
 
@@ -100,11 +103,6 @@ class FindPasswordFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // 빈 공간 터치 시 키보드 숨김 처리
-        binding.root.setOnClickListener {
-            binding.root.hideKeyboard()
-        }
-
         // 아이디 입력 감지
         binding.tfFindPwId.editText?.addTextChangedListener { text ->
             viewModel.idInput.value = text?.toString()
@@ -129,7 +127,7 @@ class FindPasswordFragment : Fragment() {
             val phoneNumber = binding.tfFindPwPhoneNumber.editText?.text.toString()
 
             if (id.isBlank() || phoneNumber.isBlank()) {
-                Snackbar.make(binding.root, "아이디와 전화번호를 입력해주세요.", Snackbar.LENGTH_SHORT).show()
+                requireContext().showSnackBar(binding.root, "아이디와 전화번호를 입력해주세요.")
                 return@setOnClickListener
             }
 
@@ -143,7 +141,7 @@ class FindPasswordFragment : Fragment() {
                     if (formattedPhoneNumber.isNotEmpty()) {
                         startPhoneNumberVerification(formattedPhoneNumber)
                     } else {
-                        Snackbar.make(binding.root, "전화번호 형식이 잘못되었습니다.", Snackbar.LENGTH_SHORT).show()
+                        requireContext().showSnackBar(binding.root, "전화번호 형식이 잘못되었습니다.")
                     }
                 }
             }
@@ -151,7 +149,7 @@ class FindPasswordFragment : Fragment() {
             // 성공 메시지 관찰
             viewModel.successMessage.observe(viewLifecycleOwner) { message ->
                 message?.let {
-                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                    requireContext().showSnackBar(binding.root, it)
                     viewModel.clearSuccessMessage()
                 }
             }
@@ -162,7 +160,7 @@ class FindPasswordFragment : Fragment() {
             val inputCode = binding.tfFindPwVerificationCode.editText?.text.toString()
 
             if (inputCode.isBlank() || storedVerificationId == null) {
-                Snackbar.make(binding.root, "인증번호를 입력하거나 인증 요청을 다시 진행하세요.", Snackbar.LENGTH_SHORT).show()
+                requireContext().showSnackBar(binding.root, "인증번호를 입력하거나 인증 요청을 다시 진행하세요.")
                 return@setOnClickListener
             }
 
@@ -185,7 +183,7 @@ class FindPasswordFragment : Fragment() {
                     .addToBackStack(null)
                     .commit()
             } else {
-                Snackbar.make(binding.root, "인증되지 않은 사용자입니다.", Snackbar.LENGTH_SHORT).show()
+                requireContext().showSnackBar(binding.root, "인증되지 않은 사용자입니다.")
             }
         }
 
@@ -207,7 +205,7 @@ class FindPasswordFragment : Fragment() {
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    Snackbar.make(binding.root, "인증번호 전송 실패: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                    requireContext().showSnackBar(binding.root, "인증번호 전송 실패")
                 }
 
                 override fun onCodeSent(
@@ -216,7 +214,7 @@ class FindPasswordFragment : Fragment() {
                 ) {
                     storedVerificationId = verificationId
                     resendToken = token
-                    Snackbar.make(binding.root, "인증번호가 전송되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    requireContext().showSnackBar(binding.root, "인증번호가 전송되었습니다.")
 
                     binding.btnFindPwVerification.postDelayed({
                         binding.btnFindPwVerification.isEnabled = true
@@ -247,15 +245,14 @@ class FindPasswordFragment : Fragment() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    Snackbar.make(binding.root, "전화번호 인증 성공!", Snackbar.LENGTH_SHORT).show()
+                    requireContext().showSnackBar(binding.root, "전화번호 인증 성공!")
                     viewModel.onVerificationSuccess() // 인증 성공 처리
                 } else {
-                    Snackbar.make(binding.root, "전화번호 인증 실패: ${task.exception?.message}", Snackbar.LENGTH_SHORT).show()
+                    requireContext().showSnackBar(binding.root, "전화번호 인증 실패: ${task.exception?.message}")
                     binding.btnFindPwCheckVerification.isEnabled = true // 실패 시 버튼 다시 활성화
                 }
             }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
