@@ -59,31 +59,13 @@ class FindPasswordViewModel @Inject constructor(
                     else -> {
                         _memberId.value = id
                         _isVerificationCodeSent.value = true
-                        _successMessage.value = "인증번호가 발송되었습니다."
+                        // _successMessage.value = "인증번호가 발송되었습니다."
                     }
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "오류가 발생했습니다. 다시 시도해주세요."
                 _isVerificationButtonEnabled.value = true
             }
-        }
-    }
-
-
-
-    fun verifyCode(inputCode: String, storedVerificationId: String?, onVerificationSuccess: () -> Unit, onVerificationFailure: () -> Unit) {
-        if (storedVerificationId == null) {
-            _errorMessage.value = "인증 요청을 먼저 진행하세요."
-            onVerificationFailure()
-            return
-        }
-
-        try {
-            val credential = PhoneAuthProvider.getCredential(storedVerificationId, inputCode)
-            onVerificationSuccess()
-        } catch (e: Exception) {
-            _errorMessage.value = "인증번호가 올바르지 않습니다."
-            onVerificationFailure()
         }
     }
 
