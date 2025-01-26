@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SignUpViewModel
 import com.nemodream.bangkkujaengi.databinding.ActivitySignUpBinding
 import com.nemodream.bangkkujaengi.utils.clearFocusOnTouchOutside
@@ -217,8 +219,8 @@ class SignUpActivity : AppCompatActivity() {
             } else {
                 signUpViewModel.registerMember { success, documentId ->
                     if (success) {
-                        showSnackBar(binding.root, "회원가입 완료!")
-                        finish()
+                        // 회원가입 완료 다이얼로그 호출
+                        showSignUpSuccessDialog()
                     } else {
                         showSnackBar(binding.root, "회원가입 실패")
                         binding.btnSignUpSignup.isEnabled = true
@@ -226,6 +228,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         }
+
 
         // 전화번호 입력 리스너
         binding.tfSignUpPhoneNumber.editText?.addTextChangedListener { editable ->
@@ -347,6 +350,29 @@ class SignUpActivity : AppCompatActivity() {
         } else {
             countryCode + cleanedNumber
         }
+    }
+
+    private fun showSignUpSuccessDialog() {
+        val dialog = CustomDialog(
+            context = this,
+            message = "회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.",
+            confirmText = "확인",
+            onConfirm = {
+                // 로그인 화면으로 이동
+                navigateToSignInScreen()
+            },
+            onCancel = {
+                // 아무 동작 없이 다이얼로그만 닫음
+            }
+        )
+        dialog.show()
+    }
+
+    private fun navigateToSignInScreen() {
+        val intent = Intent(this, SignInActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish() // 현재 Activity 종료
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
