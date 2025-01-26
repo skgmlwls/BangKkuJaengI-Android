@@ -78,16 +78,6 @@ fun Context.createDropDownAdapter(items: List<String>): ArrayAdapter<String> =
         items
     )
 
-fun Context.getUserType(): String {
-    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
-    return sharedPreferences.getString("userType", "guest") ?: "guest"
-}
-
-fun Context.getUserId(): String {
-    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
-    return sharedPreferences.getString("documentId", "") ?: ""
-}
-
 fun Activity.clearFocusOnTouchOutside(event: MotionEvent) {
     if (event.action == MotionEvent.ACTION_DOWN) {
         val view = currentFocus
@@ -110,4 +100,9 @@ fun Fragment.clearFocusOnTouchOutside(event: MotionEvent) {
 fun Context.getUserType(): String {
     val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
     return sharedPreferences.getString("userType", "guest") ?: "guest"
+}
+
+fun Context.getUserId(): String {
+    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("documentId", "") ?: ""
 }
