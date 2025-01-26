@@ -106,3 +106,22 @@ fun Context.getUserId(): String {
     val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
     return sharedPreferences.getString("documentId", "") ?: ""
 }
+
+fun Activity.clearFocusOnTouchOutside(event: MotionEvent) {
+    if (event.action == MotionEvent.ACTION_DOWN) {
+        val view = currentFocus
+        if (view is EditText) {
+            val outRect = Rect()
+            view.getGlobalVisibleRect(outRect)
+            if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                view.clearFocus()
+                view.hideKeyboard()
+            }
+        }
+    }
+}
+
+fun Fragment.clearFocusOnTouchOutside(event: MotionEvent) {
+    val activity = this.activity ?: return
+    activity.clearFocusOnTouchOutside(event)
+}
