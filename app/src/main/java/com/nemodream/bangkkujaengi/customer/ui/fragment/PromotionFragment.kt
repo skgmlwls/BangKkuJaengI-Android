@@ -159,4 +159,8 @@ class PromotionFragment: Fragment(), ProductClickListener {
         val action = PromotionFragmentDirections.actionNavigationPromotionToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
     }
+
+    override fun onFavoriteClick(product: Product) {
+        TODO("Not yet implemented")
+    }
 }

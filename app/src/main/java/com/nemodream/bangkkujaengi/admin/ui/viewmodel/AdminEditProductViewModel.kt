@@ -246,7 +246,14 @@ class AdminEditProductViewModel @Inject constructor(
         productCount = count.toInt(),
         images = _storageImages.value ?: emptyList(),
         colors = _colors.value ?: emptyList(),
-        searchKeywords = title.split(" ")
+        searchKeywords = title.split(" "),
+        createdAt = System.currentTimeMillis(),
+        delete = false,
+        like = false,
+        likeCount = 0,
+        purchaseCount = 0,
+        reviewCount = 0,
+        viewCount = 0,
     )
 
     companion object {

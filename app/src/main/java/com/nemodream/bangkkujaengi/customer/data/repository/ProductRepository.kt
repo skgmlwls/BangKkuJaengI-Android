@@ -94,7 +94,15 @@ class ProductRepository @Inject constructor(
             price = getLong("price")?.toInt() ?: 0,
             productCount = getLong("productCount")?.toInt() ?: 0,
             saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saleRate = getLong("saleRate")?.toInt() ?: 0
+            saleRate = getLong("saleRate")?.toInt() ?: 0,
+            like = getBoolean("like") ?: false,
+            likeCount = getLong("likeCount")?.toInt() ?: 0,
+            purchaseCount = getLong("purchaseCount")?.toInt() ?: 0,
+            reviewCount = getLong("reviewCount")?.toInt() ?: 0,
+            viewCount = getLong("viewCount")?.toInt() ?: 0,
+            createdAt = getLong("createdAt") ?: 0,
+            delete = getBoolean("delete") ?: false,
+            searchKeywords = get("searchKeywords") as? List<String> ?: emptyList()
         )
     }
 

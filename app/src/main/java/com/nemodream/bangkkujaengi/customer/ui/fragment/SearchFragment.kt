@@ -191,4 +191,8 @@ class SearchFragment : Fragment(), OnItemClickListener, ProductClickListener {
         val action = SearchFragmentDirections.actionNavigationSearchToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
     }
+
+    override fun onFavoriteClick(product: Product) {
+        TODO("Not yet implemented")
+    }
 }

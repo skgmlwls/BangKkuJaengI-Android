@@ -2,6 +2,7 @@ package com.nemodream.bangkkujaengi.customer.data.repository
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.local.dao.SearchHistoryDao
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
@@ -15,7 +16,7 @@ class SearchRepository @Inject constructor(
     private val searchHistoryDao: SearchHistoryDao,
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    ) {
+) {
     suspend fun getAllSearchHistory(): List<SearchHistory> =
         searchHistoryDao.getSearchHistoryList()
 
@@ -66,21 +67,11 @@ class SearchRepository @Inject constructor(
     * Firebase Firestore에서 상품 데이터 가져오기
     * */
     private suspend fun DocumentSnapshot.toProduct(): Product {
-        val imageRefs = get("images") as? List<String> ?: emptyList()
-        val imageUrls = imageRefs.map { imagePath -> getImageUrl(imagePath) }
-
-        return Product(
+        return toObject<Product>()?.copy(
             productId = id,
-            productName = getString("productName") ?: "",
-            description = getString("description") ?: "",
-            images = imageUrls,
-            isBest = getBoolean("isBest") ?: false,
-            category = CategoryType.fromString(getString("category") ?: ""),
-            subCategory = SubCategoryType.fromString(getString("subCategory") ?: ""),
-            price = getLong("price")?.toInt() ?: 0,
-            productCount = getLong("productCount")?.toInt() ?: 0,
-            saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saleRate = getLong("saledRate")?.toInt() ?: 0,
-        )
+            images = (get("images") as? List<String>)?.map { imagePath ->
+                getImageUrl(imagePath)
+            } ?: emptyList()
+        ) ?: Product()
     }
 }

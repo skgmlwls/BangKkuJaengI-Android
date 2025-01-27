@@ -158,4 +158,6 @@ class SocialWriteTagBottomSheetFragment : BottomSheetDialogFragment(), OnItemCli
         parentFragmentManager.setFragmentResult("productWithTagData", resultData)
         dismiss()
     }
+
+    override fun onFavoriteClick(product: Product) {}
 }

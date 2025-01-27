@@ -62,6 +62,10 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
         findNavController().navigate(action)
     }
 
+    override fun onFavoriteClick(product: Product) {
+        TODO("Not yet implemented")
+    }
+
     private fun setupUI() {
         binding.rvCategoryProductList.adapter = adapter
         binding.rvCategoryProductList.itemAnimator = null

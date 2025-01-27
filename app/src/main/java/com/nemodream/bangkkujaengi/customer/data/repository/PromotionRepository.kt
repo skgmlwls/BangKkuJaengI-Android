@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
@@ -33,7 +34,7 @@ class PromotionRepository @Inject constructor(
                 .await()
                 .documents.first()
 
-            val promotion = promotionSnapshot.toPromotion()
+            val promotion = promotionSnapshot.toObject<Promotion>() ?: Promotion()
             if (promotion.productIds.isEmpty()) return emptyList()
 
             // 2. 해당 프로모션의 상품들 가져오기
@@ -75,7 +76,15 @@ class PromotionRepository @Inject constructor(
             }
 
             // 3. 프로모션 필터 적용
-            val products = query.get().await().documents.map { it.toProduct() }
+            val products = query.get().await().documents.map { doc ->
+                doc.toObject<Product>()?.copy(
+                    productId = doc.id,
+                    images = (doc.get("images") as? List<String>)?.map { imagePath ->
+                        getImageUrl(imagePath)
+                    } ?: emptyList()
+                ) ?: Product()
+            }
+
             val filteredProducts =
                 if (promotion.filterField != null && promotion.filterValue != null) {
                     products.filter {
@@ -105,42 +114,9 @@ class PromotionRepository @Inject constructor(
         }
     }
 
-    private fun DocumentSnapshot.toPromotion(): Promotion =
-        Promotion(
-            title = getString("title") ?: "",
-            order = getLong("order")?.toInt() ?: 0,
-            isActive = getBoolean("isActive") ?: false,
-            startDate = getTimestamp("startDate")?.seconds ?: 0L,
-            endDate = getTimestamp("endDate")?.seconds ?: 0L,
-            productIds = (get("productIds") as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-            filterField = getString("filterField"),
-            filterValue = getLong("filterValue")?.toInt(),
-            filterType = getString("filterType")
-        )
-
-    private suspend fun DocumentSnapshot.toProduct(): Product {
-        val imageRefs = get("images") as? List<String> ?: emptyList()
-        val imageUrls = imageRefs.map { imagePath -> getImageUrl(imagePath) }
-
-        return Product(
-            productId = id,
-            productName = getString("productName") ?: "",
-            description = getString("description") ?: "",
-            images = imageUrls,
-            isBest = getBoolean("isBest") ?: false,
-            category = CategoryType.fromString(getString("category") ?: ""),
-            subCategory = SubCategoryType.fromString(getString("subCategory") ?: ""),
-            price = getLong("price")?.toInt() ?: 0,
-            productCount = getLong("productCount")?.toInt() ?: 0,
-            saledPrice = getLong("saledPrice")?.toInt() ?: 0,
-            saleRate = getLong("saleRate")?.toInt() ?: 0,
-            purchaseCount = getLong("purchaseCount")?.toInt() ?: 0,
-            reviewCount = getLong("reviewCount")?.toInt() ?: 0,
-            viewCount = getLong("viewCount")?.toInt() ?: 0,
-            createdAt = getLong("createdAt") ?: 0L,
-        )
-    }
-
+    /*
+    * Firebase Storage에서 상대 경로에 맞는 이미지 가져오기
+    * */
     private suspend fun getImageUrl(imagePath: String) = storage.reference
         .child(imagePath)
         .downloadUrl

@@ -19,6 +19,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PromotionAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -208,6 +209,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
         val action =
             HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
+    }
+
+    override fun onFavoriteClick(product: Product) {
+        viewModel.toggleFavorite(requireContext().getUserId(), product.productId)
     }
 
     override fun onMoreProductsClick(title: String) {
