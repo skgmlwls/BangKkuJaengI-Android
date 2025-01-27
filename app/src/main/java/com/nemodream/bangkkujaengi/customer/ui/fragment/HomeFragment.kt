@@ -44,6 +44,8 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setMemberId(requireContext().getUserId())
+
         observeViewModel()
         setupLayout()
         setupListeners()
@@ -105,6 +107,7 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
                         promotionShimmerLayout.root.visibility = View.VISIBLE
                         rvPromotion.visibility = View.GONE
                     }
+
                     false -> {
                         shimmerLayout.startShimmer()
                         promotionShimmerLayout.root.visibility = View.GONE

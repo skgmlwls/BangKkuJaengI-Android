@@ -26,9 +26,9 @@ class ProductDetailViewModel @Inject constructor(
     private var _selectedColor = MutableLiveData<String>(null)
     val selectedColor: LiveData<String> = _selectedColor
 
-    fun loadProduct(productId: String) = viewModelScope.launch {
+    fun loadProduct(productId: String, userId: String) = viewModelScope.launch {
         runCatching {
-            repository.getProducts(productId)
+            repository.getProducts(productId, userId)
         }.onSuccess {
             _product.value = it
         }.onFailure {

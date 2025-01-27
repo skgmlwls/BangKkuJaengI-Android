@@ -3,7 +3,6 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailBannerAdapte
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentProductDetailBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +57,7 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toggleStatusBarColor()
-        viewModel.loadProduct(productId)
+        viewModel.loadProduct(productId, requireContext().getUserId())
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter

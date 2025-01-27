@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Banner
-import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionItem
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
 import com.nemodream.bangkkujaengi.customer.data.repository.HomeRepository
@@ -33,9 +32,21 @@ class HomeViewModel @Inject constructor(
     private val _promotionLoading = MutableLiveData(true)
     val promotionLoading: LiveData<Boolean> = _promotionLoading
 
+    private var memberId: String = ""  // 기본값 설정
+
+    private var isInitialized = false
+
+
     init {
         loadBannerItems()
-        loadPromotions()
+    }
+
+    fun setMemberId(id: String) {
+        if (!isInitialized) {
+            memberId = id
+            loadPromotions()
+            isInitialized = true
+        }
     }
 
     // 홈 화면 배너 리스트 불러오기
@@ -55,7 +66,7 @@ class HomeViewModel @Inject constructor(
     private fun loadPromotions() = viewModelScope.launch {
         _promotionLoading.value = true
         runCatching {
-            homeRepository.getPromotionSections()
+            homeRepository.getPromotionSections(memberId)
         }.onSuccess { items ->
             _promotionItems.value = items
             _promotionLoading.value = false

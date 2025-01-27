@@ -53,7 +53,7 @@ class HomeRepository @Inject constructor(
     /*
     * productId를 통해 Firebase의 Product Collection에서 해당 상품 데이터 가져오기
     * */
-    suspend fun getProducts(productId: String, userId: String = ""): Product {
+    suspend fun getProducts(productId: String, userId: String): Product {  // userId 기본값 설정
         val doc = firestore.collection("Product")
             .document(productId)
             .get()
@@ -64,14 +64,14 @@ class HomeRepository @Inject constructor(
             images = (doc.get("images") as? List<String>)?.map { imagePath ->
                 getImageUrl(imagePath)
             } ?: emptyList(),
-            like = isProductLiked(userId, productId)
+            like = isProductLiked(userId, productId)  // 사용자의 좋아요 상태 확인
         ) ?: Product()
     }
 
     /*
     * 프로모션 섹션 데이터 가져오기
     * */
-    suspend fun getPromotionSections(): List<PromotionItem> {
+    suspend fun getPromotionSections(memberId: String): List<PromotionItem> {
         val sections = mutableListOf<PromotionItem>()
 
         try {
@@ -85,7 +85,7 @@ class HomeRepository @Inject constructor(
 
                 if (promotion.isActive) {
                     sections.add(PromotionHeader(promotion.title))
-                    val products = getProductsByIds(promotion.productIds)
+                    val products = getProductsByIds(promotion.productIds, memberId)
                     sections.add(PromotionProducts(products))
                 }
             }
@@ -96,10 +96,10 @@ class HomeRepository @Inject constructor(
         return sections
     }
 
-    private suspend fun getProductsByIds(productIds: List<String>): List<Product> {
+    private suspend fun getProductsByIds(productIds: List<String>, memberId: String): List<Product> {
         return productIds.mapNotNull { productId ->
             try {
-                getProducts(productId)
+                getProducts(productId, memberId)
             } catch (e: Exception) {
                 Log.e("PromotionRepository", "Error fetching product $productId: ", e)
                 null
@@ -218,7 +218,7 @@ class HomeRepository @Inject constructor(
     }
 
     /* 상품 좋아요 여부 확인 */
-    suspend fun isProductLiked(userId: String, productId: String): Boolean {
+    private suspend fun isProductLiked(userId: String, productId: String): Boolean {
         return try {
             val doc = firestore.collection("ProductLike")
                 .document(userId)
