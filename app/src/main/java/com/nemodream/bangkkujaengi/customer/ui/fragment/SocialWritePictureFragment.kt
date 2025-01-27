@@ -21,6 +21,7 @@ import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.Tag
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
+import com.nemodream.bangkkujaengi.databinding.ItemSocialTagProductLabelBinding
 
 class SocialWritePictureFragment : Fragment() {
 
@@ -103,18 +104,14 @@ class SocialWritePictureFragment : Fragment() {
 
         container?.addView(tagPin)
 
-        // 상품 정보를 표시할 라벨을 생성
-        val productLabel = LayoutInflater.from(requireContext()).inflate(R.layout.item_social_tag_product_label, container, false)
-        val labelName = productLabel.findViewById<TextView>(R.id.tv_tag_product_label_name)
-        val labelPrice = productLabel.findViewById<TextView>(R.id.tv_tag_product_label_price)
-        val labelImage = productLabel.findViewById<ImageView>(R.id.iv_tag_product_label_image)
+        val labelBinding = ItemSocialTagProductLabelBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+        labelBinding.tvTagProductLabelName.text = getShortenedProductName(product.productName)
+        labelBinding.tvTagProductLabelPrice.text = "${product.price}원"
 
-        labelName.text = product.productName
-        labelPrice.text = "${product.price}원"
         // 상품 이미지 설정 (예시로 Glide 사용)
         Glide.with(requireContext())
-            .load(product.images[0]) // 상품 이미지 URL이 있다면
-            .into(labelImage)
+            .load(product.images[0]) // 상품 이미지 URL
+            .into(labelBinding.ivTagProductLabelImage)
 
         // 라벨 위치 설정
         val params = FrameLayout.LayoutParams(
@@ -126,18 +123,12 @@ class SocialWritePictureFragment : Fragment() {
         }
 
         // 라벨을 처음에는 숨김
-        productLabel.visibility = View.GONE
+        labelBinding.root.visibility = View.GONE
 
-        container?.addView(productLabel, params)
+        container?.addView(labelBinding.root, params)
 
-        // 태그 클릭 시 라벨 보이기
-        tagPin.setOnClickListener {
-            if (productLabel.visibility == View.GONE) {
-                productLabel.visibility = View.VISIBLE  // 라벨 보이기
-            } else {
-                productLabel.visibility = View.GONE   // 라벨 숨기기
-            }
-        }
+        // 태그와 라벨 클릭 리스너 설정
+        setupTagAndLabelListeners(tagPin, labelBinding, container, position, x, y)
     }
 
     // 리스너 모음
@@ -158,11 +149,6 @@ class SocialWritePictureFragment : Fragment() {
                 openWritePictureBottomSheet()
             }
 
-            // 게시된 사진 클릭 리스너
-            // 클릭하면..
-            // 사진에서 클릭된 위치값 저장 함수 호출
-            // openWriteTagBottomSheet() 바텀시트 올리기 함수 호출
-
             // 사진 추가 화면에서 "다음" 버튼
             btnWritePictureNext.setOnClickListener {
                 binding.btnWritePictureNext.visibility = View.GONE
@@ -177,6 +163,44 @@ class SocialWritePictureFragment : Fragment() {
                 binding.tfWriteContent.visibility = View.VISIBLE
                 binding.btnPost.visibility = View.VISIBLE
             }
+        }
+    }
+
+    // 태그와 라벨 클릭 리스너
+    private fun setupTagAndLabelListeners(
+        tagPin: ImageView,
+        labelBinding: ItemSocialTagProductLabelBinding,
+        container: FrameLayout?,
+        position: Int,
+        x: Float,
+        y: Float
+    ) {
+        // 태그 클릭 시 라벨 보이기/숨기기
+        tagPin.setOnClickListener {
+            if (labelBinding.root.visibility == View.GONE) {
+                labelBinding.root.visibility = View.VISIBLE // 라벨 보이기
+            } else {
+                labelBinding.root.visibility = View.GONE // 라벨 숨기기
+            }
+        }
+
+        // 삭제 버튼 클릭 시 태그와 라벨 제거
+        labelBinding.tvTagProductLabelDelete.setOnClickListener {
+            // 태그 삭제
+            container?.removeView(tagPin)
+            // 라벨 삭제
+            container?.removeView(labelBinding.root)
+            // 태그 리스트에서 해당 태그 삭제
+            productTagPinList.removeAll { it.order == position && it.tagX == x && it.tagY == y }
+        }
+    }
+
+    // 상품명 글자수 제한 함수
+    private fun getShortenedProductName(productName: String): String {
+        return if (productName.length > 7) {
+            "${productName.substring(0, 7)}..."
+        } else {
+            productName
         }
     }
 
