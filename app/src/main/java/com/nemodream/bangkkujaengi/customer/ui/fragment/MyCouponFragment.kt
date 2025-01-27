@@ -9,16 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.nemodream.bangkkujaengi.R
-import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponAdapter
-import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponReceiveClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyCouponBinding
-import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyCouponFragment: Fragment(), CouponReceiveClickListener {
+class MyCouponFragment: Fragment() {
     private var _binding: FragmentMyCouponBinding? = null
     private val binding get() = _binding!!
 
@@ -48,7 +45,7 @@ class MyCouponFragment: Fragment(), CouponReceiveClickListener {
         super.onDestroyView()
         _binding = null
     }
-
+        
     override fun onCouponReceiveClick(coupon: Coupon) {
         viewModel.receiveCoupon(requireContext().getUserId(), coupon)
     }

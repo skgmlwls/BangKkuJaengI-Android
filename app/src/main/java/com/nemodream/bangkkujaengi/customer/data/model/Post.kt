@@ -1,5 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.model
 
+import android.nfc.Tag
+
 data class Post(
     // 게시글 고유 아이디
     val id: String,
@@ -22,8 +24,8 @@ data class Post(
     // 게시글 썸네일
     // val thumbnailImage: imageList[0]
 
-    // 사진 위 태그들
-    // val productTagPinList : List<Tag>,
+     // 사진 위 태그들
+     val productTagPinList : List<Tag>,
 
     // 저장됨 수
     val savedCount: Int = 0,
