@@ -3,6 +3,7 @@ package com.nemodream.bangkkujaengi.admin.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.databinding.RowPaymentCompletedBinding
@@ -11,13 +12,10 @@ class AdminOrderAdapter(
     private var orders: List<Order>,          // 주문 데이터
     private val viewType: OrderViewType,      // 화면 타입에 따라 다르게 표시
     private val onActionClick: (Order) -> Unit, // 다음 상태 버튼 클릭 이벤트 처리
-    private val onCancelClick: (Order) -> Unit // 취소 버튼 클릭 이벤트 처리
+    private val onCancelClick: (Order) -> Unit, // 취소 버튼 클릭 이벤트 처리
+    private val isOrderSelected: (String) -> Boolean,
+    private val onOrderCheckedChange: (String, Boolean) -> Unit
 ) : RecyclerView.Adapter<AdminOrderAdapter.OrderViewHolder>() {
-
-    fun updateOrders(newOrders: List<Order>) {
-        orders = newOrders
-        notifyDataSetChanged()
-    }
 
     inner class OrderViewHolder(val binding: RowPaymentCompletedBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -29,8 +27,30 @@ class AdminOrderAdapter(
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
         with(holder.binding) {
-            // 공통 필드 설정
-            cbRowPcSelect.isChecked = false
+            // 기존 리스너 제거 및 상태 초기화
+            cbRowPcSelect.setOnCheckedChangeListener(null)
+
+            // 체크박스 활성화 여부 설정
+            val isCheckboxEnabled = when (viewType) {
+                OrderViewType.SHIPPING,
+                OrderViewType.PURCHASE_CONFIRMED,
+                OrderViewType.CANCELED -> false
+                else -> true
+            }
+            cbRowPcSelect.isEnabled = isCheckboxEnabled
+            cbRowPcSelect.isChecked = if (isCheckboxEnabled) {
+                order.orderNumber?.let { isOrderSelected(it) } ?: false
+            } else {
+                false
+            }
+
+            cbRowPcSelect.setOnCheckedChangeListener { _, isChecked ->
+                if (isCheckboxEnabled) {
+                    order.orderNumber?.let { onOrderCheckedChange(it, isChecked) }
+                }
+            }
+
+            // 필드 설정
             tvRowPcOrderDate.text = order.orderDate
             tvRowPcProductName.text = order.productName
             tvRowPcCustomerId.text = order.customerId
@@ -95,6 +115,12 @@ class AdminOrderAdapter(
         }
     }
 
+    fun updateOrders(newOrders: List<Order>) {
+        val diffResult = DiffUtil.calculateDiff(AdminOrderDiffCallback(orders, newOrders))
+        orders = newOrders
+        diffResult.dispatchUpdatesTo(this)
+    }
+
     override fun getItemCount(): Int = orders.size
 }
 
@@ -106,5 +132,3 @@ enum class OrderViewType {
     PURCHASE_CONFIRMED, // 구매 확정
     CANCELED            // 취소
 }
-
-

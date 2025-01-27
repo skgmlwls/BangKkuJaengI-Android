@@ -43,6 +43,5 @@ class CouponRepository @Inject constructor(
         firestore.collection("Member")
             .document(userId)
             .update("couponDocumentId", FieldValue.arrayUnion(coupon.documentId))
-
     }
 }

@@ -3,14 +3,16 @@ package com.nemodream.bangkkujaengi
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
+import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.nemodream.bangkkujaengi.customer.ui.fragment.findAccount.FindInfoActivity
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SignInViewModel
 import com.nemodream.bangkkujaengi.databinding.ActivitySignInBinding
-import com.nemodream.bangkkujaengi.utils.hideKeyboard
+import com.nemodream.bangkkujaengi.utils.clearFocusOnTouchOutside
+import com.nemodream.bangkkujaengi.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +25,8 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        checkLoginState()
+
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupListeners()
@@ -30,11 +34,6 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // 빈 공간 터치 시 키보드 숨김 처리
-        binding.root.setOnClickListener {
-            binding.root.hideKeyboard()
-        }
-
         // 회원가입 버튼 클릭 시 회원가입 화면으로 이동
         binding.tvSignInSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
@@ -47,7 +46,7 @@ class SignInActivity : AppCompatActivity() {
             val password = binding.tfSignInUserPw.editText?.text.toString().trim()
 
             if (id.isEmpty() || password.isEmpty()) {
-                showToast("아이디와 비밀번호를 모두 입력해주세요.")
+                showSnackBar(binding.root,"아이디와 비밀번호를 모두 입력해주세요.")
             } else {
                 // 관리자 계정 확인
                 if (id == "admin" && password == "admin*") {
@@ -80,7 +79,7 @@ class SignInActivity : AppCompatActivity() {
                 saveLoginState("member", documentId)
                 navigateToCustomerActivity()
             } else {
-                showToast(message)
+                showSnackBar(binding.root, message)
             }
         }
     }
@@ -108,8 +107,34 @@ class SignInActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    private fun checkLoginState() {
+        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val userType = sharedPreferences.getString("userType", null) // 저장된 사용자 유형
+        val documentId = sharedPreferences.getString("documentId", null) // 저장된 사용자 ID
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        when {
+            userType == null -> {
+                Log.d("SignInActivity", "이전 로그인 정보 없음: 비회원 상태")
+                // 비회원 상태, 로그인 화면 유지
+            }
+            userType == "member" && documentId != null -> {
+                Log.d("SignInActivity", "이전 로그인 정보: 회원 (documentId=$documentId)")
+                navigateToCustomerActivity()
+            }
+            userType == "admin" -> {
+                Log.d("SignInActivity", "이전 로그인 정보: 관리자")
+                navigateToAdminActivity()
+            }
+            else -> {
+                Log.d("SignInActivity", "로그인 정보가 올바르지 않음: userType=$userType, documentId=$documentId")
+                // 로그인 화면 유지
+            }
+        }
     }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        clearFocusOnTouchOutside(event) // Activity 확장 함수 호출
+        return super.dispatchTouchEvent(event)
+    }
+
 }

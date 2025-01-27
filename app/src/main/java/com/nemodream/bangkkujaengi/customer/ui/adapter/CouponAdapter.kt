@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.databinding.ItemCouponListBinding
-import com.nemodream.bangkkujaengi.databinding.RowPaymentSelectCouponRecyclerviewBinding
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import com.nemodream.bangkkujaengi.utils.toFormattedDate
 
@@ -35,6 +34,11 @@ class CouponAdapter(
         private val binding: ItemCouponListBinding,
         private val onCouponReceiveClick: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.btnCouponReceive.setOnClickListener {
+                onCouponReceiveClick(adapterPosition)
+            }
+        }
 
         fun bind(coupon: Coupon) {
             with(binding) {
@@ -43,7 +47,7 @@ class CouponAdapter(
                     if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
                 tvCouponDescription.text = coupon.conditionDescription
                 tvCouponLimitDate.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
-                btnCouponReceive.visibility = View.GONE
+                btnCouponReceive.visibility = if (coupon.isHold) View.INVISIBLE else View.VISIBLE
             }
         }
     }

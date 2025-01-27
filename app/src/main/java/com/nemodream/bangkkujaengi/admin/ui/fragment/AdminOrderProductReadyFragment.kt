@@ -5,73 +5,67 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.admin.data.model.OrderState
-import com.nemodream.bangkkujaengi.admin.ui.adapter.AdminOrderAdapter
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OrderViewType
-import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminOrderViewModel
+import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderProductReadyBinding
 
 // 상품 준비
-class AdminOrderProductReadyFragment : Fragment() {
+class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
+    private var _binding: FragmentAdminOrderProductReadyBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var binding: FragmentAdminOrderProductReadyBinding
-    private lateinit var orderAdapter: AdminOrderAdapter
-    private val viewModel: AdminOrderViewModel by viewModels()
+    override val viewType = OrderViewType.PRODUCT_READY
+    override val orderState = OrderState.PRODUCT_READY
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAdminOrderProductReadyBinding.inflate(inflater, container, false)
+        _binding = FragmentAdminOrderProductReadyBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        setupScrollSync()
-        observeOrders()
-        viewModel.loadOrders(OrderState.PRODUCT_READY)
-    }
-
-    private fun setupRecyclerView() {
-
-        orderAdapter = AdminOrderAdapter(
-            orders = emptyList(),
-            viewType = OrderViewType.PRODUCT_READY,
-            onActionClick = { order -> handleNextState(order) },
-            onCancelClick = { order -> {} } // 상품 준비 탭에는 취소 버튼이 없음
+        setupHeaderText(
+            orderDateHeader = "준비일시"
         )
-
-        binding.recyclerViewProductReady.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = orderAdapter
-        }
+        setupRecyclerView(binding.recyclerViewProductReady)
+        setupHeaderCheckbox(binding.layoutHeader.cbOrderPcHeader, binding.recyclerViewProductReady)
+        setupScrollSync(headerScrollView = binding.layoutHeader.scrOrderPcHeader, recyclerScrollView = binding.scrollableRecyclerView)
+        setupHeaderTextAndActions(
+            cancelSelectionTextView = binding.layoutHeader.tvOrderPcCancelSelection,
+            prepareSelectionTextView = binding.layoutHeader.tvOrderPcPrepareSelection,
+            headerCheckbox = binding.layoutHeader.cbOrderPcHeader
+        )
+        viewModel.loadOrders(orderState)
     }
 
-    private fun observeOrders() {
-        viewModel.orders.observe(viewLifecycleOwner) { orders ->
-            orderAdapter.updateOrders(orders) // 어댑터에 데이터 갱신
-        }
+    override fun handleNextState(order: Order) {
+        val context = requireContext()
+        CustomDialog(
+            context = context,
+            message = "선택한 상품 \"${order.productName}\"을 배송하시겠습니까?",
+            confirmText = "확인",
+            cancelText = "취소",
+            onConfirm = {
+                // ViewModel에 상태 변경 요청
+                viewModel.updateOrderState(order, OrderState.SHIPPING)
+            },
+            onCancel = {}
+        ).show()
     }
 
-    private fun handleNextState(order: Order) {
-        Toast.makeText(requireContext(), "${order.productName} 배송으로 이동", Toast.LENGTH_SHORT).show()
-    }
+    override fun handleCancel(order: Order) {
 
-    private fun setupScrollSync() {
-        binding.layoutHeader.scrOrderPcHeader.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            binding.scrollableRecyclerView.scrollTo(scrollX, 0)
-        }
-
-        binding.scrollableRecyclerView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            binding.layoutHeader.scrOrderPcHeader.scrollTo(scrollX, 0)
-        }
     }
 }
-

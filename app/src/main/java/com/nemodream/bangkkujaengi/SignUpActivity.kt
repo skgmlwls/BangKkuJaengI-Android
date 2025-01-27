@@ -1,27 +1,26 @@
 package com.nemodream.bangkkujaengi
 
-import android.graphics.Rect
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
-import android.view.WindowManager
-import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.nemodream.bangkkujaengi.customer.ui.custom.CustomDialog
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SignUpViewModel
 import com.nemodream.bangkkujaengi.databinding.ActivitySignUpBinding
+import com.nemodream.bangkkujaengi.utils.clearFocusOnTouchOutside
 import com.nemodream.bangkkujaengi.utils.hideKeyboard
+import com.nemodream.bangkkujaengi.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -99,7 +98,7 @@ class SignUpActivity : AppCompatActivity() {
         signUpViewModel.idResult.observe(this) { result ->
             val (isAvailable, message) = result
             Log.d("nickname", "아이디 사용 가능: $isAvailable, 메시지: $message")
-            showToast(message)
+            showSnackBar(binding.root, message)
             // 중복된 아이디 있으면 버튼 활성화
             if(!isAvailable){
                 binding.btnSignUpCheckId.isEnabled = true
@@ -109,7 +108,7 @@ class SignUpActivity : AppCompatActivity() {
         signUpViewModel.nicknameResult.observe(this) { result ->
             val (isAvailable, message) = result
             Log.d("nickname", "닉네임 사용 가능: $isAvailable, 메시지: $message")
-            showToast(message)
+            showSnackBar(binding.root, message)
             // 중복된 닉네임일 때 버튼 다시 활성화
             if (!isAvailable) {
                 binding.btnSignUpCheckNickname.isEnabled = true
@@ -215,20 +214,21 @@ class SignUpActivity : AppCompatActivity() {
             ).any { !it.isNullOrEmpty() }
 
             if (hasErrors) {
-                showToast("입력한 내용을 확인해주세요.")
+                showSnackBar(binding.root, "입력한 내용을 확인해주세요.")
                 binding.btnSignUpSignup.isEnabled = true
             } else {
                 signUpViewModel.registerMember { success, documentId ->
                     if (success) {
-                        showToast("회원가입 완료! 문서 ID: $documentId")
-                        finish()
+                        // 회원가입 완료 다이얼로그 호출
+                        showSignUpSuccessDialog()
                     } else {
-                        showToast("회원가입 실패")
+                        showSnackBar(binding.root, "회원가입 실패")
                         binding.btnSignUpSignup.isEnabled = true
                     }
                 }
             }
         }
+
 
         // 전화번호 입력 리스너
         binding.tfSignUpPhoneNumber.editText?.addTextChangedListener { editable ->
@@ -243,7 +243,7 @@ class SignUpActivity : AppCompatActivity() {
             if (isValidPhoneNumber(formattedPhoneNumber)) {
                 startPhoneNumberVerification(formattedPhoneNumber)
             } else {
-                showToast("전화번호를 올바르게 입력하세요.")
+                showSnackBar(binding.root, "전화번호를 올바르게 입력하세요.")
             }
         }
 
@@ -255,7 +255,7 @@ class SignUpActivity : AppCompatActivity() {
                 binding.btnSignUpCheckVerification.isEnabled = false // 버튼 비활성화
                 verifyCode(code)
             } else {
-                showToast("인증 코드를 입력하거나 인증 요청을 다시 진행하세요.")
+                showSnackBar(binding.root, "인증 코드를 입력하거나 인증 요청을 다시 진행하세요.")
             }
         }
     }
@@ -275,7 +275,7 @@ class SignUpActivity : AppCompatActivity() {
                 override fun onVerificationFailed(e: FirebaseException) {
                     // 인증번호 전송 실패 시
                     binding.btnSignUpVerification.isEnabled = true // 버튼 활성화
-                    showToast("인증번호 전송 실패")
+                    showSnackBar(binding.root, "인증번호 전송 실패")
                     Log.w("PhoneAuth", "Verification failed", e)
                 }
 
@@ -286,7 +286,7 @@ class SignUpActivity : AppCompatActivity() {
                     // 인증번호 전송 성공
                     storedVerificationId = verificationId
                     resendToken = token
-                    showToast("인증번호가 전송되었습니다.")
+                    showSnackBar(binding.root, "인증번호가 전송되었습니다.")
                     Log.d("PhoneAuth", "Code sent: $verificationId")
 
                     // 60초 동안 버튼 비활성화 후 다시 활성화
@@ -313,7 +313,7 @@ class SignUpActivity : AppCompatActivity() {
         } else {
             // 인증 요청이 없었다면 버튼 활성화
             binding.btnSignUpCheckVerification.isEnabled = true
-            showToast("인증 요청을 먼저 진행해주세요.")
+            showSnackBar(binding.root, "인증 요청을 먼저 진행해주세요.")
         }
     }
 
@@ -323,12 +323,12 @@ class SignUpActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // 인증 성공 처리
-                    showToast("전화번호 인증 성공!")
+                    showSnackBar(binding.root, "전화번호 인증 성공!")
                     signUpViewModel.verifyCodeSuccess() // 인증 성공 시 가입 버튼 활성화
                 } else {
                     // 인증 실패 시 버튼 활성화
                     binding.btnSignUpCheckVerification.isEnabled = true
-                    showToast("전화번호 인증 실패: ${task.exception?.message}")
+                    showSnackBar(binding.root, "전화번호 인증 실패: ${task.exception?.message}")
                     Log.w("PhoneAuth", "Sign in failed", task.exception)
                 }
             }
@@ -352,24 +352,31 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    // 모든 터치 이벤트를 처리
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) { // 터치가 발생했을 때
-            val view = currentFocus // 현재 포커스를 가진 뷰 가져오기
-            if (view is EditText) { // 현재 포커스가 EditText라면
-                val outRect = Rect()
-                view.getGlobalVisibleRect(outRect) // EditText의 화면 영역
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    // 터치가 EditText 영역 밖에서 발생
-                    view.clearFocus() // EditText 포커스 해제
-                    view.hideKeyboard() // 키보드 숨기기
-                }
+    private fun showSignUpSuccessDialog() {
+        val dialog = CustomDialog(
+            context = this,
+            message = "회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.",
+            confirmText = "확인",
+            onConfirm = {
+                // 로그인 화면으로 이동
+                navigateToSignInScreen()
+            },
+            onCancel = {
+                // 아무 동작 없이 다이얼로그만 닫음
             }
-        }
-        return super.dispatchTouchEvent(event) // 이벤트를 계속 전달
+        )
+        dialog.show()
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun navigateToSignInScreen() {
+        val intent = Intent(this, SignInActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish() // 현재 Activity 종료
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        clearFocusOnTouchOutside(event) // Activity 확장 함수 호출
+        return super.dispatchTouchEvent(event)
     }
 }
