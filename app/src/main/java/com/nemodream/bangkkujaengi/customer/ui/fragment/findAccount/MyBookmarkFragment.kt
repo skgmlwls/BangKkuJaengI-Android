@@ -56,7 +56,8 @@ class MyBookmarkFragment: Fragment(), ProductClickListener {
     }
 
     override fun onProductClick(product: Product) {
-        TODO("Not yet implemented")
+        val action = MyBookmarkFragmentDirections.actionNavigationMyBookmarkToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
     }
 
     override fun onFavoriteClick(product: Product) {
