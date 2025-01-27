@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
+import com.nemodream.bangkkujaengi.databinding.ItemCouponListBinding
 import com.nemodream.bangkkujaengi.databinding.RowPaymentSelectCouponRecyclerviewBinding
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import com.nemodream.bangkkujaengi.utils.toFormattedDate
@@ -31,17 +32,18 @@ class CouponAdapter(
     }
 
     class CouponViewHolder(
-        private val binding: RowPaymentSelectCouponRecyclerviewBinding,
+        private val binding: ItemCouponListBinding,
+        private val onCouponReceiveClick: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(coupon: Coupon) {
             with(binding) {
-                tvRowPaymentCouponTitle.text = coupon.title
-                tvRowPaymentCouponPrice.text =
+                tvCouponTitle.text = coupon.title
+                tvCouponDiscount.text =
                     if (coupon.couponType == "SALE_RATE") "${coupon.saleRate} %" else "${coupon.salePrice.toCommaString()} 원"
-                tvRowPaymentCouponCondition.text = coupon.conditionDescription
-                tvRowPaymentCouponPeriod.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
-                btnRowRowPaymentCouponDelete.visibility = View.GONE
+                tvCouponDescription.text = coupon.conditionDescription
+                tvCouponLimitDate.text = "~ ${coupon.endCouponDate?.toFormattedDate()}"
+                btnCouponReceive.visibility = View.GONE
             }
         }
     }

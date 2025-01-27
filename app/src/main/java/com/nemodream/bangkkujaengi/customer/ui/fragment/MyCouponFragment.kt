@@ -9,13 +9,16 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponReceiveClickListener
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyCouponBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyCouponFragment: Fragment() {
+class MyCouponFragment: Fragment(), CouponReceiveClickListener {
     private var _binding: FragmentMyCouponBinding? = null
     private val binding get() = _binding!!
 
