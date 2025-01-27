@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.SocialLogin
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyPageViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
@@ -56,6 +57,11 @@ class MyPageFragment : Fragment() {
                     ivMyPageProfileImage.loadImage(it)
                 } ?: ivMyPageProfileImage.setImageResource(R.drawable.ic_default_profile)
                 tvMyPageProfileName.text = "${member.memberNickName}님"
+
+                ivMyPageSocialKakao.visibility = when(member.socialLogin) {
+                    SocialLogin.KAKAO -> View.VISIBLE
+                    else -> View.GONE
+                }
             }
         }
     }
