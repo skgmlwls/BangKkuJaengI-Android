@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
@@ -29,6 +30,7 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
+    private val productStateSharedViewModel: ProductStateSharedViewModel by activityViewModels()
 
     private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter(this) }
     private val promotionAdapter: PromotionAdapter by lazy { PromotionAdapter(this, this) }
@@ -44,6 +46,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productStateSharedViewModel.likeUpdate.observe(viewLifecycleOwner) { (productId, isLiked) ->
+            viewModel.updateProductLikeState(productId, isLiked)
+        }
+
         viewModel.setMemberId(requireContext().getUserId())
 
         observeViewModel()

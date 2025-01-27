@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Banner
+import com.nemodream.bangkkujaengi.customer.data.model.PromotionHeader
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionItem
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
 import com.nemodream.bangkkujaengi.customer.data.repository.HomeRepository
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository,
-): ViewModel() {
+) : ViewModel() {
 
     // 배너 아이템
     private var _bannerItems = MutableLiveData<List<Banner>>(emptyList())
@@ -57,8 +58,8 @@ class HomeViewModel @Inject constructor(
         }.onSuccess { items ->
             _bannerItems.value = items
             _bannerLoading.value = false
-        }.onFailure {
-            e -> Log.d("HomeViewModel", "loadBannerItems: $e")
+        }.onFailure { e ->
+            Log.d("HomeViewModel", "loadBannerItems: $e")
         }
     }
 
@@ -98,6 +99,7 @@ class HomeViewModel @Inject constructor(
                         }
                         item.copy(products = updatedProducts)
                     }
+
                     else -> item
                 }
             }
@@ -106,5 +108,25 @@ class HomeViewModel @Inject constructor(
         }.onFailure { e ->
             Log.e("HomeViewModel", "좋아요 상태 변경 실패: ", e)
         }
+    }
+
+    fun updateProductLikeState(productId: String, liked: Boolean) {
+        val currentItems = _promotionItems.value?.toMutableList() ?: mutableListOf()
+
+        val updatedItems = currentItems.map { item ->
+            when (item) {
+                is PromotionProducts -> {
+                    val updatedProducts = item.products.map { product ->
+                        if (product.productId == productId) {
+                            product.copy(like = liked)
+                        } else product
+                    }
+                    item.copy(products = updatedProducts)
+                }
+                else -> item
+            }
+        }
+
+        _promotionItems.value = updatedItems
     }
 }

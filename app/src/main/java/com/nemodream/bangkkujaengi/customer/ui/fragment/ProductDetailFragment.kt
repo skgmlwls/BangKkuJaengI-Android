@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +36,7 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
     private val args: ProductDetailFragmentArgs by navArgs()
 
     private val viewModel: ProductDetailViewModel by viewModels()
+    private val productStateSharedViewModel: ProductStateSharedViewModel by activityViewModels()
 
     private val adapter: ProductDetailBannerAdapter by lazy { ProductDetailBannerAdapter() }
     private val imageAdapter: ProductDetailImageAdapter by lazy { ProductDetailImageAdapter() }
@@ -64,6 +66,10 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        // 좋아요 상태 변경이 있었다면 공유
+        viewModel.product.value?.let { product ->
+            productStateSharedViewModel.updateLikeState(product.productId, product.like)
+        }
         toggleStatusBarColor()
         _binding = null
     }
@@ -157,6 +163,10 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
                     bottomSheet.setOnCartClickListener(this@ProductDetailFragment)
                     bottomSheet.show(childFragmentManager, bottomSheet.tag)
                 }
+            }
+
+            btnLike.setOnClickListener {
+                viewModel.toggleFavorite(requireContext().getUserId(), productId)
             }
         }
     }
