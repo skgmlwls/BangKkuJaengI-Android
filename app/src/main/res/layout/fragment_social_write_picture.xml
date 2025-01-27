@@ -76,11 +76,11 @@
     <!-- ViewPager2: 태그 핀 추가를 위한 FrameLayout 컨테이너 추가 -->
     <FrameLayout
         android:id="@+id/fl_social_write_picture_container"
-        android:layout_width="match_parent"
-        android:layout_height="453dp"
-        android:layout_marginBottom="80dp"
-        android:layout_marginTop="30dp"
-        android:visibility="gone"
+        android:layout_width="360dp"
+        android:layout_height="473dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         app:layout_constraintTop_toBottomOf="@id/tab_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -90,7 +90,8 @@
             android:id="@+id/vp_social_write_picture_carousel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_social_carousel_photo" />
+            tools:listitem="@layout/item_social_carousel_photo"
+            />
 
         <!-- 태그 핀을 동적으로 추가할 FrameLayout -->
         <FrameLayout

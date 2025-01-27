@@ -10,14 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.Tag
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
+import com.nemodream.bangkkujaengi.databinding.ItemSocialTagProductLabelBinding
 
 class SocialWritePictureFragment : Fragment() {
 
@@ -68,10 +72,10 @@ class SocialWritePictureFragment : Fragment() {
             Log.d("SocialWritePictureFragment", "Product: $product, Position: $position, X: $xCoord, Y: $yCoord")
 
             if (product != null && position != -1) {
-                addTagPin(position, xCoord, yCoord)
+                addTagPin(position, xCoord, yCoord, product)
 
                 // Tag 데이터 생성 및 리스트에 추가
-                val tag = Tag(tagX = xCoord, tagY = yCoord, tagProductInfo = product)
+                val tag = Tag(order = position, tagX = xCoord, tagY = yCoord, tagProductInfo = product)
                 productTagPinList.add(tag)
             }
         }
@@ -83,11 +87,11 @@ class SocialWritePictureFragment : Fragment() {
     }
 
     // 태그 핀 추가 함수
-    private fun addTagPin(position: Int, x: Float, y: Float) {
+    private fun addTagPin(position: Int, x: Float, y: Float, product: Product) {
         val container = (binding.vpSocialWritePictureCarousel[0] as RecyclerView)
             .findViewHolderForAdapterPosition(position)?.itemView as? FrameLayout
 
-        val imageView = ImageView(requireContext()).apply {
+        val tagPin = ImageView(requireContext()).apply {
             setImageResource(R.drawable.ic_tag_pin)
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -98,7 +102,33 @@ class SocialWritePictureFragment : Fragment() {
             }
         }
 
-        container?.addView(imageView)
+        container?.addView(tagPin)
+
+        val labelBinding = ItemSocialTagProductLabelBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+        labelBinding.tvTagProductLabelName.text = getShortenedProductName(product.productName)
+        labelBinding.tvTagProductLabelPrice.text = "${product.price}원"
+
+        // 상품 이미지 설정 (예시로 Glide 사용)
+        Glide.with(requireContext())
+            .load(product.images[0]) // 상품 이미지 URL
+            .into(labelBinding.ivTagProductLabelImage)
+
+        // 라벨 위치 설정
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            leftMargin = (x + 40).toInt() // 태그 오른쪽에 라벨 배치
+            topMargin = (y - 10).toInt()  // 태그 위에 라벨 배치
+        }
+
+        // 라벨을 처음에는 숨김
+        labelBinding.root.visibility = View.GONE
+
+        container?.addView(labelBinding.root, params)
+
+        // 태그와 라벨 클릭 리스너 설정
+        setupTagAndLabelListeners(tagPin, labelBinding, container, position, x, y)
     }
 
     // 리스너 모음
@@ -119,11 +149,6 @@ class SocialWritePictureFragment : Fragment() {
                 openWritePictureBottomSheet()
             }
 
-            // 게시된 사진 클릭 리스너
-            // 클릭하면..
-            // 사진에서 클릭된 위치값 저장 함수 호출
-            // openWriteTagBottomSheet() 바텀시트 올리기 함수 호출
-
             // 사진 추가 화면에서 "다음" 버튼
             btnWritePictureNext.setOnClickListener {
                 binding.btnWritePictureNext.visibility = View.GONE
@@ -138,6 +163,44 @@ class SocialWritePictureFragment : Fragment() {
                 binding.tfWriteContent.visibility = View.VISIBLE
                 binding.btnPost.visibility = View.VISIBLE
             }
+        }
+    }
+
+    // 태그와 라벨 클릭 리스너
+    private fun setupTagAndLabelListeners(
+        tagPin: ImageView,
+        labelBinding: ItemSocialTagProductLabelBinding,
+        container: FrameLayout?,
+        position: Int,
+        x: Float,
+        y: Float
+    ) {
+        // 태그 클릭 시 라벨 보이기/숨기기
+        tagPin.setOnClickListener {
+            if (labelBinding.root.visibility == View.GONE) {
+                labelBinding.root.visibility = View.VISIBLE // 라벨 보이기
+            } else {
+                labelBinding.root.visibility = View.GONE // 라벨 숨기기
+            }
+        }
+
+        // 삭제 버튼 클릭 시 태그와 라벨 제거
+        labelBinding.tvTagProductLabelDelete.setOnClickListener {
+            // 태그 삭제
+            container?.removeView(tagPin)
+            // 라벨 삭제
+            container?.removeView(labelBinding.root)
+            // 태그 리스트에서 해당 태그 삭제
+            productTagPinList.removeAll { it.order == position && it.tagX == x && it.tagY == y }
+        }
+    }
+
+    // 상품명 글자수 제한 함수
+    private fun getShortenedProductName(productName: String): String {
+        return if (productName.length > 7) {
+            "${productName.substring(0, 7)}..."
+        } else {
+            productName
         }
     }
 
