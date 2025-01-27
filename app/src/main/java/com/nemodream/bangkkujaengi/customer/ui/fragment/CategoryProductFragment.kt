@@ -22,6 +22,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.CategoryProductViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentCategoryProductBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +48,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setUserId(requireContext().getUserId())
         setupUI()
         observeViewModel()
         setupTabs()
@@ -63,7 +65,7 @@ class CategoryProductFragment: Fragment(), ProductClickListener {
     }
 
     override fun onFavoriteClick(product: Product) {
-        TODO("Not yet implemented")
+        viewModel.toggleFavorite(requireContext().getUserId(), product.productId)
     }
 
     private fun setupUI() {

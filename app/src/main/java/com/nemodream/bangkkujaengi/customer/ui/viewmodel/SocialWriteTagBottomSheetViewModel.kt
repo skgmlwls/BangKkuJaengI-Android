@@ -25,10 +25,10 @@ class SocialWriteTagBottomSheetViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> = _isLoading
 
     // 검색 결과 가져오기
-    fun getProductsByProductName(productName: String) = viewModelScope.launch {
+    fun getProductsByProductName(productName: String, userId: String) = viewModelScope.launch {
         _isLoading.value = true
         runCatching {
-            repository.getProductsByKeyword(productName)
+            repository.getProductsByKeyword(productName, userId)
         }.onSuccess {
             _searchResults.value = it
             Log.d("SearchViewModel", "검색 결과: $it")

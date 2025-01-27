@@ -21,7 +21,8 @@ class ProductGridAdapter(
                 parent,
                 false
             ),
-            productClickListener = { position -> productClickListener.onProductClick(getItem(position)) }
+            productClickListener = { position -> productClickListener.onProductClick(getItem(position)) },
+            favoriteClickListener = { position -> productClickListener.onFavoriteClick(getItem(position)) },
         )
     }
 
@@ -32,10 +33,15 @@ class ProductGridAdapter(
     class ProductGridViewHolder(
         private val binding: ItemProductBinding,
         productClickListener: (position: Int) -> Unit,
+        favoriteClickListener: (position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 productClickListener(adapterPosition)
+            }
+
+            binding.btnLike.setOnClickListener {
+                favoriteClickListener(adapterPosition)
             }
         }
 
@@ -44,6 +50,7 @@ class ProductGridAdapter(
                 ivProduct.loadImage(product.images.first())
                 tvProductName.text = product.productName
                 tvProductPrice.text = "${product.price.toCommaString()}원"
+                btnLike.isSelected = product.like
             }
         }
     }

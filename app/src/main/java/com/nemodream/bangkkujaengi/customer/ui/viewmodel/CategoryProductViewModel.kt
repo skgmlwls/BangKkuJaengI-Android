@@ -38,8 +38,14 @@ class CategoryProductViewModel @Inject constructor(
     private val _productLoading = MutableLiveData(false)
     val productLoading: LiveData<Boolean> = _productLoading
 
+    private var userId = ""
+
     init {
         updateSortText(SortType.PURCHASE) // 기본으로 구매 많은 순
+    }
+
+    fun setUserId(id: String) {
+        userId = id
     }
 
     /*
@@ -94,7 +100,7 @@ class CategoryProductViewModel @Inject constructor(
             _categoryType.value?.let { category ->
                 _selectedSubCategory.value?.let { subCategory ->
                     _currentSortType.value?.let { sortType ->
-                        repository.getProducts(category, subCategory, sortType)
+                        repository.getProducts(category, subCategory, sortType, userId)
                     }
                 }
             }
@@ -107,6 +113,28 @@ class CategoryProductViewModel @Inject constructor(
             Log.e("CategoryProductViewModel", "상품 정보를 가져오지 못했습니다", throwable)
             _products.value = emptyList()
             _productLoading.value = false
+        }
+    }
+
+    fun toggleFavorite(memberId: String, productId: String) = viewModelScope.launch {
+        runCatching {
+            repository.toggleProductLikeState(memberId, productId)
+        }.onSuccess {
+            // 프로모션 아이템 좋아요 상태 변경
+            val currentItems = _products.value?.toMutableList() ?: mutableListOf()
+
+            // 프로모션 아이템들을 순회하면서 해당 상품의 좋아요 상태 업데이트
+            val updatedItems = currentItems.map { item ->
+                if (item.productId == productId) {
+                    item.copy(like = !item.like)
+                } else {
+                    item
+                }
+            }
+
+            _products.value = updatedItems
+        }.onFailure { e ->
+            Log.e("CategoryProductViewModel", "좋아요 상태 변경 실패: ", e)
         }
     }
 

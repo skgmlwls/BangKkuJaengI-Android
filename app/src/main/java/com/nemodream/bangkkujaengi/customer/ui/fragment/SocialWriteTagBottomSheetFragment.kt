@@ -19,6 +19,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SearchResultAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialWriteTagBottomSheetViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWriteTagBottomSheetBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.hideKeyboard
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -132,7 +133,7 @@ class SocialWriteTagBottomSheetFragment : BottomSheetDialogFragment(), OnItemCli
             appContext.showToast("검색어를 입력해주세요.")
             return
         }
-        viewModel.getProductsByProductName(binding.etSearchTrack.editText?.text.toString())
+        viewModel.getProductsByProductName(binding.etSearchTrack.editText?.text.toString(), appContext.getUserId())
     }
 
     private fun setupSearchResultText(query: String, resultCount: Int): SpannableStringBuilder {

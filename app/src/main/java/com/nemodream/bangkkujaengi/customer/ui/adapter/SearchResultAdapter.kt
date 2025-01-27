@@ -22,7 +22,8 @@ class SearchResultAdapter(
                 LayoutInflater.from(parent.context),
                 parent, false
             ),
-            onProductClickListener = { position -> productClickListener.onProductClick(getItem(position)) }
+            onProductClickListener = { position -> productClickListener.onProductClick(getItem(position)) },
+            onFavoriteClickListener = { position -> productClickListener.onFavoriteClick(getItem(position)) },
         )
     }
 
@@ -32,11 +33,15 @@ class SearchResultAdapter(
 
     class SearchResultViewHolder(
         private val binding: ItemProductBinding,
-        private val onProductClickListener: (position: Int) -> Unit
+        private val onProductClickListener: (position: Int) -> Unit,
+        private val onFavoriteClickListener: (position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
                 onProductClickListener(adapterPosition)
+            }
+            binding.btnLike.setOnClickListener {
+                onFavoriteClickListener(adapterPosition)
             }
         }
 
@@ -45,6 +50,7 @@ class SearchResultAdapter(
                 ivProduct.loadImage(product.images.first())
                 tvProductName.text = product.productName
                 tvProductPrice.text = "${product.price.toCommaString()} 원"
+                btnLike.isSelected = product.like
             }
         }
     }
