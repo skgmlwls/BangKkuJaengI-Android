@@ -104,6 +104,8 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
             tvProductDetailContentDescription.text = product.description
             tvProductDetailIsBest.visibility = if (product.isBest) View.VISIBLE else View.GONE
             tvProductDetailCategory.text = CategoryType.fromString(product.category.name).getTabTitle()
+            btnLike.isSelected = product.like
+            tvLikeCount.text = product.likeCount.toCommaString()
 
             // product.images에서 2번째 값부터 리스트에 넣는다
             val subList = product.images.subList(1, product.images.size)
