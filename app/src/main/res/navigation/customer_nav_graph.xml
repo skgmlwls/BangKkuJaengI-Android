@@ -203,6 +203,9 @@
         <action
             android:id="@+id/action_navigation_my_page_to_navigation_my_coupon"
             app:destination="@id/navigation_my_coupon" />
+        <action
+            android:id="@+id/action_navigation_my_page_to_myBookmarkFragment"
+            app:destination="@id/navigation_my_bookmark" />
     </fragment>
     <activity
         android:id="@+id/signInActivity"
@@ -234,6 +237,15 @@
             app:argType="string" />
         <action
             android:id="@+id/action_navigation_my_coupon_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_my_bookmark"
+        tools:layout="@layout/fragment_my_bookmark"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.findAccount.MyBookmarkFragment"
+        android:label="MyBookmarkFragment" >
+        <action
+            android:id="@+id/action_navigation_my_bookmark_to_navigation_cart"
             app:destination="@id/navigation_cart" />
     </fragment>
 </navigation>
