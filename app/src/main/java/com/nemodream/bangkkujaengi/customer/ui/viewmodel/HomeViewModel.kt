@@ -45,7 +45,6 @@ class HomeViewModel @Inject constructor(
     fun setMemberId(id: String) {
         if (!isInitialized) {
             memberId = id
-            loadPromotions()
             isInitialized = true
         }
     }
@@ -64,7 +63,7 @@ class HomeViewModel @Inject constructor(
     }
 
     // 홈 화면 프로모션 데이터 불러오기
-    private fun loadPromotions() = viewModelScope.launch {
+    fun loadPromotions() = viewModelScope.launch {
         _promotionLoading.value = true
         runCatching {
             homeRepository.getPromotionSections(memberId)

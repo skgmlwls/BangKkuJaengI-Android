@@ -46,11 +46,8 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productStateSharedViewModel.likeUpdate.observe(viewLifecycleOwner) { (productId, isLiked) ->
-            viewModel.updateProductLikeState(productId, isLiked)
-        }
-
         viewModel.setMemberId(requireContext().getUserId())
+        viewModel.loadPromotions()
 
         observeViewModel()
         setupLayout()
@@ -77,6 +74,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     * 변경이 감지되면 데이터 갱신
     * */
     private fun observeViewModel() {
+        productStateSharedViewModel.likeUpdate.observe(viewLifecycleOwner) { (productId, isLiked) ->
+            viewModel.updateProductLikeState(productId, isLiked)
+        }
+
         viewModel.bannerItems.observe(viewLifecycleOwner) { bannerList ->
             bannerAdapter.submitList(bannerList)
         }

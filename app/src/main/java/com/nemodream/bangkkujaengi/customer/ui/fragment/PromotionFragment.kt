@@ -17,6 +17,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.PromotionViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentPromotionBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,6 +42,7 @@ class PromotionFragment: Fragment(), ProductClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setUserId(requireContext().getUserId())
         setupUI()
         setupListeners()
         viewModel.getPromotionByTitle(title)
@@ -161,6 +163,6 @@ class PromotionFragment: Fragment(), ProductClickListener {
     }
 
     override fun onFavoriteClick(product: Product) {
-        TODO("Not yet implemented")
+        viewModel.toggleFavorite(requireContext().getUserId(), product.productId)
     }
 }
