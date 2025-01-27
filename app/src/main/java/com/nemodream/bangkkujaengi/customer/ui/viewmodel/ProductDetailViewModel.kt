@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
 import com.nemodream.bangkkujaengi.customer.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,9 +27,9 @@ class ProductDetailViewModel @Inject constructor(
     private var _selectedColor = MutableLiveData<String>(null)
     val selectedColor: LiveData<String> = _selectedColor
 
-    fun loadProduct(productId: String) = viewModelScope.launch {
+    fun loadProduct(productId: String, userId: String) = viewModelScope.launch {
         runCatching {
-            repository.getProducts(productId)
+            repository.getProducts(productId, userId)
         }.onSuccess {
             _product.value = it
         }.onFailure {
@@ -61,6 +62,22 @@ class ProductDetailViewModel @Inject constructor(
             Log.d("ProductDetailViewModel", "saveCartProduct: $it")
         }.onFailure {
             Log.d("ProductDetailViewModel", "saveCartProduct: ${it.message}")
+        }
+    }
+
+    fun toggleFavorite(memberId: String, productId: String) = viewModelScope.launch {
+        runCatching {
+            repository.toggleProductLikeState(memberId, productId)
+        }.onSuccess {
+            _product.value = _product.value?.copy(
+                like = !(_product.value?.like ?: false),
+                likeCount = if (_product.value?.like != true)
+                    (_product.value?.likeCount ?: 0) + 1
+                else
+                    (_product.value?.likeCount ?: 0) - 1
+            )
+        }.onFailure { e ->
+            Log.e("HomeViewModel", "좋아요 상태 변경 실패: ", e)
         }
     }
 }

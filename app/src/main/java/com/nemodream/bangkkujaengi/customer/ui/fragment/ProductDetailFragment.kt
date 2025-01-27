@@ -3,12 +3,12 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +22,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailBannerAdapte
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentProductDetailBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +36,7 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
     private val args: ProductDetailFragmentArgs by navArgs()
 
     private val viewModel: ProductDetailViewModel by viewModels()
+    private val productStateSharedViewModel: ProductStateSharedViewModel by activityViewModels()
 
     private val adapter: ProductDetailBannerAdapter by lazy { ProductDetailBannerAdapter() }
     private val imageAdapter: ProductDetailImageAdapter by lazy { ProductDetailImageAdapter() }
@@ -57,13 +59,17 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toggleStatusBarColor()
-        viewModel.loadProduct(productId)
+        viewModel.loadProduct(productId, requireContext().getUserId())
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        // 좋아요 상태 변경이 있었다면 공유
+        viewModel.product.value?.let { product ->
+            productStateSharedViewModel.updateLikeState(product.productId, product.like)
+        }
         toggleStatusBarColor()
         _binding = null
     }
@@ -104,6 +110,8 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
             tvProductDetailContentDescription.text = product.description
             tvProductDetailIsBest.visibility = if (product.isBest) View.VISIBLE else View.GONE
             tvProductDetailCategory.text = CategoryType.fromString(product.category.name).getTabTitle()
+            btnLike.isSelected = product.like
+            tvLikeCount.text = product.likeCount.toCommaString()
 
             // product.images에서 2번째 값부터 리스트에 넣는다
             val subList = product.images.subList(1, product.images.size)
@@ -155,6 +163,10 @@ class ProductDetailFragment: Fragment(), OnCartClickListener {
                     bottomSheet.setOnCartClickListener(this@ProductDetailFragment)
                     bottomSheet.show(childFragmentManager, bottomSheet.tag)
                 }
+            }
+
+            btnLike.setOnClickListener {
+                viewModel.toggleFavorite(requireContext().getUserId(), productId)
             }
         }
     }

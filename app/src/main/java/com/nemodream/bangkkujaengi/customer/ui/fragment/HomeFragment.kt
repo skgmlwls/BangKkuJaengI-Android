@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
@@ -19,6 +20,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.PromotionAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.HomeViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentHomeBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +30,7 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
+    private val productStateSharedViewModel: ProductStateSharedViewModel by activityViewModels()
 
     private val bannerAdapter: HomeBannerAdapter by lazy { HomeBannerAdapter(this) }
     private val promotionAdapter: PromotionAdapter by lazy { PromotionAdapter(this, this) }
@@ -43,6 +46,9 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setMemberId(requireContext().getUserId())
+        viewModel.loadPromotions()
+
         observeViewModel()
         setupLayout()
         setupListeners()
@@ -68,6 +74,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
     * 변경이 감지되면 데이터 갱신
     * */
     private fun observeViewModel() {
+        productStateSharedViewModel.likeUpdate.observe(viewLifecycleOwner) { (productId, isLiked) ->
+            viewModel.updateProductLikeState(productId, isLiked)
+        }
+
         viewModel.bannerItems.observe(viewLifecycleOwner) { bannerList ->
             bannerAdapter.submitList(bannerList)
         }
@@ -104,6 +114,7 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
                         promotionShimmerLayout.root.visibility = View.VISIBLE
                         rvPromotion.visibility = View.GONE
                     }
+
                     false -> {
                         shimmerLayout.startShimmer()
                         promotionShimmerLayout.root.visibility = View.GONE
@@ -208,6 +219,10 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
         val action =
             HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(product.productId)
         findNavController().navigate(action)
+    }
+
+    override fun onFavoriteClick(product: Product) {
+        viewModel.toggleFavorite(requireContext().getUserId(), product.productId)
     }
 
     override fun onMoreProductsClick(title: String) {
