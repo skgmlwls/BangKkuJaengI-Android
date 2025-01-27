@@ -53,10 +53,6 @@ class MyCouponFragment: Fragment(), CouponReceiveClickListener {
         viewModel.receiveCoupon(requireContext().getUserId(), coupon)
     }
 
-    override fun onCouponReceiveClick(coupon: Coupon) {
-        viewModel.receiveCoupon(requireContext().getUserId(), coupon)
-    }
-
     private fun setupUI() {
         viewModel.getCouponList(requireContext().getUserId())
         with(binding) {
