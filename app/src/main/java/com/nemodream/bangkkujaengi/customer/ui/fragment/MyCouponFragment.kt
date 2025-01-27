@@ -20,7 +20,7 @@ class MyCouponFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MyCouponViewModel by viewModels()
-    private val couponAdapter: CouponAdapter by lazy { CouponAdapter() }
+    private val couponAdapter: CouponAdapter by lazy { CouponAdapter(this) }
 
     private val args: MyCouponFragmentArgs by navArgs()
     private val memberId: String by lazy { args.memberId }
@@ -45,9 +45,13 @@ class MyCouponFragment: Fragment() {
         super.onDestroyView()
         _binding = null
     }
+        
+    override fun onCouponReceiveClick(coupon: Coupon) {
+        viewModel.receiveCoupon(requireContext().getUserId(), coupon)
+    }
 
     private fun setupUI() {
-        viewModel.getCouponList()
+        viewModel.getCouponList(requireContext().getUserId())
         with(binding) {
             rvMyCouponList.adapter = couponAdapter
         }

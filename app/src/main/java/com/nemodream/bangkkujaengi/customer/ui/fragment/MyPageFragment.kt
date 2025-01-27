@@ -8,18 +8,25 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
+import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyPageViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.getUserType
+import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.showToast
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private lateinit var appContext: Context
+    private val viewModel: MyPageViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,6 +46,18 @@ class MyPageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         setupListeners()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.memberInfo.observe(viewLifecycleOwner) { member ->
+            with(binding) {
+                member.memberProfileImage?.let {
+                    ivMyPageProfileImage.loadImage(it)
+                } ?: ivMyPageProfileImage.setImageResource(R.drawable.ic_default_profile)
+                tvMyPageProfileName.text = "${member.memberNickName}님"
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -50,7 +69,8 @@ class MyPageFragment : Fragment() {
         val userType = appContext.getUserType()
 
         with(binding) {
-            // 멤버 타입에 따라 화면을 나눈다.
+            // 멤버 타입에 따라 화면을 나눈다
+            viewModel.getMemberInfo(appContext.getUserId())
             when(userType) {
                 "member" -> {
                     groupMyPageNonMember.visibility = View.INVISIBLE

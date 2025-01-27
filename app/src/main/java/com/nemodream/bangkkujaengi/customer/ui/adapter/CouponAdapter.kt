@@ -11,15 +11,18 @@ import com.nemodream.bangkkujaengi.databinding.RowPaymentSelectCouponRecyclervie
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import com.nemodream.bangkkujaengi.utils.toFormattedDate
 
-class CouponAdapter: ListAdapter<Coupon, CouponAdapter.CouponViewHolder>(CouponDiffCallback()) {
+class CouponAdapter(
+    private val couponReceiveClickListener: CouponReceiveClickListener,
+): ListAdapter<Coupon, CouponAdapter.CouponViewHolder>(CouponDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponViewHolder {
         return CouponViewHolder(
-            RowPaymentSelectCouponRecyclerviewBinding.inflate(
+            ItemCouponListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
+            onCouponReceiveClick = { position -> couponReceiveClickListener.onCouponReceiveClick(getItem(position)) }
         )
     }
 
@@ -52,4 +55,8 @@ class CouponDiffCallback : DiffUtil.ItemCallback<Coupon>() {
     override fun areContentsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
         return oldItem == newItem
     }
+}
+
+interface CouponReceiveClickListener {
+    fun onCouponReceiveClick(coupon: Coupon)
 }
