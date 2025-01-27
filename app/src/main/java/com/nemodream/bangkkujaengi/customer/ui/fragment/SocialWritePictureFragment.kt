@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -68,7 +69,7 @@ class SocialWritePictureFragment : Fragment() {
             Log.d("SocialWritePictureFragment", "Product: $product, Position: $position, X: $xCoord, Y: $yCoord")
 
             if (product != null && position != -1) {
-                addTagPin(position, xCoord, yCoord)
+                addTagPin(position, xCoord, yCoord, product)
 
                 // Tag 데이터 생성 및 리스트에 추가
                 val tag = Tag(tagX = xCoord, tagY = yCoord, tagProductInfo = product)
@@ -83,11 +84,11 @@ class SocialWritePictureFragment : Fragment() {
     }
 
     // 태그 핀 추가 함수
-    private fun addTagPin(position: Int, x: Float, y: Float) {
+    private fun addTagPin(position: Int, x: Float, y: Float, product: Product) {
         val container = (binding.vpSocialWritePictureCarousel[0] as RecyclerView)
             .findViewHolderForAdapterPosition(position)?.itemView as? FrameLayout
 
-        val imageView = ImageView(requireContext()).apply {
+        val tagPin = ImageView(requireContext()).apply {
             setImageResource(R.drawable.ic_tag_pin)
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -98,7 +99,18 @@ class SocialWritePictureFragment : Fragment() {
             }
         }
 
-        container?.addView(imageView)
+        container?.addView(tagPin)
+
+        tagPin.setOnClickListener {
+            // 태그 정보 표시 로직
+            tag?.let {
+                Toast.makeText(
+                    binding.root.context,
+                    "상품명: ${product.productName}, 가격: ${product.price}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     // 리스너 모음
