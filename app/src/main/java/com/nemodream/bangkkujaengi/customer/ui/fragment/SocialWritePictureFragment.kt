@@ -74,7 +74,7 @@ class SocialWritePictureFragment : Fragment() {
                 addTagPin(position, xCoord, yCoord, product)
 
                 // Tag 데이터 생성 및 리스트에 추가
-                val tag = Tag(tagX = xCoord, tagY = yCoord, tagProductInfo = product)
+                val tag = Tag(order = position, tagX = xCoord, tagY = yCoord, tagProductInfo = product)
                 productTagPinList.add(tag)
             }
         }
