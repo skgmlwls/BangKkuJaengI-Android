@@ -127,7 +127,10 @@ class MyPageFragment : Fragment() {
                 findNavController().navigate(action)
             }
             myPageReserve.root.setOnClickListener {  }
-            myPageBookmark.root.setOnClickListener {  }
+            myPageBookmark.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToMyBookmarkFragment()
+                findNavController().navigate(action)
+            }
 
 
             tvMyPageSetting.setOnClickListener {
