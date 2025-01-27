@@ -247,5 +247,8 @@
         <action
             android:id="@+id/action_navigation_my_bookmark_to_navigation_cart"
             app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_my_bookmark_to_navigation_product_detail"
+            app:destination="@id/navigation_product_detail" />
     </fragment>
 </navigation>
