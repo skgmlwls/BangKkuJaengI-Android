@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,21 @@ class MyBookmarkViewModel @Inject constructor(
         }.onFailure {
             _isLoading.value = false
             it.printStackTrace()
+        }
+    }
+
+    fun toggleFavorite(memberId: String, productId: String) = viewModelScope.launch {
+        runCatching {
+            repository.toggleProductLikeState(memberId, productId)
+        }.onSuccess {
+            // 좋아요 해제된 아이템 제거
+            val currentItems = _productList.value?.toMutableList() ?: mutableListOf()
+            val updatedItems = currentItems.filterNot {
+                it.productId == productId
+            }
+            _productList.value = updatedItems
+        }.onFailure { e ->
+            Log.e("MyBookmarkViewModel", "좋아요 상태 변경 실패: ", e)
         }
     }
 
