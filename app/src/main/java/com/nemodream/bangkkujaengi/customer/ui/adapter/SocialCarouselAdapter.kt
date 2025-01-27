@@ -4,12 +4,9 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.databinding.ItemSocialCarouselPhotoBinding
-import com.nemodream.bangkkujaengi.R
 
 class SocialCarouselAdapter(
     private val photos: List<Uri>,
@@ -25,33 +22,16 @@ class SocialCarouselAdapter(
                 .load(photoUri)
                 .into(binding.ivCarouselPhoto)
 
-            // 터치 이벤트로 태그 위치 처리
+            // 터치 이벤트에서는 위치만 전달
             binding.ivCarouselPhoto.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    // 클릭된 위치에서 태그 핀 추가
-                    addTagPin(event.x, event.y)
-                    // 클릭된 위치 정보 콜백 호출
+                    // 클릭된 위치 정보만 콜백으로 전달
                     onPhotoClick(adapterPosition, event.x, event.y)
                 }
                 true
             }
         }
 
-        // 태그 핀 추가하는 함수
-        private fun addTagPin(x: Float, y: Float) {
-            // 태그 핀을 추가하는 로직
-            val tagPin = ImageView(binding.root.context).apply {
-                setImageResource(R.drawable.ic_tag_pin)  // 태그 핀 아이콘
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    leftMargin = (x - 20).toInt()  // 태그 위치 조정
-                    topMargin = (y - 20).toInt()   // 태그 위치 조정
-                }
-            }
-            (binding.root as FrameLayout).addView(tagPin)  // 태그 핀을 FrameLayout에 추가
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselViewHolder {

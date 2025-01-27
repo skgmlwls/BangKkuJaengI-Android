@@ -38,6 +38,10 @@ class SocialWriteTagBottomSheetFragment : BottomSheetDialogFragment(), OnItemCli
     private val viewModel: SocialWriteTagBottomSheetViewModel by viewModels()
     private val searchResultAdapter: SearchResultAdapter by lazy { SearchResultAdapter(this) }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSocialWriteTagBottomSheetBinding.inflate(inflater, container, false)
