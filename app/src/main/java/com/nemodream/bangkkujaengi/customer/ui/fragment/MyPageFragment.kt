@@ -25,6 +25,7 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private lateinit var appContext: Context
+
     private val viewModel: MyPageViewModel by viewModels()
 
     override fun onAttach(context: Context) {
@@ -68,7 +69,7 @@ class MyPageFragment : Fragment() {
         val userType = appContext.getUserType()
 
         with(binding) {
-            // 멤버 타입에 따라 화면을 나눈다
+            // 멤버 타입에 따라 화면을 나눈다.
             viewModel.getMemberInfo(appContext.getUserId())
             when(userType) {
                 "member" -> {
