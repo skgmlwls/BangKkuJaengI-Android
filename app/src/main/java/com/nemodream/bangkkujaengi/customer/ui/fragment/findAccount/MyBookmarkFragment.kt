@@ -61,7 +61,7 @@ class MyBookmarkFragment: Fragment(), ProductClickListener {
     }
 
     override fun onFavoriteClick(product: Product) {
-        TODO("Not yet implemented")
+        viewModel.toggleFavorite(appContext.getUserId(), product.productId)
     }
 
     private fun setupUI() {
