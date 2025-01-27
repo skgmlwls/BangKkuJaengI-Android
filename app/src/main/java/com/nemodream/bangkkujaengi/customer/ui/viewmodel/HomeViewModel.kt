@@ -66,6 +66,7 @@ class HomeViewModel @Inject constructor(
     fun loadPromotions() = viewModelScope.launch {
         _promotionLoading.value = true
         runCatching {
+            _promotionItems.value = emptyList()
             homeRepository.getPromotionSections(memberId)
         }.onSuccess { items ->
             _promotionItems.value = items
