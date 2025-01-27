@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.Tag
@@ -101,14 +103,39 @@ class SocialWritePictureFragment : Fragment() {
 
         container?.addView(tagPin)
 
+        // 상품 정보를 표시할 라벨을 생성
+        val productLabel = LayoutInflater.from(requireContext()).inflate(R.layout.item_social_tag_product_label, container, false)
+        val labelName = productLabel.findViewById<TextView>(R.id.tv_tag_product_label_name)
+        val labelPrice = productLabel.findViewById<TextView>(R.id.tv_tag_product_label_price)
+        val labelImage = productLabel.findViewById<ImageView>(R.id.iv_tag_product_label_image)
+
+        labelName.text = product.productName
+        labelPrice.text = "${product.price}원"
+        // 상품 이미지 설정 (예시로 Glide 사용)
+        Glide.with(requireContext())
+            .load(product.images[0]) // 상품 이미지 URL이 있다면
+            .into(labelImage)
+
+        // 라벨 위치 설정
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            leftMargin = (x + 40).toInt() // 태그 오른쪽에 라벨 배치
+            topMargin = (y - 10).toInt()  // 태그 위에 라벨 배치
+        }
+
+        // 라벨을 처음에는 숨김
+        productLabel.visibility = View.GONE
+
+        container?.addView(productLabel, params)
+
+        // 태그 클릭 시 라벨 보이기
         tagPin.setOnClickListener {
-            // 태그 정보 표시 로직
-            tag?.let {
-                Toast.makeText(
-                    binding.root.context,
-                    "상품명: ${product.productName}, 가격: ${product.price}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (productLabel.visibility == View.GONE) {
+                productLabel.visibility = View.VISIBLE  // 라벨 보이기
+            } else {
+                productLabel.visibility = View.GONE   // 라벨 숨기기
             }
         }
     }
