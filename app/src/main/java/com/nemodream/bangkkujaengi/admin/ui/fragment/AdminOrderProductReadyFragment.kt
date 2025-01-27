@@ -59,7 +59,7 @@ class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
             cancelText = "취소",
             onConfirm = {
                 // ViewModel에 상태 변경 요청
-                viewModel.handleNextState(order)
+                viewModel.updateOrderState(order, OrderState.SHIPPING)
             },
             onCancel = {}
         ).show()

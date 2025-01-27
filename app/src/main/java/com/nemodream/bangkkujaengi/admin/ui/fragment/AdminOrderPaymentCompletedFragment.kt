@@ -59,7 +59,6 @@ class AdminOrderPaymentCompletedFragment : BaseAdminOrderFragment() {
             confirmText = "확인",
             cancelText = "취소",
             onConfirm = {
-                // ViewModel에 상태 변경 요청
                 viewModel.updateOrderState(order, OrderState.PRODUCT_READY)
             },
             onCancel = {}
@@ -74,8 +73,7 @@ class AdminOrderPaymentCompletedFragment : BaseAdminOrderFragment() {
             message = "결제 완료된 상품의 주문을 취소하시겠습니까?",
             reasons = reasons,
             onConfirm = {
-                // ViewModel에 취소 요청
-                viewModel.handleCancel(order)
+                viewModel.updateOrderState(order, OrderState.CANCELED)
             },
             onCancel = { }
         ).show()
