@@ -63,7 +63,7 @@ class PaymentCouponBottomSheetAdapter(
         select_single_coupon(holder, paymentCouponBottomSheetViewModel, position)
 
 
-        if (paymentCouponBottomSheetViewModel.checked_document_id.value == coupon_list[position].couponDocumentId) {
+        if (paymentCouponBottomSheetViewModel.checked_document_id.value == coupon_list[position].documentId) {
             holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = true
         }
 
@@ -155,7 +155,7 @@ class PaymentCouponBottomSheetAdapter(
             holder.rowPaymentCouponRecyclerviewBinding.cvRowPaymentCoupon.isChecked = isChecked
             if (isChecked) {
                 paymentCouponBottomSheetViewModel.checked_position.value = position
-                paymentCouponBottomSheetViewModel.checked_document_id.value = coupon_list[position].couponDocumentId
+                paymentCouponBottomSheetViewModel.checked_document_id.value = coupon_list[position].documentId
             } else {
                 paymentCouponBottomSheetViewModel.checked_position.value = null
             }

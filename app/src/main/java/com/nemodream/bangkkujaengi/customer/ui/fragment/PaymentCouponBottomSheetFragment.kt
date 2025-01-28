@@ -105,7 +105,7 @@ class PaymentCouponBottomSheetFragment(val paymentFragment: PaymentFragment) : B
             coupon_list = work2.await()
 
             coupon_list.forEach {
-                Log.d("1234", "coupon_list : ${it.couponDocumentId}")
+                Log.d("1234", "coupon_list : ${it.documentId}")
             }
 
             fragmentPaymentCouponBottomSheetBinding.apply {

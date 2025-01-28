@@ -122,7 +122,7 @@ class PaymentRepository {
                 Log.d("coupon", "Fetched documents: ${result.documents.size}")
 
                 for (document in result.documents) {
-                    val couponData = document.toObject(Coupon::class.java)?.copy(couponDocumentId = document.id)
+                    val couponData = document.toObject(Coupon::class.java)?.copy(documentId = document.id)
                     if (couponData != null && coupon_document_id_list.contains(document.id)) {
                         couponList.add(couponData)
                     }

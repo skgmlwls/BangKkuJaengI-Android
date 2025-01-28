@@ -23,7 +23,7 @@ class AdminCouponRepository @Inject constructor(
         val snapshot = firestore.collection("Coupon").get().await()
         snapshot.documents.map { document ->
             document.toObject(Coupon::class.java)?.copy(
-                couponDocumentId = document.id
+                documentId = document.id
             ) ?: throw Exception("쿠폰 정보 불러오기 실패")
         }
     } catch (e: Exception) {
@@ -32,7 +32,7 @@ class AdminCouponRepository @Inject constructor(
 
     // 쿠폰 삭제하기
     fun deleteCoupon(coupon: Coupon) {
-        firestore.collection("Coupon").document(coupon.couponDocumentId).delete()
+        firestore.collection("Coupon").document(coupon.documentId).delete()
     }
 
 }
