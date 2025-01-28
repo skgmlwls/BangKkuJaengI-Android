@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Rect
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -17,7 +18,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.R
+import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -105,4 +109,76 @@ fun Context.getUserType(): String {
 fun Context.getUserId(): String {
     val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
     return sharedPreferences.getString("documentId", "") ?: ""
+}
+
+/* Firestore 게시물 좋아요 토글 확장함수 */
+suspend fun FirebaseFirestore.togglePostLikeState(userId: String, postId: String) {
+    try {
+        this.runTransaction { transaction ->
+            // 현재 좋아요 상태만 확인
+            val likeDoc = transaction.get(
+                this.collection("PostLike").document(userId)
+            )
+
+            val currentLikes = if (likeDoc.exists()) {
+                (likeDoc.get("postIds") as? List<String>) ?: emptyList()
+            } else {
+                emptyList()
+            }
+
+            // 좋아요 상태 토글
+            if (postId in currentLikes) {
+                // 좋아요 취소
+                transaction.set(
+                    this.collection("PostLike").document(userId),
+                    mapOf(
+                        "userId" to userId,
+                        "postIds" to (currentLikes - postId),
+                        "updatedAt" to System.currentTimeMillis()
+                    )
+                )
+                transaction.update(
+                    this.collection("Post").document(postId),
+                    "likeCount", FieldValue.increment(-1)
+                )
+            } else {
+                // 좋아요 추가
+                transaction.set(
+                    this.collection("PostLike").document(userId),
+                    mapOf(
+                        "userId" to userId,
+                        "postIds" to (currentLikes + postId),
+                        "updatedAt" to System.currentTimeMillis()
+                    )
+                )
+                transaction.update(
+                    this.collection("Post").document(postId),
+                    "likeCount", FieldValue.increment(1)
+                )
+            }
+        }.await()
+    } catch (e: Exception) {
+        Log.e("FirestoreExtension", "게시물 좋아요 상태변경 실패: ", e)
+        throw e
+    }
+}
+
+/* Firestore 게시물 좋아요 여부 확인 확장함수 */
+suspend fun FirebaseFirestore.isPostLiked(userId: String, postId: String): Boolean {
+    return try {
+        val doc = this.collection("PostLike")
+            .document(userId)
+            .get()
+            .await()
+
+        if (doc.exists()) {
+            val postIds = doc.get("postIds") as? List<String>
+            postIds?.contains(postId) ?: false
+        } else {
+            false
+        }
+    } catch (e: Exception) {
+        Log.e("FirestoreExtension", "게시물 좋아요 상태확인 실패: ", e)
+        false
+    }
 }
