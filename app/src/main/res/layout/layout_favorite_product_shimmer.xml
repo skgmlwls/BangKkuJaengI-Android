@@ -9,49 +9,49 @@
         android:columnCount="3">
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />
 
         <include
-            layout="@layout/shimmer_item_product"
+            layout="@layout/shimmer_item_favorite_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1" />

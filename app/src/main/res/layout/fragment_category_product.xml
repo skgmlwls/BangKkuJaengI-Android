@@ -90,6 +90,8 @@
         android:id="@+id/rv_category_product_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

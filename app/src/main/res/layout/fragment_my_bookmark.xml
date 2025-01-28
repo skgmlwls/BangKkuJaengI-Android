@@ -62,6 +62,8 @@
         android:id="@+id/rv_my_bookmark_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:paddingHorizontal="12dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,13 +72,13 @@
         app:spanCount="3"
         tools:listitem="@layout/item_product" />
 
-        <include
-            android:id="@+id/shimmer_my_bookmark"
-            layout="@layout/layout_product_grid_three_shimmer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_my_bookmark_image" />
+    <include
+        android:id="@+id/shimmer_my_bookmark"
+        layout="@layout/layout_favorite_product_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_my_bookmark_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>
