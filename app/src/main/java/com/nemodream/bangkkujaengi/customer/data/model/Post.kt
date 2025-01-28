@@ -4,28 +4,28 @@ import android.nfc.Tag
 
 data class Post(
     // 게시글 고유 아이디
-    val id: String,
+    val id: String = "",
 
     // 작성자 아이디
-    val nickname: String,
+    val nickname: String = "",
 
     // 작성자 프사
-    val authorProfilePicture: String,
+    val authorProfilePicture: String = "",
 
     // 게시글 제목
-    val title: String,
+    val title: String = "",
 
     // 게시글 내용
-    val content: String,
+    val content: String = "",
 
     // 게시 사진들
-    val imageList: List<String>,
+    val imageList: List<String> = emptyList(),
 
     // 게시글 썸네일
     // val thumbnailImage: imageList[0]
 
      // 사진 위 태그들
-     val productTagPinList : List<Tag>,
+     val productTagPinList : List<Tag> = emptyList(),
 
     // 저장됨 수
     val savedCount: Int = 0,
