@@ -119,12 +119,12 @@
         android:id="@+id/iv_my_page_social_kakao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/tv_my_page_hello_label"
-        app:layout_constraintTop_toTopOf="@id/tv_my_page_hello_label"
-        app:layout_constraintBottom_toBottomOf="@id/tv_my_page_hello_label"
-        android:src="@drawable/ic_kakao_talk_logo"
         android:layout_marginStart="14dp"
-        />
+        android:src="@drawable/ic_kakao_talk_logo"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/tv_my_page_hello_label"
+        app:layout_constraintStart_toEndOf="@id/tv_my_page_hello_label"
+        app:layout_constraintTop_toTopOf="@id/tv_my_page_hello_label" />
 
     <TextView
         android:id="@+id/tv_my_page_profile_name"
@@ -151,8 +151,8 @@
             layout="@layout/view_my_page_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintEnd_toStartOf="@id/my_page_review"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
