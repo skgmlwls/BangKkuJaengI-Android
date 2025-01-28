@@ -100,6 +100,18 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
+    <!-- 태그 입력 안내 문구 -->
+    <TextView
+        android:id="@+id/tv_tag_guidance"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:text="사진을 클릭하여 사용 상품 태그를 등록할 수 있습니다 📌"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fl_social_write_picture_container" />
+
     <!-- 게시글 내용 작성(제목) -->
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/tf_write_title"
@@ -136,7 +148,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- 항목 수정 버튼 -->
+    <!-- 사진 항목 수정 버튼 -->
     <Button
         android:id="@+id/btn_modify_item"
         android:layout_width="320dp"
@@ -144,7 +156,7 @@
         android:layout_marginBottom="120dp"
         android:backgroundTint="#D6D6D6"
         android:textColor="@color/black"
-        android:text="항목 수정"
+        android:text="사진 항목 수정"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
