@@ -1,7 +1,5 @@
 package com.nemodream.bangkkujaengi.customer.data.model
 
-import android.nfc.Tag
-
 data class Post(
     // 게시글 고유 아이디
     val id: String = "",
