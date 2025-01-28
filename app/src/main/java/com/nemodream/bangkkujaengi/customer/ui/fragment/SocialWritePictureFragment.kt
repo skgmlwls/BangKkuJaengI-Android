@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
@@ -22,6 +21,9 @@ import com.nemodream.bangkkujaengi.customer.data.model.Tag
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
 import com.nemodream.bangkkujaengi.databinding.ItemSocialTagProductLabelBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.nemodream.bangkkujaengi.customer.data.model.Post
+
 
 class SocialWritePictureFragment : Fragment() {
 
@@ -31,7 +33,12 @@ class SocialWritePictureFragment : Fragment() {
     private val selectedPhotos = mutableListOf<Uri>() // 게시할 사진들 리스트
     private val productTagPinList = mutableListOf<Tag>() // 태그 리스트
 
+    
     private lateinit var appContext: Context
+
+    // Firebase Firestore와 FirebaseAuth 초기화
+    private val firestore = FirebaseFirestore.getInstance()
+
 
     private val carouselAdapter: SocialCarouselAdapter by lazy {
         SocialCarouselAdapter(selectedPhotos) { position, x, y ->
@@ -158,6 +165,51 @@ class SocialWritePictureFragment : Fragment() {
                 binding.tfWriteTitle.visibility = View.VISIBLE
                 binding.tfWriteContent.visibility = View.VISIBLE
                 binding.btnPost.visibility = View.VISIBLE
+            }
+
+//            btnPost.setOnClickListener {
+//                val title = binding.tfWriteTitle.text.toString()
+//                val content = binding.tfWriteContent.text.toString()
+//                Log.d("SocialWritePictureFragment", "title:$title")
+//                Log.d("SocialWritePictureFragment", "content:$content")
+//                Log.d("SocialWritePictureFragment", "imageList:$selectedPhotos")
+//                Log.d("SocialWritePictureFragment", "productTagPinList:$productTagPinList")
+//            }
+
+            binding.btnPost.setOnClickListener {
+                val title = binding.tfWriteTitle.text.toString()
+                val content = binding.tfWriteContent.text.toString()
+
+                if (title.isEmpty() || content.isEmpty() || selectedPhotos.isEmpty()) {
+                    Toast.makeText(context, "제목, 내용, 사진을 모두 입력해주세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+
+                // Firestore에 저장할 Post 객체 생성
+                val post = Post(
+                    id = firestore.collection("posts").document().id, // 자동으로 고유 ID 생성
+                    nickname = "김헤인", // 현재 사용자 닉네임
+                    authorProfilePicture = "", // 현재 사용자 프로필 사진
+                    title = title,
+                    content = content,
+                    imageList = selectedPhotos.map { it.toString() }, // 이미지 Uri를 문자열로 변환
+                    productTagPinList = productTagPinList,
+                    savedCount = 0, // 초기값
+                    commentCount = 0 // 초기값
+                )
+
+                // Firestore에 게시글 저장
+                firestore.collection("Post")
+                    .document(post.id)  // 게시글 ID를 문서 ID로 사용
+                    .set(post)
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "게시글이 성공적으로 작성되었습니다.", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack() // 게시글 작성 후 이전 화면으로 돌아가기
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(context, "게시글 작성에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }
