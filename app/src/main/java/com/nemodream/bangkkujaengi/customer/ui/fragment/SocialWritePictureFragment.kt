@@ -27,7 +27,8 @@ class SocialWritePictureFragment : Fragment() {
 
     private var _binding: FragmentSocialWritePictureBinding? = null
     private val binding get() = _binding!!
-    private val selectedPhotos = mutableListOf<Uri>()
+
+    private val selectedPhotos = mutableListOf<Uri>() // 게시할 사진들 리스트
     private val productTagPinList = mutableListOf<Tag>() // 태그 리스트
 
     private lateinit var appContext: Context
@@ -153,12 +154,7 @@ class SocialWritePictureFragment : Fragment() {
             btnWritePictureNext.setOnClickListener {
                 binding.btnWritePictureNext.visibility = View.GONE
                 binding.btnModifyItem.visibility = View.GONE
-                binding.btnWriteTagNext.visibility = View.VISIBLE
-            }
-
-            // 태그 추가 화면에서 "다음" 버튼
-            btnWriteTagNext.setOnClickListener {
-                binding.btnWriteTagNext.visibility = View.GONE
+                binding.tvTagGuidance.visibility = View.GONE
                 binding.tfWriteTitle.visibility = View.VISIBLE
                 binding.tfWriteContent.visibility = View.VISIBLE
                 binding.btnPost.visibility = View.VISIBLE
@@ -222,6 +218,7 @@ class SocialWritePictureFragment : Fragment() {
         binding.btnAddPicture.visibility = View.GONE
         binding.btnModifyItem.visibility = View.VISIBLE
         binding.btnWritePictureNext.visibility = View.VISIBLE
+        binding.tvTagGuidance.visibility = View.VISIBLE
 
         binding.vpSocialWritePictureCarousel.adapter?.notifyDataSetChanged()
     }
