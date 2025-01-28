@@ -15,6 +15,9 @@ import com.nemodream.bangkkujaengi.customer.data.model.PromotionHeader
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionItem
 import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
 import com.nemodream.bangkkujaengi.customer.data.model.SubCategoryType
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -85,7 +88,19 @@ class HomeRepository @Inject constructor(
 
                 if (promotion.isActive) {
                     sections.add(PromotionHeader(promotion.title))
-                    val products = getProductsByIds(promotion.productIds, memberId)
+                    // 병렬로 상품 정보 가져오기
+                    val products = coroutineScope {
+                        promotion.productIds.map { productId ->
+                            async {
+                                try {
+                                    getProducts(productId, memberId)
+                                } catch (e: Exception) {
+                                    Log.e("PromotionRepository", "Error fetching product $productId: ", e)
+                                    null
+                                }
+                            }
+                        }.awaitAll().filterNotNull()
+                    }
                     sections.add(PromotionProducts(products))
                 }
             }
