@@ -50,6 +50,7 @@ class ProductAdapter(
                 ivProduct.loadImage(product.images.first())
                 tvProductName.text = product.productName
                 tvProductPrice.text = "${product.price.toCommaString()}원"
+                tvProductCategory.text = product.category.getTabTitle()
                 btnLike.isSelected = product.like
             }
         }
