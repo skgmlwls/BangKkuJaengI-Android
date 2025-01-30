@@ -23,6 +23,7 @@ import com.nemodream.bangkkujaengi.databinding.FragmentSocialWritePictureBinding
 import com.nemodream.bangkkujaengi.databinding.ItemSocialTagProductLabelBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.utils.getUserId
 
 
 class SocialWritePictureFragment : Fragment() {
@@ -139,6 +140,36 @@ class SocialWritePictureFragment : Fragment() {
         setupTagAndLabelListeners(tagPin, labelBinding, container, position, x, y)
     }
 
+    // Firebase Firestore에서 memberNickName 필드를 가져오는 함수
+    fun getMemberNickName(userId: String, callback: (String?) -> Unit) {
+        firestore.collection("Member")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                val memberNickName = document.getString("memberNickName")
+                callback(memberNickName)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error getting nickname: ${exception.message}")
+                callback(null)
+            }
+    }
+
+    // Firebase Firestore에서 memberProfileImage 필드를 가져오는 함수
+    fun getMemberProfileImage(userId: String, callback: (String?) -> Unit) {
+        firestore.collection("Member")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                val memberNickName = document.getString("memberProfileImage")
+                callback(memberNickName)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error getting nickname: ${exception.message}")
+                callback(null)
+            }
+    }
+
     // 리스너 모음
     private fun setupListeners() {
         with(binding) {
@@ -167,15 +198,6 @@ class SocialWritePictureFragment : Fragment() {
                 binding.btnPost.visibility = View.VISIBLE
             }
 
-//            btnPost.setOnClickListener {
-//                val title = binding.tfWriteTitle.text.toString()
-//                val content = binding.tfWriteContent.text.toString()
-//                Log.d("SocialWritePictureFragment", "title:$title")
-//                Log.d("SocialWritePictureFragment", "content:$content")
-//                Log.d("SocialWritePictureFragment", "imageList:$selectedPhotos")
-//                Log.d("SocialWritePictureFragment", "productTagPinList:$productTagPinList")
-//            }
-
             binding.btnPost.setOnClickListener {
                 val title = binding.tfWriteTitle.text.toString()
                 val content = binding.tfWriteContent.text.toString()
@@ -185,31 +207,35 @@ class SocialWritePictureFragment : Fragment() {
                     return@setOnClickListener
                 }
 
+                // Firestore에서 memberNickName 가져오기
+                getMemberNickName(appContext.getUserId()) { memberNickName ->
+                    getMemberProfileImage(appContext.getUserId()) { memberProfileImage ->
+                        // Post 객체 생성
+                        val post = Post(
+                            id = firestore.collection("posts").document().id, // 자동 생성된 ID
+                            nickname = memberNickName ?: "익명", // 닉네임 없으면 "익명" 처리
+                            authorProfilePicture = memberProfileImage ?: "", // 프로필 이미지 없으면 빈 문자열 처리
+                            title = title,
+                            content = content,
+                            imageList = selectedPhotos.map { it.toString() }, // 이미지 Uri를 문자열로 변환
+                            productTagPinList = productTagPinList,
+                            savedCount = 0, // 초기값
+                            commentCount = 0 // 초기값
+                        )
 
-                // Firestore에 저장할 Post 객체 생성
-                val post = Post(
-                    id = firestore.collection("posts").document().id, // 자동으로 고유 ID 생성
-                    nickname = "김헤인", // 현재 사용자 닉네임
-                    authorProfilePicture = "", // 현재 사용자 프로필 사진
-                    title = title,
-                    content = content,
-                    imageList = selectedPhotos.map { it.toString() }, // 이미지 Uri를 문자열로 변환
-                    productTagPinList = productTagPinList,
-                    savedCount = 0, // 초기값
-                    commentCount = 0 // 초기값
-                )
-
-                // Firestore에 게시글 저장
-                firestore.collection("Post")
-                    .document(post.id)  // 게시글 ID를 문서 ID로 사용
-                    .set(post)
-                    .addOnSuccessListener {
-                        Toast.makeText(context, "게시글이 성공적으로 작성되었습니다.", Toast.LENGTH_SHORT).show()
-                        findNavController().popBackStack() // 게시글 작성 후 이전 화면으로 돌아가기
+                        // Firestore에 게시글 저장
+                        firestore.collection("Post")
+                            .document(post.id)
+                            .set(post)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "게시글이 성공적으로 작성되었습니다.", Toast.LENGTH_SHORT).show()
+                                findNavController().popBackStack() // 게시글 작성 후 이전 화면으로 돌아가기
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "게시글 작성에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(context, "게시글 작성에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                }
             }
         }
     }
