@@ -1,5 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
+import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.Member
@@ -38,6 +40,7 @@ class MyPageRepository @Inject constructor(
                     .get()
                     .await()
                     .toObject(Product::class.java)
+                    ?.copy(like = isProductLiked(userId, productId))
             }
 
             products
@@ -51,4 +54,75 @@ class MyPageRepository @Inject constructor(
         .downloadUrl
         .await()
         .toString()
+
+    /* 좋아요 토글 */
+    suspend fun toggleProductLikeState(userId: String, productId: String) {
+        try {
+            firestore.runTransaction { transaction ->
+                // 현재 좋아요 상태만 확인
+                val likeDoc = transaction.get(
+                    firestore.collection("ProductLike").document(userId)
+                )
+
+                val currentLikes = if (likeDoc.exists()) {
+                    (likeDoc.get("productIds") as? List<String>) ?: emptyList()
+                } else {
+                    emptyList()
+                }
+
+                // 좋아요 상태 토글
+                if (productId in currentLikes) {
+                    // 좋아요 취소
+                    transaction.update(
+                        firestore.collection("ProductLike").document(userId),
+                        mapOf(
+                            "productIds" to currentLikes - productId,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                    transaction.update(
+                        firestore.collection("Product").document(productId),
+                        "likeCount", FieldValue.increment(-1)
+                    )
+                } else {
+                    // 좋아요 추가
+                    transaction.set(
+                        firestore.collection("ProductLike").document(userId),
+                        mapOf(
+                            "userId" to userId,
+                            "productIds" to currentLikes + productId,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                    transaction.update(
+                        firestore.collection("Product").document(productId),
+                        "likeCount", FieldValue.increment(1)
+                    )
+                }
+            }.await()
+        } catch (e: Exception) {
+            Log.e("HomeRepository", "좋아요 상태변경 실패: ", e)
+            throw e
+        }
+    }
+
+    /* 상품 좋아요 여부 확인 */
+    private suspend fun isProductLiked(userId: String, productId: String): Boolean {
+        return try {
+            val doc = firestore.collection("ProductLike")
+                .document(userId)
+                .get()
+                .await()
+
+            if (doc.exists()) {
+                val productIds = doc.get("productIds") as? List<String>
+                productIds?.contains(productId) ?: false
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("HomeRepository", "좋아요 상태변경 실패: ", e)
+            false
+        }
+    }
 }

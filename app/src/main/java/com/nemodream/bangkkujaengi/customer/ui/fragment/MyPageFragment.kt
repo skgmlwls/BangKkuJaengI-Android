@@ -22,6 +22,7 @@ import com.nemodream.bangkkujaengi.databinding.FragmentMyPageBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.getUserType
 import com.nemodream.bangkkujaengi.utils.loadImage
+import com.nemodream.bangkkujaengi.utils.showLoginSnackbar
 import com.nemodream.bangkkujaengi.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -113,6 +114,29 @@ class MyPageFragment : Fragment(), ProductClickListener {
         _binding = null
     }
 
+    override fun onProductClick(product: Product) {
+        val action =
+            MyPageFragmentDirections.actionNavigationMyPageToNavigationProductDetail(product.productId)
+        findNavController().navigate(action)
+    }
+
+    override fun onFavoriteClick(product: Product) {
+        when(appContext.getUserType()) {
+            "member" -> {
+                viewModel.toggleFavorite(appContext.getUserId(), product.productId)
+            }
+            "guest" -> {
+                appContext.showLoginSnackbar(
+                    binding.root,
+                    requireActivity().findViewById(R.id.customer_bottom_navigation),
+                ) {
+                    val action = HomeFragmentDirections.actionNavigationHomeToSignInActivity()
+                    findNavController().navigate(action)
+                }
+            }
+        }
+    }
+
     private fun setupUI() {
         val userType = appContext.getUserType()
 
@@ -198,11 +222,4 @@ class MyPageFragment : Fragment(), ProductClickListener {
         }
     }
 
-    override fun onProductClick(product: Product) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFavoriteClick(product: Product) {
-        TODO("Not yet implemented")
-    }
 }
