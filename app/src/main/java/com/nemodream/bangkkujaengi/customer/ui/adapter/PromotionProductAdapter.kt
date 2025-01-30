@@ -8,33 +8,33 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.customer.data.model.Product
-import com.nemodream.bangkkujaengi.databinding.ItemProductBinding
+import com.nemodream.bangkkujaengi.databinding.ItemPromotionBinding
 import com.nemodream.bangkkujaengi.utils.getUserType
 import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.toCommaString
 
-class ProductGridAdapter(
+class PromotionProductAdapter(
     private val productClickListener: ProductClickListener,
-) : ListAdapter<Product, ProductGridAdapter.ProductGridViewHolder>(ProductGridDiffCallback()) {
+) : ListAdapter<Product, PromotionProductAdapter.PromotionProductViewHolder>(PromotionProductDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductGridViewHolder {
-        return ProductGridViewHolder(
-            ItemProductBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            productClickListener = { position -> productClickListener.onProductClick(getItem(position)) },
-            favoriteClickListener = { position -> productClickListener.onFavoriteClick(getItem(position)) },
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromotionProductViewHolder {
+            return PromotionProductViewHolder(
+                ItemPromotionBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                productClickListener = { position -> productClickListener.onProductClick(getItem(position)) },
+                favoriteClickListener = { position -> productClickListener.onFavoriteClick(getItem(position)) },
+            )
     }
 
-    override fun onBindViewHolder(holder: ProductGridViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PromotionProductViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ProductGridViewHolder(
-        private val binding: ItemProductBinding,
+    class PromotionProductViewHolder(
+        private val binding: ItemPromotionBinding,
         productClickListener: (position: Int) -> Unit,
         favoriteClickListener: (position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -61,6 +61,7 @@ class ProductGridAdapter(
                             tvProductPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                         tvProductDiscount.visibility = View.VISIBLE
                         tvProductDiscountPrice.visibility = View.VISIBLE
+
                         viewDiscountBlind.visibility = if (root.context.getUserType() == "member") View.GONE else View.VISIBLE
                     }
 
@@ -82,7 +83,7 @@ class ProductGridAdapter(
     }
 }
 
-class ProductGridDiffCallback : DiffUtil.ItemCallback<Product>() {
+class PromotionProductDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem.productId == newItem.productId
     }
