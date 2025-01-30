@@ -179,6 +179,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
     //게시글 클릭 이벤트를 처리하는 메서드
     override fun onPostItemClick(post: Post) {
-        // 게시글 클릭 시 처리할 로직 (예: 상세 화면으로 이동)
+        val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
+        findNavController().navigate(action)
     }
 }
