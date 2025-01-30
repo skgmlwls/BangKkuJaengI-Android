@@ -60,8 +60,7 @@ class SignInActivity : AppCompatActivity() {
 
         // 비회원으로 이용하기 버튼 클릭 시 CustomerActivity로 이동
         binding.tvSignInGuestLogin.setOnClickListener {
-            saveLoginState("guest", null)
-            navigateToCustomerActivity()
+            signInViewModel.signInAnonymously()
         }
 
         // 아이디/비밀번호 찾기 버튼 클릭 시 FindInfoFragment로 이동
@@ -76,7 +75,8 @@ class SignInActivity : AppCompatActivity() {
         signInViewModel.loginResult.observe(this) { result ->
             val (success, message, documentId) = result
             if (success) {
-                saveLoginState("member", documentId)
+                val userType = if (message == "guest") "guest" else "member"
+                saveLoginState(userType, documentId)
                 navigateToCustomerActivity()
             } else {
                 showSnackBar(binding.root, message)
