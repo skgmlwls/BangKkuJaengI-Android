@@ -245,4 +245,33 @@ class HomeRepository @Inject constructor(
             false
         }
     }
+
+    // 최근 본 상품을 RecentProduct 컬렉션에 저장한다.
+    fun saveRecentViewProduct(productId: String, userId: String) {
+        val recentProductRef = firestore.collection("RecentProduct").document(userId)
+
+        recentProductRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    // 기존 상품 목록을 가져옴
+                    val productIds = (document.get("productIds") as? List<String>) ?: emptyList()
+
+                    // 이미 있는 상품이 아닐 경우에만 추가
+                    if (!productIds.contains(productId)) {
+                        recentProductRef.update("productIds", productIds + productId)
+                    }
+                } else {
+                    // 문서가 없는 경우 새로 생성
+                    val data = hashMapOf(
+                        "productIds" to listOf(productId),
+                        "userId" to userId,
+                        "updatedAt" to FieldValue.serverTimestamp()
+                    )
+                    recentProductRef.set(data)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("SaveRecentProduct", "Error saving recent product", e)
+            }
+    }
 }
