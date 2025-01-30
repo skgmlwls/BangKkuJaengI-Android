@@ -52,7 +52,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         // 초기설정
         updateTabStyle(isMyPostsSelected = true)
-        viewModel.loadMyWrittenPosts()
+        viewModel.loadMyWrittenPosts(appContext.getUserId())
 
         setupRecyclerView()
         observeViewModel()
@@ -124,7 +124,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         // 내가쓴글 탭 클릭
         binding.tvMyPosts.setOnClickListener {
             isMyPostsSelected = true
-            viewModel.loadMyWrittenPosts()
+            viewModel.loadMyWrittenPosts(appContext.getUserId())
             updateTabStyle(isMyPostsSelected)
         }
         // 저장됨 탭 클릭

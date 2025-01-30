@@ -38,9 +38,9 @@ class SocialMyViewModel @Inject constructor(
     }
 
     // 게시글을 로드하는 함수
-    fun loadMyWrittenPosts() {
+    fun loadMyWrittenPosts(memberDocId: String) {
         viewModelScope.launch {
-            val posts = repository.getMyWittenPosts() // 데이터 로드
+            val posts = repository.getMyWittenPosts(memberDocId) // 데이터 로드
             _posts.value = posts.ifEmpty { emptyList() } // 빈 리스트일 경우 빈 리스트로 설정
         }
     }
