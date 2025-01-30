@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingAllBinding
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingAllAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingAllViewModel
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,12 +24,17 @@ class SocialFollowingAllFragment : Fragment() {
 
     private var _binding: FragmentSocialFollowingAllBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
     private val viewModel: SocialFollowingAllViewModel by viewModels()
 
     // 팔로잉 프로필 RecyclerView의 어댑터
     private val socialFollowingAllAdapter = SocialFollowingAllAdapter()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     // 프래그먼트의 뷰를 생성하는 메서드
     override fun onCreateView(
@@ -45,7 +52,7 @@ class SocialFollowingAllFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         setupListeners()
-        viewModel.loadFollowingAllMembers()
+        viewModel.loadFollowingAllMembers(appContext.getUserId())
     }
 
     // 프래그먼트가 파괴될 때 Binding 해제
