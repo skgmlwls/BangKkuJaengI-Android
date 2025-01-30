@@ -140,34 +140,20 @@ class SocialWritePictureFragment : Fragment() {
         setupTagAndLabelListeners(tagPin, labelBinding, container, position, x, y)
     }
 
-    // Firebase Firestore에서 memberNickName 필드를 가져오는 함수
+    // Firestore에서 memberNickName 필드를 가져오는 함수
     fun getMemberNickName(userId: String, callback: (String?) -> Unit) {
         firestore.collection("Member")
             .document(userId)
             .get()
-            .addOnSuccessListener { document ->
-                val memberNickName = document.getString("memberNickName")
-                callback(memberNickName)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error getting nickname: ${exception.message}")
-                callback(null)
-            }
+            .addOnSuccessListener { callback(it.getString("memberNickName")) }
     }
 
-    // Firebase Firestore에서 memberProfileImage 필드를 가져오는 함수
+    // Firestore에서 memberProfileImage 필드를 가져오는 함수
     fun getMemberProfileImage(userId: String, callback: (String?) -> Unit) {
         firestore.collection("Member")
             .document(userId)
             .get()
-            .addOnSuccessListener { document ->
-                val memberNickName = document.getString("memberProfileImage")
-                callback(memberNickName)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error getting nickname: ${exception.message}")
-                callback(null)
-            }
+            .addOnSuccessListener { callback(it.getString("memberProfileImage")) }
     }
 
     // 리스너 모음
