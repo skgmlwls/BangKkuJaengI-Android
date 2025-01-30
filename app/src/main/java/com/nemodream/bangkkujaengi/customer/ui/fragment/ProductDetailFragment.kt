@@ -70,7 +70,8 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toggleStatusBarColor()
-        viewModel.loadProduct(productId, requireContext().getUserId())
+        viewModel.loadProduct(productId, appContext.getUserId())
+        viewModel.saveRecentViewProduct(productId, appContext.getUserId())
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter

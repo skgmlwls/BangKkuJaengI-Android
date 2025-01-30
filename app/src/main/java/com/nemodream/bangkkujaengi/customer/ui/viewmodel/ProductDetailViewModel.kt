@@ -80,4 +80,16 @@ class ProductDetailViewModel @Inject constructor(
             Log.e("HomeViewModel", "좋아요 상태 변경 실패: ", e)
         }
     }
+
+    // 최근 본 상품 저장
+    fun saveRecentViewProduct(productId: String, userId: String) = viewModelScope.launch {
+        runCatching {
+            repository.saveRecentViewProduct(productId, userId)
+        }.onSuccess {
+            Log.d("ProductDetailViewModel", "saveRecentViewProduct: $it")
+        }.onFailure {
+                Log.d("ProductDetailViewModel", "saveRecentViewProduct: ${it.message}")
+            }
+
+    }
 }
