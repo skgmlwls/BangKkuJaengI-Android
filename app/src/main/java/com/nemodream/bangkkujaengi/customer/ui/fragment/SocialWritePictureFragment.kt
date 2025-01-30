@@ -1,8 +1,10 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +26,9 @@ import com.nemodream.bangkkujaengi.databinding.ItemSocialTagProductLabelBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.utils.getUserId
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 
 class SocialWritePictureFragment : Fragment() {
@@ -140,6 +145,28 @@ class SocialWritePictureFragment : Fragment() {
         setupTagAndLabelListeners(tagPin, labelBinding, container, position, x, y)
     }
 
+    // 이미지 경로 설정하는 함수
+    fun saveImageToStorage(context: Context, imageUri: Uri): String? {
+        val resolver: ContentResolver = context.contentResolver
+        val fileName = "IMG_${System.currentTimeMillis()}.jpg"
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(storageDir, fileName)
+
+        return try {
+            val inputStream: InputStream? = resolver.openInputStream(imageUri)
+            val outputStream = FileOutputStream(imageFile)
+
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+
+            imageFile.absolutePath // 저장된 파일의 경로 반환
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     // Firestore에서 memberNickName 필드를 가져오는 함수
     fun getMemberNickName(userId: String, callback: (String?) -> Unit) {
         firestore.collection("Member")
@@ -203,7 +230,7 @@ class SocialWritePictureFragment : Fragment() {
                             authorProfilePicture = memberProfileImage ?: "", // 프로필 이미지 없으면 빈 문자열 처리
                             title = title,
                             content = content,
-                            imageList = selectedPhotos.map { it.toString() }, // 이미지 Uri를 문자열로 변환
+                            imageList = selectedPhotos.mapNotNull { saveImageToStorage(appContext, it) }, // 이미지 Uri를 문자열로 변환
                             productTagPinList = productTagPinList,
                             savedCount = 0, // 초기값
                             commentCount = 0 // 초기값
