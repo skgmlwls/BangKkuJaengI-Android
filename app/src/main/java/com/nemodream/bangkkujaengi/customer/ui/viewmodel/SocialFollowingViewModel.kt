@@ -3,10 +3,12 @@ package com.nemodream.bangkkujaengi.customer.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.data.repository.SocialFollowingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,19 +35,26 @@ class SocialFollowingViewModel @Inject constructor(
     private val _isFollowing = MutableLiveData<Boolean>()
     val isFollowing: LiveData<Boolean> get() = _isFollowing
 
-    // 팔로잉 멤버 목록 로드
-    fun loadFollowingMembers() {
-        val members = repository.getFollowingMembers() // 데이터베이스나 API에서 데이터 가져옴
-        _followingMembers.value = members
 
-        // 각 멤버의 초기 팔로잉 상태를 true로 설정
-        members.forEach { member ->
-            followingStates[member.id] = true
-        }
+    // 내 팔로잉 목록 업데이트
+    fun loadFollowingMembers(memberDocId: String) = viewModelScope.launch {
+        runCatching {
+            repository.getFollowingMembers(memberDocId)
+        }.onSuccess {
+            _followingMembers.value = it
 
-        // 첫 번째 멤버를 기본 선택
-        if (members.isNotEmpty()) {
-            selectMember(members.first())
+            // 각 멤버의 초기 팔로잉 상태를 true로 설정
+            it.forEach { member ->
+                followingStates[member.id] = true
+            }
+
+            // 첫 번째 멤버를 기본 선택
+            if (it.isNotEmpty()) {
+                selectMember(it.first())
+            }
+
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 
