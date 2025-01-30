@@ -165,8 +165,6 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 val action = SocialFragmentDirections.actionNavigationSocialToSocialFollowingAllFragment()
                 findNavController().navigate(action)
             }
-
-
         }
     }
 
