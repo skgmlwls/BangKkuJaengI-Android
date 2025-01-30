@@ -11,26 +11,36 @@ import javax.inject.Singleton
 
 // 하드코딩 테스트 데이터
 @Singleton
-class SocialMyRepository @Inject constructor() {
+class SocialMyRepository @Inject constructor(private val firestore: FirebaseFirestore,) {
+
+    // 현재 로그인된 사용자 정보를 받아온다.
+    suspend fun getMyProfile(memberDocId: String): Member {
+        // 현재 로그인된 사용자 정보를 받아온다.
+        return firestore.collection("Member")
+            .document(memberDocId)
+            .get()
+            .await()
+            .toObject(Member::class.java)!!
+    }
 
     // 더미 데이터 생성 (실제 구현 시 네트워크 또는 데이터베이스와 연동)
-    fun getMyProfile(): Member {
-        return Member(
-            id = "100",
-            memberId = "hyein604",
-            memberPassword = "password",
-            memberName = "김혜인",
-            memberNickName = "방꾸쟁이",
-            memberPhoneNumber = "010-1234-5678",
-            memberProfileImage = "https://example.com/profile1.jpg",
-            point = 3000,
-            isActive = true,
-            createAt = System.currentTimeMillis(),
-            followingCount = 5,
-            followingList = emptyList(),
-            followerCount = 1,
-        )
-    }
+//    fun getMyProfile(): Member {
+//        return Member(
+//            id = "100",
+//            memberId = "hyein604",
+//            memberPassword = "password",
+//            memberName = "김혜인",
+//            memberNickName = "방꾸쟁이",
+//            memberPhoneNumber = "010-1234-5678",
+//            memberProfileImage = "https://example.com/profile1.jpg",
+//            point = 3000,
+//            isActive = true,
+//            createAt = System.currentTimeMillis(),
+//            followingCount = 5,
+//            followingList = emptyList(),
+//            followerCount = 1,
+//        )
+//    }
 
     suspend fun getMyWittenPosts(): List<Post> {
         // 테스트용 더미 데이터 생성
@@ -136,7 +146,7 @@ class SocialMyRepository @Inject constructor() {
             ),
         )
         // 현재 로그인 유저 닉네임으로 필터링
-        return allPosts.filter { it.nickname == getMyProfile().memberNickName }
+        return allPosts
     }
 
     suspend fun getMySavedPosts(): List<Post> {

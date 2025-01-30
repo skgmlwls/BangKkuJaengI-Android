@@ -27,10 +27,15 @@ class SocialMyViewModel @Inject constructor(
 
 
     // 내 프로필 업데이트
-    fun loadMyProfile() {
-        _myProfile.value = repository.getMyProfile()
+    fun loadMyProfile(memberDocId: String) = viewModelScope.launch {
+        runCatching {
+            repository.getMyProfile(memberDocId)
+        }.onSuccess {
+            _myProfile.value = it
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
-
 
     // 게시글을 로드하는 함수
     fun loadMyWrittenPosts() {
