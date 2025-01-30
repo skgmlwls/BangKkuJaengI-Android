@@ -43,7 +43,7 @@ class MyPageRepository @Inject constructor(
                     ?.copy(like = isProductLiked(userId, productId))
             }
 
-            products
+            products.subList(0, minOf(products.size, 7))
         } catch (e: Exception) {
             emptyList()
         }
