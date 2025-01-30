@@ -218,6 +218,9 @@
         <action
             android:id="@+id/action_navigation_my_page_to_myBookmarkFragment"
             app:destination="@id/navigation_my_bookmark" />
+        <action
+            android:id="@+id/action_navigation_my_page_to_navigation_product_detail"
+            app:destination="@id/navigation_product_detail" />
     </fragment>
     <activity
         android:id="@+id/signInActivity"

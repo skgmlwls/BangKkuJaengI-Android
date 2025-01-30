@@ -1,11 +1,13 @@
 package com.nemodream.bangkkujaengi.customer.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.PromotionProducts
 import com.nemodream.bangkkujaengi.customer.data.repository.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -54,6 +56,28 @@ class MyPageViewModel @Inject constructor(
         }.onFailure {
             it.printStackTrace()
             _isLoading.value = false
+        }
+    }
+
+    fun toggleFavorite(memberId: String, productId: String) = viewModelScope.launch {
+        runCatching {
+            repository.toggleProductLikeState(memberId, productId)
+            Log.d("HomeViewModel", "toggleFavorite: $productId")
+        }.onSuccess {
+            // 프로모션 아이템 좋아요 상태 변경
+            val currentItems = _recentProductList.value?.toMutableList() ?: mutableListOf()
+            // 프로모션 아이템들을 순회하면서 해당 상품의 좋아요 상태 업데이트
+            val updatedItems = currentItems.map { item ->
+                if (item.productId == productId) {
+                    item.copy(like = !item.like)
+                } else {
+                    item
+                }
+            }
+
+            _recentProductList.value = updatedItems
+        }.onFailure { e ->
+            Log.e("MyPageViewModel", "좋아요 상태 변경 실패: ", e)
         }
     }
 
