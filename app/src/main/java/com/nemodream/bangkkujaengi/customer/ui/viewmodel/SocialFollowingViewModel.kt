@@ -102,8 +102,15 @@ class SocialFollowingViewModel @Inject constructor(
     }
 
 
-    // 특정 멤버의 게시글 로드
-    private fun loadMemberPosts(member: Member) {
-        _memberPosts.value = repository.getPostsByMember(member) // 멤버의 게시글 데이터 가져오기
+    // 팔로잉 멤버 게시글 업데이트
+    fun loadMemberPosts(member: Member) = viewModelScope.launch {
+        runCatching {
+            repository.getPostsByMember(member)
+        }.onSuccess {
+            _memberPosts.value = it
+
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 }
