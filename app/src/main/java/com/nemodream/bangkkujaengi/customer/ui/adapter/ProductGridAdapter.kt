@@ -61,7 +61,6 @@ class ProductGridAdapter(
                             tvProductPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                         tvProductDiscount.visibility = View.VISIBLE
                         tvProductDiscountPrice.visibility = View.VISIBLE
-
                         viewDiscountBlind.visibility = if (root.context.getUserType() == "member") View.GONE else View.VISIBLE
                     }
 

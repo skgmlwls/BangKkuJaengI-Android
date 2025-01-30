@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -9,12 +10,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.data.model.SocialLogin
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialMyViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialMyBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,14 +28,17 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
 
     private var _binding: FragmentSocialMyBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
     private val viewModel: SocialMyViewModel by viewModels()
-
-    private val socialMyAdapter: SocialDiscoveryAdapter by lazy {
-        SocialDiscoveryAdapter(this)
-    }
+    private val socialMyAdapter: SocialDiscoveryAdapter by lazy { SocialDiscoveryAdapter(this) }
 
     private var isMyPostsSelected: Boolean = true
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +53,11 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         // 초기설정
         updateTabStyle(isMyPostsSelected = true)
-        viewModel.loadMyWrittenPosts()
+        viewModel.loadMyWrittenPosts(appContext.getUserId())
 
         setupRecyclerView()
         observeViewModel()
-        viewModel.loadMyProfile() // 프로필 데이터 로드
+        viewModel.loadMyProfile(appContext.getUserId()) // 프로필 데이터 로드
         setupTabClickListeners() // 탭 클릭 리스너 설정
         setupProfileEdit() // 편집 모드 전환
     }
@@ -117,7 +125,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         // 내가쓴글 탭 클릭
         binding.tvMyPosts.setOnClickListener {
             isMyPostsSelected = true
-            viewModel.loadMyWrittenPosts()
+            viewModel.loadMyWrittenPosts(appContext.getUserId())
             updateTabStyle(isMyPostsSelected)
         }
         // 저장됨 탭 클릭
@@ -151,13 +159,15 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
     private fun observeViewModel() {
         // 프로필 데이터 관찰
         viewModel.myProfile.observe(viewLifecycleOwner, Observer { profile ->
-            profile?.let {
-                binding.ivMyProfileImage.loadImage(it.memberProfileImage.toString()) // 프로필 이미지
-                binding.tvMyProfileNickname.text = Editable.Factory.getInstance().newEditable(it.memberNickName) // 닉네임
-                binding.tvMyProfileFollowInfo.text =
-                    "팔로잉 ${it.followingCount}명   팔로워 ${it.followerCount}명" // 팔로우 정보
+            with(binding) {
+                profile!!.memberProfileImage?.let {
+                    ivMyProfileImage.loadImage(profile.memberProfileImage.toString())
+                } ?: ivMyProfileImage.setImageResource(R.drawable.ic_default_profile)
+                tvMyProfileNickname.text = "${profile.memberNickName}"
+                tvMyProfileFollowInfo.text = "팔로잉 ${profile.followingCount}명   팔로워 ${profile.followerCount}명"
             }
         })
+
 
         // 게시글 데이터 관찰
         viewModel.posts.observe(viewLifecycleOwner, Observer { posts ->
@@ -184,7 +194,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
      * 게시글 클릭 이벤트 처리
      */
     override fun onPostItemClick(post: Post) {
-        // 게시글 클릭 시 수행할 작업을 여기에 작성
-        // 게시글 상세 페이지로 이동
+        val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
+        findNavController().navigate(action)
     }
 }

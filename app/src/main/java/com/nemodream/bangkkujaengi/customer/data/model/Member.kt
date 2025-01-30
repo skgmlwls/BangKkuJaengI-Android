@@ -1,5 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.model
 
+import com.google.firebase.firestore.DocumentReference
+
 data class Member(
 
     // 문서 id
@@ -31,7 +33,7 @@ data class Member(
     // 팔로워 수
     val followerCount:Int = 0,
     // 팔로잉 목록
-    val followingList: List<Member> = emptyList(),
+    val followingList: List<DocumentReference> = emptyList(),
     // 올린 게시글 목록
     val postedList: List<Post> = emptyList(),
     // 저장한 게시글 리스트

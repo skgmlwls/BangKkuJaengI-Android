@@ -108,6 +108,7 @@
         android:layout_marginTop="10dp"
         android:visibility="gone"
         android:text="사진을 클릭하여 사용 상품 태그를 등록할 수 있습니다 📌"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fl_social_write_picture_container" />
@@ -206,14 +207,15 @@
         android:id="@+id/btn_post"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="#332828"
-        android:textColor="@color/white"
         android:text="게시"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_write_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

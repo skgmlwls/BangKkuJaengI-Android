@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +29,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
     private var _binding: FragmentSocialFollowingBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
     private val viewModel: SocialFollowingViewModel by viewModels()
 
@@ -40,6 +43,11 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
     // 게시글 RecyclerView의 어댑터
     private val postAdapter: SocialDiscoveryAdapter by lazy {
         SocialDiscoveryAdapter(this) // Fragment 자체가 OnPostItemClickListener를 구현
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
     }
 
     // 프래그먼트의 뷰를 생성하는 메서드
@@ -57,7 +65,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerViews() // RecyclerView 초기화
         observeViewModel() // ViewModel 데이터 관찰 설정
-        viewModel.loadFollowingMembers() // 팔로잉 멤버 데이터를 로드
+        viewModel.loadFollowingMembers(appContext.getUserId()) // 팔로잉 멤버 데이터를 로드
         setupListeners() // 리스너 설정
     }
 
@@ -165,14 +173,13 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 val action = SocialFragmentDirections.actionNavigationSocialToSocialFollowingAllFragment()
                 findNavController().navigate(action)
             }
-
-
         }
     }
 
 
     //게시글 클릭 이벤트를 처리하는 메서드
     override fun onPostItemClick(post: Post) {
-        // 게시글 클릭 시 처리할 로직 (예: 상세 화면으로 이동)
+        val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
+        findNavController().navigate(action)
     }
 }

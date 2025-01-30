@@ -1,12 +1,14 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
@@ -72,7 +74,8 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
      * 게시글 클릭 이벤트 처리
      */
     override fun onPostItemClick(post: Post) {
-        // 게시글 클릭 시 수행할 작업을 여기에 작성
-        // 게시글 상세 페이지로 이동
+        Log.d("SocialDiscoveryFragment", "Post clicked: ${post.title}")
+        val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
+        findNavController().navigate(action)
     }
 }
