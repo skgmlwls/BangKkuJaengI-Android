@@ -126,6 +126,24 @@ class CustomerActivity : AppCompatActivity() {
                 else -> View.GONE
             }
         }
+
+//        회원일 경우: 네비게이션 바텀 아이템 클릭을 정상 처리
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            if (userType == "member") {
+//                binding.customerBottomNavigation.visibility = when (destination.id) {
+//                    in showBottomNavDestinations -> View.VISIBLE
+//                    else -> View.GONE
+//                }
+//            }else{
+//                when (destination.id) {
+//                    R.id.navigation_home -> {binding.customerBottomNavigation.visibility = View.VISIBLE}
+//                    R.id.navigation_social -> {
+//                        showGuestOnlyDialog()
+//                        binding.customerBottomNavigation.visibility = View.GONE }
+//                    R.id.navigation_my_page -> {binding.customerBottomNavigation.visibility = View.VISIBLE}
+//                }
+//            }
+//        }
     }
 
     companion object {
