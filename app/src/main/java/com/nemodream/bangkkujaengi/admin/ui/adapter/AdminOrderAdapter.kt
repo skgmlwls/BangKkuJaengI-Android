@@ -77,6 +77,7 @@ class AdminOrderAdapter(
                 }
 
                 OrderViewType.SHIPPING -> {
+                    tvRowPcOrderDate.text = order.deliveryStartDate
                     tvRowPcDeliveryStatus.visibility = View.VISIBLE
                     tvRowPcDeliveryStatus.text = order.deliveryStatus
                     tvRowPcInvoiceNumber.visibility = View.VISIBLE
