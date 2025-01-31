@@ -37,7 +37,7 @@ class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupHeaderText(
-            orderDateHeader = "준비일시"
+            orderDateHeader = "주문일시"
         )
         setupRecyclerView(binding.recyclerViewProductReady)
         setupHeaderCheckbox(binding.layoutHeader.cbOrderPcHeader, binding.recyclerViewProductReady)
@@ -51,15 +51,13 @@ class AdminOrderProductReadyFragment : BaseAdminOrderFragment() {
     }
 
     override fun handleNextState(order: Order) {
-        val context = requireContext()
         CustomDialog(
-            context = context,
+            context = requireContext(),
             message = "선택한 상품 \"${order.productName}\"을 배송하시겠습니까?",
             confirmText = "확인",
             cancelText = "취소",
             onConfirm = {
-                // ViewModel에 상태 변경 요청
-                viewModel.updateOrderState(order, OrderState.SHIPPING)
+                viewModel.updateOrderToShipping(order, orderState)
             },
             onCancel = {}
         ).show()
