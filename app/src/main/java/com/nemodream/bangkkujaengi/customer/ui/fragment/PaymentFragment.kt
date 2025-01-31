@@ -279,6 +279,8 @@ class PaymentFragment : Fragment() {
 
                         val purchase = Purchase(
                             memberId = user_id,
+                            purchaseId = user_id + formattedTime,
+                            nonMemberPassword = fragmentPaymentBinding.tilPaymentNonMemberPassword.editText?.text.toString(),
                             productTitle = paymentViewModel.payment_product_data_list.value!![position].productName,
                             color = it.color,
                             images = paymentViewModel.payment_product_data_list.value!![position].images[0],
@@ -360,7 +362,18 @@ class PaymentFragment : Fragment() {
             user_name = PaymentFragmentArgs.fromBundle(it).userName
             user_phone_number = PaymentFragmentArgs.fromBundle(it).userPhoneNumber
             // user_address = PaymentFragmentArgs.fromBundle(it).userAddress
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                val work1 = async(Dispatchers.IO) {
+                    PaymentRepository.found_user_id_by_user_id(user_id)
+                }.await()
+                if (work1 != true) {
+                    fragmentPaymentBinding.tilPaymentNonMemberPassword.visibility = View.VISIBLE
+                }
+            }
+
         }
+
     }
 
     // textInputLayout의 값을 세팅하고 업데이트 메소드

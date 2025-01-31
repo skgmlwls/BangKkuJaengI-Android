@@ -8,6 +8,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nemodream.bangkkujaengi.customer.data.model.PurchaseState
+import com.nemodream.bangkkujaengi.customer.data.repository.OrderHistoryRepository
 import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
 import com.nemodream.bangkkujaengi.customer.deliverytracking.RetrofitInstance
 import com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragment
@@ -15,6 +18,7 @@ import com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragmentDire
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryProductAdapterViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryProductViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryViewModel
+import com.nemodream.bangkkujaengi.databinding.OrderHistoryProductCustomDialogBinding
 import com.nemodream.bangkkujaengi.databinding.RowOrderHistoryProductBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 import kotlinx.coroutines.CoroutineScope
@@ -64,6 +68,12 @@ class OrderHistoryProductAdapter(
             position
         )
 
+        setting_btn_purchase_confirmation(
+            holder.rowOrderHistoryProductBinding,
+            orderHistoryProductAdapterViewModel,
+            position
+        )
+
         // 주문 상품 리스트 이미지 세팅
         setting_product_list_image(holder.rowOrderHistoryProductBinding, position)
 
@@ -73,6 +83,49 @@ class OrderHistoryProductAdapter(
         // 배송 현황 버튼
         setting_btn_row_order_history_product_shipping_status_check(holder.rowOrderHistoryProductBinding, orderHistoryProductAdapterViewModel, position)
 
+    }
+
+    fun setting_btn_purchase_confirmation(
+        rowOrderHistoryProductBinding : RowOrderHistoryProductBinding,
+        orderHistoryProductAdapterViewModel : OrderHistoryProductAdapterViewModel,
+        position: Int
+    ) {
+        rowOrderHistoryProductBinding.btnRowOrderHistoryProductPurchaseConfirmation.setOnClickListener {
+            // 다이얼로그 뷰 바인딩
+            val inflater = LayoutInflater.from(rowOrderHistoryProductBinding.root.context)
+            val customDialogBinding = OrderHistoryProductCustomDialogBinding.inflate(inflater)
+
+            val builder = MaterialAlertDialogBuilder(rowOrderHistoryProductBinding.root.context)
+                .setView(customDialogBinding.root)
+                .setCancelable(true)
+
+            val dialog = builder.create()
+
+            customDialogBinding.apply {
+                // 확인 버튼 이벤트
+                btnOrderHistoryProductCheck.setOnClickListener {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val work1 = async(Dispatchers.IO) {
+                            OrderHistoryRepository.update_purchase_state(
+                                orderHistoryProductViewModel.order_history_product_list.value!![position].documentId
+                            )
+                        }.await()
+                        rowOrderHistoryProductBinding.tvRowOrderHistoryProductDeliveryState.text = "구매 확정"
+                        rowOrderHistoryProductBinding.btnRowOrderHistoryProductPurchaseConfirmation.visibility = View.GONE
+                        Log.d("asdfasdf", orderHistoryProductViewModel.order_history_product_list.value!![position].documentId)
+                        dialog.dismiss()
+                    }
+                }
+
+                // 취소 버튼 이벤트
+                btnOrderHistoryProductCancel.setOnClickListener {
+                    // 로그인 처리 로직 추가
+                    dialog.dismiss()
+                }
+            }
+
+            dialog.show()
+        }
     }
 
     // 배송 현황 버튼
@@ -121,11 +174,21 @@ class OrderHistoryProductAdapter(
 
         orderHistoryProductAdapterViewModel.shipping_status_list.observe(viewLifecycleOwner) {
             Log.d("trackingDetails3", "${it.level}")
-            holder.tvRowOrderHistoryProductDeliveryState.text = when(it.level) {
-                1 -> "배송 준비 중"
-                2,3,4,5 -> "배송 중"
-                6 -> "배송 완료"
-                else -> "결제 완료"
+            if (orderHistoryProductViewModel.order_history_product_list.value!![position].purchaseState != PurchaseState.PURCHASE_CONFIRMED.name) {
+                holder.tvRowOrderHistoryProductDeliveryState.text = when(it.level) {
+                    1 -> "배송 준비 중"
+                    2,3,4,5 -> "배송 중"
+                    6 -> "배송 완료"
+                    else -> "결제 완료"
+                }
+                if (it.level == 6) {
+                    holder.btnRowOrderHistoryProductPurchaseConfirmation.visibility = View.VISIBLE
+                } else {
+                    holder.btnRowOrderHistoryProductPurchaseConfirmation.visibility = View.GONE
+                }
+            }
+            else {
+                holder.tvRowOrderHistoryProductDeliveryState.text = "구매 확정"
             }
         }
     }

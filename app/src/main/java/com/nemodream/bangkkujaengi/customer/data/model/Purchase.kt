@@ -4,6 +4,8 @@ import com.google.firebase.Timestamp
 
 data class Purchase(
     val documentId: String = "",
+    val purchaseId: String = "",
+    val nonMemberPassword: String = "",
     val memberId: String = "",
     val productTitle : String = "",
     val color : String = "",
@@ -32,4 +34,5 @@ enum class PurchaseState() {
     READY_TO_SHIP,
     SHIPPING,
     DELIVERED,
+    PURCHASE_CONFIRMED,
 }

@@ -211,6 +211,25 @@ class PaymentRepository {
             }
         }
 
+        // 유저 id로 유저 아이디 찾기
+        suspend fun found_user_id_by_user_id(user_id: String): Boolean {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Member")
+
+            return try {
+                // Firestore에서 memberId가 user_id와 일치하는 문서 검색
+                val result = collectionReference.whereEqualTo("memberId", user_id).get().await()
+                Log.d("FirestoreCheck", "Found matching memberId: ${result.documents.size > 0}")
+
+                // 결과가 존재하면 true, 없으면 false 반환
+                result.documents.isNotEmpty()
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error checking user_id: ${e.message}", e)
+                false
+            }
+        }
+
+
 
     }
 
