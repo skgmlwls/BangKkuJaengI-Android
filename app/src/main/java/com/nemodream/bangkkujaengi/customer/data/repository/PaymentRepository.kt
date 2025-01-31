@@ -1,24 +1,12 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.nemodream.bangkkujaengi.customer.data.model.Cart
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
-import com.nemodream.bangkkujaengi.customer.data.model.Member
-import com.nemodream.bangkkujaengi.customer.data.model.PaymentItems
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
-import com.nemodream.bangkkujaengi.customer.data.model.Promotion
 import com.nemodream.bangkkujaengi.customer.data.model.Purchase
-import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import kotlinx.coroutines.tasks.await
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class PaymentRepository {
 

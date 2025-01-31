@@ -1,17 +1,30 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.webkit.WebViewAssetLoader
 import com.google.firebase.Timestamp
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
@@ -46,6 +59,8 @@ class PaymentFragment : Fragment() {
 
     // 유저 ID
     var user_id: String = ""
+    // 유저 이름
+    var user_name: String = ""
     // 유저 전화번호
     var user_phone_number: String = ""
     // 유저 주소
@@ -72,12 +87,21 @@ class PaymentFragment : Fragment() {
 
     var selectedDocumentId = ""
 
+
+
+    private lateinit var webView: WebView
+    private lateinit var dialog: Dialog
+    private lateinit var assetLoader: WebViewAssetLoader
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         fragmentPaymentBinding = FragmentPaymentBinding.inflate(inflater, container, false)
 
+        // 툴바 세팅
+        setting_toolbar()
         // 유저 아이디 세팅
         getting_user_id()
         // 리사이클러뷰 설정
@@ -102,11 +126,128 @@ class PaymentFragment : Fragment() {
         // 결제 하기 버튼 클릭 관련
         setting_btn_payment_make_payment()
 
+        // 주소 찾기 버튼 클릭 관련
+        setting_btn_payment_zip_code()
+
         return fragmentPaymentBinding.root
     }
 
-    // 결제 하기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
+    // 툴바 세팅
+    fun setting_toolbar() {
+        fragmentPaymentBinding.tbPayment.apply {
+            // 툴바에 뒤로가기 버튼 아이콘 생성
+            setNavigationIcon(R.drawable.ic_arrow_back)
+            // 툴바 뒤로가기 버튼의 이벤트
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
+    }
 
+
+    // 주소 찾기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
+    // **주소 찾기 버튼 클릭 이벤트**
+    private fun setting_btn_payment_zip_code() {
+        fragmentPaymentBinding.btnPaymentZipCode.setOnClickListener {
+            showWebViewDialog()
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun showWebViewDialog() {
+        if (::dialog.isInitialized && dialog.isShowing) {
+            dialog.dismiss()
+        }
+
+        // 다이얼로그 생성
+        dialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.dialog_webview)
+            window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+
+        val btnCloseWebView: ImageView = dialog.findViewById(R.id.btnCloseWebView)
+        val webViewContainer: FrameLayout = dialog.findViewById(R.id.webViewContainer)
+
+        // WebView 동적 생성 (기존 WebView를 제거 후 추가)
+        webView = WebView(requireContext()).apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.allowFileAccess = true
+            settings.allowContentAccess = true
+            settings.setSupportMultipleWindows(true)
+            settings.javaScriptCanOpenWindowsAutomatically = true
+        }
+
+        // WebViewAssetLoader 설정
+        assetLoader = WebViewAssetLoader.Builder()
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(requireContext()))
+            .build()
+
+        // WebViewClient 설정
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
+                return assetLoader.shouldInterceptRequest(request.url)
+            }
+        }
+
+        // WebChromeClient 설정
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onCreateWindow(
+                view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message?
+            ): Boolean {
+                val newWebView = WebView(requireContext()).apply {
+                    settings.javaScriptEnabled = true
+                    settings.domStorageEnabled = true
+                }
+                webViewContainer.addView(newWebView) // 기존 UI 유지하면서 WebView 추가
+
+                newWebView.webChromeClient = object : WebChromeClient() {
+                    override fun onCloseWindow(window: WebView?) {
+                        webViewContainer.removeView(newWebView) // 창 닫기 시 제거
+                    }
+                }
+
+                (resultMsg?.obj as? WebView.WebViewTransport)?.webView = newWebView
+                resultMsg?.sendToTarget()
+                return true
+            }
+        }
+
+        // JavaScript 인터페이스 추가
+        webView.addJavascriptInterface(WebAppInterface(), "Android")
+
+        // WebView를 컨테이너에 추가
+        webViewContainer.addView(webView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        // 웹페이지 로드
+        webView.loadUrl("https://appassets.androidplatform.net/assets/postcode.html")
+
+        // 닫기 버튼 클릭 시 다이얼로그 닫기
+        btnCloseWebView.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
+
+    // JavaScript 인터페이스 정의
+    inner class WebAppInterface {
+        @JavascriptInterface
+        fun processDATA(postcode: String, address: String, extraAddress: String) {
+            requireActivity().runOnUiThread {
+                fragmentPaymentBinding.tilPaymentAddress.editText?.setText(address)
+                fragmentPaymentBinding.tilPaymentZipCode.editText?.setText(postcode)
+                dialog.dismiss()
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // 결제 하기 버튼 클릭 관련 ///////////////////////////////////////////////////////////////////////
     // 결제 버튼 클릭 메소드
     fun setting_btn_payment_make_payment() {
 
@@ -152,7 +293,12 @@ class PaymentFragment : Fragment() {
                             purchaseQuantity = it.quantity,
                             Delete = false,
                             purchaseDateTime = formattedTime,
-                            deliveryCost = paymentViewModel.tv_payment_tot_delivery_cost_text.value!!
+                            deliveryCost = paymentViewModel.tv_payment_tot_delivery_cost_text.value!!,
+                            receiverName = fragmentPaymentBinding.tilPaymentName.editText?.text.toString(),
+                            receiverZipCode = fragmentPaymentBinding.tilPaymentZipCode.editText?.text.toString(),
+                            receiverAddr = fragmentPaymentBinding.tilPaymentAddress.editText?.text.toString(),
+                            receiverDetailAddr = fragmentPaymentBinding.tilPaymentDetailedAddress.editText?.text.toString(),
+                            receiverPhone = fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.text.toString()
                         )
 
                         purchase_product.add(purchase)
@@ -211,8 +357,9 @@ class PaymentFragment : Fragment() {
     fun getting_user_id() {
         arguments?.let {
             user_id = PaymentFragmentArgs.fromBundle(it).userId
+            user_name = PaymentFragmentArgs.fromBundle(it).userName
             user_phone_number = PaymentFragmentArgs.fromBundle(it).userPhoneNumber
-            user_address = PaymentFragmentArgs.fromBundle(it).userAddress
+            // user_address = PaymentFragmentArgs.fromBundle(it).userAddress
         }
     }
 
@@ -220,7 +367,7 @@ class PaymentFragment : Fragment() {
     fun setting_textInputLayout_delivery_address() {
 
         // 이름 뷰모델 세팅
-        paymentViewModel.til_payment_name_text.value = user_id
+        paymentViewModel.til_payment_name_text.value = user_name
         // 전화번호 뷰모델 세팅
         paymentViewModel.til_payment_phone_number_text.value = user_phone_number
         // 주소 뷰모델 세팅
