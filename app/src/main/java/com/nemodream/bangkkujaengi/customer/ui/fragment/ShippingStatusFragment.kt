@@ -154,7 +154,7 @@ class ShippingStatusFragment : Fragment() {
             // 받는 사람
             fragmentShippingStatusBinding.tvShippingStatusRecipientName.text = it.receiverName
             // 받는 주소
-            fragmentShippingStatusBinding.tvShippingStatusRecipientAddress.text = it.receiverAddr
+            fragmentShippingStatusBinding.tvShippingStatusRecipientAddress.text = "${it.receiverAddr}\n${it.receiverDetailAddr}"
 
             // 상품명
             fragmentShippingStatusBinding.tvShippingStatusOrderProductName.text = it.productTitle

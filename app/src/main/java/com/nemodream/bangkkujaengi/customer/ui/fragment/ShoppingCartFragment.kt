@@ -161,7 +161,7 @@ class ShoppingCartFragment : Fragment() {
 
                 Log.d("user_data", "${memberData?.memberPhoneNumber}")
 
-                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(user_id, memberData?.memberPhoneNumber.toString(), "서울시 강남구 역삼동")
+                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(user_id, memberData?.memberName.toString(), memberData?.memberPhoneNumber.toString(), "서울시 강남구 역삼동")
                 findNavController().navigate(action)
             }
         }

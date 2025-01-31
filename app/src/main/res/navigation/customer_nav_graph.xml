@@ -146,6 +146,9 @@
             android:name="userId"
             app:argType="string" />
         <argument
+            android:name="userName"
+            app:argType="string" />
+        <argument
             android:name="userPhoneNumber"
             app:argType="string" />
         <argument

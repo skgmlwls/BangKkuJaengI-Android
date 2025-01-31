@@ -21,7 +21,9 @@ data class Purchase(
     val purchaseDateTime: String = "",
     val deliveryCost: Int = 0,
     val receiverName: String = "",
+    val receiverZipCode: String = "",
     val receiverAddr: String = "",
+    val receiverDetailAddr: String = "",
     val receiverPhone: String = ""
 )
 
