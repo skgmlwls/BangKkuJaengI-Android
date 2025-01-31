@@ -1,25 +1,24 @@
 package com.nemodream.bangkkujaengi.admin.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.admin.ui.viewmodel.AdminOrderViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentAdminOrderBinding
-import com.nemodream.bangkkujaengi.utils.showSnackBar
-import com.nemodream.bangkkujaengi.utils.showToast
 
 class AdminOrderFragment : Fragment() {
 
     private lateinit var binding: FragmentAdminOrderBinding
     private lateinit var pagerAdapter: OrderPagerAdapter
+    protected val viewModel: AdminOrderViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,13 +43,13 @@ class AdminOrderFragment : Fragment() {
         }
     }
 
+    // 툴바 메뉴 클릭 리스너 설정
     private fun settingToolbarMenuClickListener() {
-        // 툴바 메뉴 클릭 리스너 설정
         val toolbar = view?.findViewById<MaterialToolbar>(R.id.toolbar_admin_order)
         toolbar?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_refresh -> {
-                    Toast.makeText(requireContext(), "새로고침 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                    refreshData()
                     true
                 }
                 else -> false
@@ -77,10 +76,33 @@ class AdminOrderFragment : Fragment() {
                 else -> throw IllegalArgumentException("Invalid position")
             }
         }.attach()
+
+        // 탭 선택 시 새로고침 호출
+        binding.tabLayoutAdminOrder.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // 탭이 선택되면 새로고침
+                refreshData()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // 탭이 다시 선택되면 새로고침
+                refreshData()
+            }
+        })
+    }
+
+    // 현재 선택된 탭의 Fragment에 데이터 새로고침 요청
+    private fun refreshData() {
+        val currentFragment = childFragmentManager.findFragmentByTag(
+            "f${binding.viewPagerAdminOrder.currentItem}"
+        ) as? BaseAdminOrderFragment
+
+        currentFragment?.refreshOrders()
     }
 
 }
 
+// ViewPager2 어댑터
 class OrderPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int {

@@ -11,7 +11,6 @@ class AdminOrderRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    // 파이어스토어에서 데이터 가져오기
     suspend fun fetchOrdersByState(state: String): List<Order> {
         return try {
             val snapshot = firestore.collection("Purchase")
@@ -20,8 +19,24 @@ class AdminOrderRepository {
                 .await()
 
             snapshot.documents.mapNotNull { doc ->
-                doc.toObject<Purchase>()?.let { purchase ->
-                    mapPurchaseToOrder(purchase)
+                val data = doc.data
+                if (data != null) {
+                    Order(
+                        orderDate = data["purchaseDateTime"] as? String ?: data["purchaseDate"].toString(),
+                        productName = data["productTitle"] as? String ?: "알 수 없음",
+                        customerId = data["memberId"] as? String ?: "알 수 없음",
+                        orderNumber = data["purchaseInvoiceNumber"].toString(),
+                        deliveryStatus = data["deliveryStatus"] as? String,
+                        invoiceNumber = data["invoiceNumber"].toString(),
+                        deliveryStartDate = data["deliveryStartDate"] as? String ?: "알 수 없음",
+                        deliveryDate = data["deliveryDate"] as? String ?: "알 수 없음",
+                        cancelDate = data["cancelDate"] as? String ?: "알 수 없음",
+                        canceledBy = data["canceledBy"] as? String ?: "알 수 없음",
+                        cancellationReason = data["cancellationReason"] as? String ?: "알 수 없음",
+                        state = mapPurchaseStateToOrderState(data["purchaseState"] as? String ?: "결제 완료")
+                    )
+                } else {
+                    null
                 }
             }
         } catch (e: Exception) {
@@ -30,18 +45,6 @@ class AdminOrderRepository {
         }
     }
 
-    // Purchase 데이터를 Order로 매핑
-    private fun mapPurchaseToOrder(purchase: Purchase): Order {
-        return Order(
-            orderDate = purchase.purchaseDateTime.ifEmpty { purchase.purchaseDate.toDate().toString() },
-            productName = purchase.productTitle,
-            customerId = purchase.memberId,
-            orderNumber = purchase.purchaseInvoiceNumber.toString(),
-            deliveryStatus = purchase.purchaseState,
-            invoiceNumber = purchase.purchaseInvoiceNumber.toString(),
-            state = mapPurchaseStateToOrderState(purchase.purchaseState)
-        )
-    }
 
     private fun mapPurchaseStateToOrderState(purchaseState: String): OrderState {
         return when (purchaseState) {
@@ -73,4 +76,63 @@ class AdminOrderRepository {
         }
     }
 
+    suspend fun updateOrderCancellation(
+        orderNumber: String,
+        cancelDate: String,
+        canceledBy: String,
+        cancellationReason: String
+    ) {
+        try {
+            val query = firestore.collection("Purchase")
+                .whereEqualTo("purchaseInvoiceNumber", orderNumber.toLong())
+                .get()
+                .await()
+
+            if (query.documents.isNotEmpty()) {
+                val document = query.documents.first()
+                firestore.collection("Purchase").document(document.id).update(
+                    mapOf(
+                        "purchaseState" to OrderState.CANCELED,
+                        "cancelDate" to cancelDate,
+                        "canceledBy" to canceledBy,
+                        "cancellationReason" to cancellationReason
+                    )
+                ).await()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("취소 상태 업데이트에 실패했습니다.")
+        }
+    }
+
+    suspend fun updateOrderShippingDetails(
+        orderNumber: String,
+        deliveryStatus: String,
+        deliveryStartDate: String,
+        invoiceNumber: String,
+        deliveryDate: String
+    ) {
+        try {
+            val query = firestore.collection("Purchase")
+                .whereEqualTo("purchaseInvoiceNumber", orderNumber.toLong())
+                .get()
+                .await()
+
+            if (query.documents.isNotEmpty()) {
+                val document = query.documents.first()
+                firestore.collection("Purchase").document(document.id).update(
+                    mapOf(
+                        "purchaseState" to OrderState.SHIPPING.name,
+                        "deliveryStatus" to deliveryStatus,
+                        "deliveryStartDate" to deliveryStartDate,
+                        "invoiceNumber" to invoiceNumber,
+                        "deliveryDate" to deliveryDate
+                    )
+                ).await()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("배송 상태 업데이트에 실패했습니다.")
+        }
+    }
 }

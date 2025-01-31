@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.nemodream.bangkkujaengi.admin.data.model.Order
 import com.nemodream.bangkkujaengi.admin.data.model.OrderState
 import com.nemodream.bangkkujaengi.admin.ui.adapter.OrderViewType
@@ -51,15 +50,15 @@ class AdminOrderPaymentCompletedFragment : BaseAdminOrderFragment() {
         viewModel.loadOrders(orderState)
     }
 
-    override fun handleNextState(order: Order){
-        val context = requireContext()
+    override fun handleNextState(order: Order) {
         CustomDialog(
-            context = context,
+            context = requireContext(),
             message = "결제 완료된 상품을 준비 상태로 변경하시겠습니까?",
             confirmText = "확인",
             cancelText = "취소",
             onConfirm = {
-                viewModel.updateOrderState(order, OrderState.PRODUCT_READY)
+                // 현재 탭 상태를 함께 전달하여 상태 변경 후 목록에서 제거
+                viewModel.updateOrderState(order, OrderState.PRODUCT_READY, orderState)
             },
             onCancel = {}
         ).show()
@@ -70,14 +69,14 @@ class AdminOrderPaymentCompletedFragment : BaseAdminOrderFragment() {
 
         CustomCanceledDialog(
             context = requireContext(),
-            message = "결제 완료된 상품의 주문을 취소하시겠습니까?",
+            message = "주문을 취소하시겠습니까?",
             reasons = reasons,
-            onConfirm = {
-                viewModel.updateOrderState(order, OrderState.CANCELED)
+            onConfirm = { reason ->
+                // 현재 탭 상태를 전달하여 취소 후 목록에서 제거
+                viewModel.handleCancel(order, "관리자", reason, orderState)
             },
-            onCancel = { }
+            onCancel = {}
         ).show()
     }
-
 }
 

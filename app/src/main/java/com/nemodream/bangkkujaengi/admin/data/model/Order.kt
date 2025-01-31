@@ -8,7 +8,7 @@ data class Order(
     val deliveryStatus: String? = null,   // 배송 상태 (배송 탭에 표시)
     val invoiceNumber: String? = null,    // 송장번호 (배송 탭에 표시)
     val deliveryStartDate: String? = null,// 배송 시작일
-    val deliveryDate: String? = null,     // 배송 완료일 (배송 탭에 표시)
+    val deliveryDate: String? = "--",     // 배송 완료일 (배송 탭에 표시)
     val confirmationDate: String? = null, // 구매 확정일 (구매 확정 탭에 표시)
     val cancelDate: String? = null,       // 취소일시 (취소 탭에 표시)
     val canceledBy: String? = null,       // 취소 주체 (구매자/판매자 - 취소 탭에 표시)
