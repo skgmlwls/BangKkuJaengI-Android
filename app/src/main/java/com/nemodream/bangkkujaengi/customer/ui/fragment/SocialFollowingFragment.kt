@@ -112,7 +112,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 binding.ivSelectedProfileImage.loadImage(selectedMember.memberProfileImage.toString())
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
-                    "팔로잉 ${selectedMember.followingCount}명     팔로워 ${selectedMember.followerCount}명"
+                    "팔로잉 ${selectedMember.followingList.size}명     팔로워 ${selectedMember.followerCount}명"
             } ?: run {
                 // 선택된 멤버가 없을 경우 프로필 정보를 숨김
                 binding.clSelectedProfileInfo.visibility = View.GONE
@@ -170,7 +170,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         with(binding) {
             // 팔로잉 상태 토글
             btnFollowingFollowing.setOnClickListener {
-                viewModel.toggleFollowing()
+                viewModel.toggleFollowing(appContext.getUserId())
             }
 
             tvAllProfiles.setOnClickListener {

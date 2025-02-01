@@ -168,7 +168,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
                     ivMyProfileImage.loadImage(profile.memberProfileImage.toString())
                 } ?: ivMyProfileImage.setImageResource(R.drawable.ic_default_profile)
                 tvMyProfileNickname.text = "${profile.memberNickName}"
-                tvMyProfileFollowInfo.text = "팔로잉 ${profile.followingCount}명   팔로워 ${profile.followerCount}명"
+                tvMyProfileFollowInfo.text = "팔로잉 ${profile.followingList.size}명   팔로워 ${profile.followerCount}명"
             }
         })
 
