@@ -45,6 +45,7 @@ class SocialMyRepository @Inject constructor(private val firestore: FirebaseFire
     // Firebase Firestore에서 게시글 데이터 가져오기
     private fun DocumentSnapshot.toPost(): Post? {
         val id = getString("id") ?: return null
+        val memberDocId = getString("memberDocId") ?: return null
         val nickname = getString("nickname") ?: return null
         val authorProfilePicture = getString("authorProfilePicture") ?: return null
         val title = getString("title") ?: return null
@@ -57,6 +58,7 @@ class SocialMyRepository @Inject constructor(private val firestore: FirebaseFire
 
         return Post(
             id = id,
+            memberDocId = memberDocId,
             nickname = nickname,
             authorProfilePicture = authorProfilePicture,
             title = title,
