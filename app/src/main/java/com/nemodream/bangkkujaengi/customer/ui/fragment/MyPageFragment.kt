@@ -195,7 +195,10 @@ class MyPageFragment : Fragment(), ProductClickListener {
 
 
             myPageOrder.root.setOnClickListener {  }
-            myPageReview.root.setOnClickListener {  }
+            myPageReview.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToMyReviewFragment()
+                findNavController().navigate(action)
+            }
             myPageCoupon.root.setOnClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationMyCoupon("")
                 findNavController().navigate(action)
