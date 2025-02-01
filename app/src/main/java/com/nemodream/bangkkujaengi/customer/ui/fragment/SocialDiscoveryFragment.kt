@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDiscoveryBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.ArrayList
 
 @AndroidEntryPoint
 class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
@@ -74,7 +76,24 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
      * 게시글 클릭 이벤트 처리
      */
     override fun onPostItemClick(post: Post) {
-        Log.d("SocialDiscoveryFragment", "Post clicked: ${post.title}")
+        Log.d("SocialDiscoveryFragment", "Post clicked: ${post}")
+
+        val clickedPost = Bundle().apply {
+            putString("id", post.id)
+            putString("nickname", post.id)
+            putString("authorProfilePicture", post.authorProfilePicture)
+            putString("title", post.title)
+            putString("content", post.content)
+            putStringArrayList("imageList", post.imageList as ArrayList<String?>?)
+            // putStringArrayList("productTagPinList", post.productTagPinList as ArrayList<String?>?)
+            putInt("savedCount", post.savedCount)
+            putInt("commentCount", post.commentCount)
+        }
+
+        Log.d("test909","소셜 디스커버리 프래그먼트 : ${clickedPost}")
+
+        setFragmentResult("clickedPost", clickedPost)
+
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }

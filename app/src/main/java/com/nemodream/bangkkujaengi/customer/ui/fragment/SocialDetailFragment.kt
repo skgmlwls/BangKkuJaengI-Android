@@ -3,21 +3,28 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Member
+import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.data.model.Product
+import com.nemodream.bangkkujaengi.customer.data.model.Tag
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDetailBinding
 import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.ArrayList
 
 @AndroidEntryPoint
 class SocialDetailFragment : Fragment() {
+
 
     private var _binding: FragmentSocialDetailBinding? = null
     private val binding get() = _binding!!
@@ -43,12 +50,45 @@ class SocialDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+
+        setFragmentResultListener("clickedPost") { clickedPost, bundle ->
+            val clickedId = bundle.getString("id")
+            val clickedNickname = bundle.getString("nickname")
+            val clickedAuthorProfilePicture = bundle.getString("authorProfilePicture")
+            val clickedTitle = bundle.getString("title")
+            val clickedContent = bundle.getString("content")
+            val clickedImageList = bundle.getStringArrayList("imageList")
+            val clickedSavedCount = bundle.getInt("savedCount")
+            val clickedCommentCount = bundle.getInt("commentCount")
+
+            // Post 객체 생성
+            val post = Post(
+                id = clickedId.orEmpty(),
+                nickname = clickedNickname.orEmpty(),
+                authorProfilePicture = clickedAuthorProfilePicture.orEmpty(),
+                title = clickedTitle.orEmpty(),
+                content = clickedContent.orEmpty(),
+                imageList = clickedImageList?.toList() ?: emptyList(),
+                productTagPinList = emptyList(),
+                savedCount = clickedSavedCount,
+                commentCount = clickedCommentCount
+            )
+
+            Log.d("test909", "소셜 디테일 프래그먼트 : ${post}")
+            setUpUI(post)
+        }
     }
 
     // 프래그먼트가 파괴될 때 Binding 해제
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setUpUI(post: Post){
+        with(binding){
+            tvSocialDetailContent.text = post.content
+        }
     }
 
     // 리스너 설정
