@@ -2,6 +2,7 @@ package com.nemodream.bangkkujaengi.customer.ui.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,6 @@ import kotlin.getValue
 
 @AndroidEntryPoint
 class SocialDetailFragment : Fragment() {
-
 
     private var _binding: FragmentSocialDetailBinding? = null
     private val binding get() = _binding!!
@@ -104,6 +104,17 @@ class SocialDetailFragment : Fragment() {
 
     private fun setUpImageUI(post: Post){
         with(binding){
+
+            val photos = post.imageList.map { imageUrl ->
+                Uri.parse(imageUrl) // String -> Uri 변환
+            }
+            val adapter = SocialCarouselAdapter(photos) { position, x, y ->
+                // 이미지 클릭 시 처리 로직 추가
+                Log.d("SocialDetail", "Image clicked at position $position: ($x, $y)")
+            }
+
+            // ViewPager2에 어댑터 설정
+            vpSocialDetailPictureCarousel.adapter = adapter
 
         }
     }
