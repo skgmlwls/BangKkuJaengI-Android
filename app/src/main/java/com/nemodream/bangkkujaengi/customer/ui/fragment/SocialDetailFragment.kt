@@ -1,5 +1,6 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
@@ -10,15 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDetailBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
@@ -27,11 +32,22 @@ class SocialDetailFragment : Fragment() {
 
     private var _binding: FragmentSocialDetailBinding? = null
     private val binding get() = _binding!!
+    private lateinit var appContext: Context
 
-    private var isFollowing = false
+    // Firebase Firestore와 FirebaseAuth 초기화
+    private val firestore = FirebaseFirestore.getInstance()
 
     // Fragment간 통신방법 : 뷰모델 공유
     private val viewModel: SocialDiscoveryViewModel by activityViewModels()
+
+    // 현재 로그인 유저가 게시글 작성자를 팔로잉 하는지에 대한 상태
+    private var isFollowing = false
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContext = context
+    }
 
     // 프래그먼트의 뷰를 생성하는 메서드
     override fun onCreateView(
@@ -46,7 +62,7 @@ class SocialDetailFragment : Fragment() {
     // 뷰가 생성된 후 초기화 작업을 수행하는 메서드
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListeners()
+
 
         viewModel.selectedPost.observe(viewLifecycleOwner) { post ->
 
@@ -56,7 +72,7 @@ class SocialDetailFragment : Fragment() {
 //                .addOnSuccessListener { tagMap ->
 //                    postTagPinList = tagMap?.toObjects(Tag::class.java)
 //                }
-
+            setupListeners(post)
             setUpTextUI(post)
             setUpImageUI(post)
             // displayTags(post)
@@ -166,7 +182,10 @@ class SocialDetailFragment : Fragment() {
 
 
     // 리스너 설정
-    private fun setupListeners() {
+    private fun setupListeners(post:Post) {
+        // val currentUserId = firestore.collection("Member").document(appContext.getUserId()) // 현재 로그인한 사용자 ID
+        val selectedMemberId = firestore.collection("Member").document(post.memberDocId) // 게시글 작성자 참조
+
         with(binding) {
             toolbarSocial.setNavigationOnClickListener {
                 findNavController().popBackStack(R.id.navigation_social, false)
@@ -180,11 +199,27 @@ class SocialDetailFragment : Fragment() {
                 isFollowing = !isFollowing
                 updateButtonState(isFollowing)
 
-//                if (isFollowing) {
-//                    // 팔로우 목록에 멤버 추가 (나중에 구현 예정)
-//                } else {
-//                    // 팔로우 목록에서 멤버 제거 (나중에 구현 예정)
-//                }
+                if (isFollowing) {
+                    // 팔로우 목록에 멤버 추가
+                    firestore.collection("Member").document(appContext.getUserId())
+                        .update("followingList", FieldValue.arrayUnion(selectedMemberId))
+                        .addOnSuccessListener {
+                            Log.d("Follow", "팔로우 성공")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Follow", "팔로우 실패: ${e.message}")
+                        }
+                } else {
+                    // 팔로우 목록에 멤버 삭제
+                    firestore.collection("Member").document(appContext.getUserId())
+                        .update("followingList", FieldValue.arrayRemove(selectedMemberId))
+                        .addOnSuccessListener {
+                            Log.d("Follow", "언팔로우 성공")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Follow", "언팔로우 실패: ${e.message}")
+                        }
+                }
             }
         }
     }
