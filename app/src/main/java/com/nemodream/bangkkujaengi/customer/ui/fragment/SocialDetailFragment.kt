@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
@@ -66,19 +67,30 @@ class SocialDetailFragment : Fragment() {
 
         viewModel.selectedPost.observe(viewLifecycleOwner) { post ->
 
+            // 현재 사용자의 팔로잉 목록을 가져와서 작성자 ID가 있는지 확인
+                firestore.collection("Member").document(appContext.getUserId())
+                    .get()
+                    .addOnSuccessListener { documentSnapshot ->
+                    val currentUser = documentSnapshot.toObject(Member::class.java)
+                    val followingList = currentUser?.followingList ?: emptyList()
+
+                    // 팔로잉 목록에 게시글 작성자의 memberDocId가 있으면 isFollowing을 true로 설정
+                    isFollowing = followingList.any { it.id == post.memberDocId }
+                    updateButtonState(isFollowing)
+                }
+
 //             태그 해시맵 데이터를 태그 객체로 바꾸기
 //            firestore.collection("Post").document(post.id).collection("productTagPinList")
 //                .get()
 //                .addOnSuccessListener { tagMap ->
 //                    postTagPinList = tagMap?.toObjects(Tag::class.java)
 //                }
+
             setupListeners(post)
             setUpTextUI(post)
             setUpImageUI(post)
             // displayTags(post)
         }
-
-
 
 //      Fragment간 통신방법 : Safe Args
 //      SocialDetailFragment에서 데이터 받기
@@ -132,6 +144,7 @@ class SocialDetailFragment : Fragment() {
             tvSocialDetailPostItemNickname.text = post.nickname
         }
     }
+
 
     private fun setUpImageUI(post: Post){
         with(binding){
@@ -223,6 +236,9 @@ class SocialDetailFragment : Fragment() {
             }
         }
     }
+
+
+    // 팔로잉 토글 효과
     private fun updateButtonState(isFollowing: Boolean) {
         if (isFollowing) {
             binding.btnSocialDetailFollowingFollowing.text = "팔로잉"
