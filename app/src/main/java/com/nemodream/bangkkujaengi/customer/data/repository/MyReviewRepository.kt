@@ -3,6 +3,7 @@ package com.nemodream.bangkkujaengi.customer.data.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.PurchaseItem
+import com.nemodream.bangkkujaengi.customer.data.model.Review
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -46,4 +47,33 @@ class MyReviewRepository @Inject constructor(
             .await()
             .toString()
     }
+
+
+    suspend fun fetchProductDataByPurchase(productId: String): ProductData? {
+        return try {
+            val document = firestore.collection("Product")
+                .document(productId)
+                .get()
+                .await()
+
+            if (!document.exists()) return null
+
+            val productTitle = document.getString("productName") ?: "상품명 없음"
+            val imagePath = (document.get("images") as? List<String>)?.getOrNull(0) ?: ""
+
+            // Firebase Storage에서 이미지 URL 가져오기
+            val imageUrl = if (imagePath.isNotEmpty()) getImageUrl(imagePath) else ""
+
+            ProductData(productTitle, imageUrl)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    // 데이터 클래스 정의
+    data class ProductData(
+        val productTitle: String,
+        val imageUrl: String
+    )
 }

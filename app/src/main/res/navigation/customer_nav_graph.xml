@@ -298,7 +298,8 @@
         android:label="MyReviewWriteFragment">
 
         <argument
-            android:name="reviewId"
-            app:argType="string" />
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
 </navigation>
