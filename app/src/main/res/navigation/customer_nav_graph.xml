@@ -218,7 +218,6 @@
         android:label="fragment_social_following_all"
         tools:layout="@layout/fragment_social_following_all" />
 
-    <!-- Social Write Picture Fragment -->
     <fragment
         android:id="@+id/socialWritePictureFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SocialWritePictureFragment"
@@ -228,7 +227,11 @@
         android:id="@+id/socialDetailFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.SocialDetailFragment"
         android:label="fragment_social_detail"
-        tools:layout="@layout/fragment_social_detail" />
+        tools:layout="@layout/fragment_social_detail">
+<!--        <argument-->
+<!--            android:name="post"-->
+<!--            app:argType="com.nemodream.bangkkujaengi.customer.data.model.Post" />-->
+    </fragment>
 
 
     <fragment

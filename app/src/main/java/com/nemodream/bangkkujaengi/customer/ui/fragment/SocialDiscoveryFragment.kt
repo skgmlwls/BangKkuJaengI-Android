@@ -78,22 +78,24 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
     override fun onPostItemClick(post: Post) {
         Log.d("SocialDiscoveryFragment", "Post clicked: ${post}")
 
-        val clickedPost = Bundle().apply {
-            putString("id", post.id)
-            putString("nickname", post.id)
-            putString("authorProfilePicture", post.authorProfilePicture)
-            putString("title", post.title)
-            putString("content", post.content)
-            putStringArrayList("imageList", post.imageList as ArrayList<String?>?)
-            // putStringArrayList("productTagPinList", post.productTagPinList as ArrayList<String?>?)
-            putInt("savedCount", post.savedCount)
-            putInt("commentCount", post.commentCount)
-        }
+//        Fragment간 통신방법 : Fragment Manager 사용
+//        setFragmentResult는 같은 FragmentManager 내에서만 동작하므로 Navigation으로 이동 시 사용 불가능
+//        val clickedPost = Bundle().apply {
+//            putString("id", post.id)
+//            putString("nickname", post.id)
+//            putString("authorProfilePicture", post.authorProfilePicture)
+//            putString("title", post.title)
+//            putString("content", post.content)
+//            putStringArrayList("imageList", post.imageList as ArrayList<String?>?)
+//            // putStringArrayList("productTagPinList", post.productTagPinList as ArrayList<String?>?)
+//            putInt("savedCount", post.savedCount)
+//            putInt("commentCount", post.commentCount)
+//        }
+//        Log.d("test909","소셜 디스커버리 프래그먼트 : ${clickedPost}")
+//        setFragmentResult("clickedPost", clickedPost)
 
-        Log.d("test909","소셜 디스커버리 프래그먼트 : ${clickedPost}")
-
-        setFragmentResult("clickedPost", clickedPost)
-
+        // Fragment간 통신방법 : Safe Args 사용
+        // SocialDiscoveryFragment에서 Safe Args로 데이터 전달
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }
