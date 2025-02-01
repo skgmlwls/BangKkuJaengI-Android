@@ -8,11 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
@@ -26,6 +27,7 @@ class SocialDetailFragment : Fragment() {
 
     private var _binding: FragmentSocialDetailBinding? = null
     private val binding get() = _binding!!
+
     private var isFollowing = false
 
     // Fragment간 통신방법 : 뷰모델 공유
@@ -45,11 +47,22 @@ class SocialDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
-        Log.d("test909","소셜 디테일 프래그먼트 실행 완료")
+
         viewModel.selectedPost.observe(viewLifecycleOwner) { post ->
+
+//             태그 해시맵 데이터를 태그 객체로 바꾸기
+//            firestore.collection("Post").document(post.id).collection("productTagPinList")
+//                .get()
+//                .addOnSuccessListener { tagMap ->
+//                    postTagPinList = tagMap?.toObjects(Tag::class.java)
+//                }
+
             setUpTextUI(post)
             setUpImageUI(post)
+            // displayTags(post)
         }
+
+
 
 //      Fragment간 통신방법 : Safe Args
 //      SocialDetailFragment에서 데이터 받기
@@ -121,6 +134,37 @@ class SocialDetailFragment : Fragment() {
         }
     }
 
+
+    private fun displayTags(post: Post) {
+        val tagPinContainer = binding.flSocialDetailTagPinOverlay
+        Log.d("TagDebug", "productTagPinList Type: ${post.productTagPinList.javaClass.name}")
+        Log.d("TagDebug", "First item: ${post.productTagPinList[0]}")
+        Log.d("TagDebug", "First item type: ${post.productTagPinList[0].javaClass.name}")
+
+        post.productTagPinList.forEach { tag ->
+
+            val x = tag.tagX!!.toFloat()
+            val y = tag.tagY!!.toFloat()
+
+            // 태그 핀 이미지 생성
+            val tagPinImageView = ImageView(requireContext()).apply {
+                setImageResource(R.drawable.ic_tag_pin)  // 태그 핀 이미지 리소스
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    leftMargin = (x - 20).toInt()
+                    topMargin = (y - 20).toInt()
+                }
+            }
+
+            // Container에 추가
+            tagPinContainer.addView(tagPinImageView)
+        }
+
+    }
+
+
     // 리스너 설정
     private fun setupListeners() {
         with(binding) {
@@ -142,9 +186,6 @@ class SocialDetailFragment : Fragment() {
 //                    // 팔로우 목록에서 멤버 제거 (나중에 구현 예정)
 //                }
             }
-
-
-
         }
     }
     private fun updateButtonState(isFollowing: Boolean) {
@@ -171,4 +212,3 @@ class SocialDetailFragment : Fragment() {
         }
     }
 }
-
