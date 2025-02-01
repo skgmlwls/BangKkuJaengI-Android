@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
+import com.nemodream.bangkkujaengi.customer.data.model.Tag
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,6 +52,8 @@ class SocialMyRepository @Inject constructor(private val firestore: FirebaseFire
         val imageList = get("imageList") as? List<String> ?: emptyList()
         val savedCount = getLong("savedCount")?.toInt() ?: 0
         val commentCount = getLong("commentCount")?.toInt() ?: 0
+        val productTagPinList = get("productTagPinList") as? List<Tag> ?: emptyList()
+
 
         return Post(
             id = id,
@@ -60,7 +63,8 @@ class SocialMyRepository @Inject constructor(private val firestore: FirebaseFire
             content = content,
             imageList = imageList,
             savedCount = savedCount,
-            commentCount = commentCount
+            commentCount = commentCount,
+            productTagPinList = productTagPinList
         )
     }
 
