@@ -51,32 +51,40 @@ class SocialDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
 
-        setFragmentResultListener("clickedPost") { clickedPost, bundle ->
-            val clickedId = bundle.getString("id")
-            val clickedNickname = bundle.getString("nickname")
-            val clickedAuthorProfilePicture = bundle.getString("authorProfilePicture")
-            val clickedTitle = bundle.getString("title")
-            val clickedContent = bundle.getString("content")
-            val clickedImageList = bundle.getStringArrayList("imageList")
-            val clickedSavedCount = bundle.getInt("savedCount")
-            val clickedCommentCount = bundle.getInt("commentCount")
+//      Fragment간 통신방법 : Safe Args
+//      SocialDetailFragment에서 데이터 받기
+//        val post = arguments?.let { SocialDetailFragmentArgs.fromBundle(it).post }
+//        post?.let { setUpUI(it) }
+//        Log.d("test909", "소셜 디테일 프래그먼트 : ${post}")
 
-            // Post 객체 생성
-            val post = Post(
-                id = clickedId.orEmpty(),
-                nickname = clickedNickname.orEmpty(),
-                authorProfilePicture = clickedAuthorProfilePicture.orEmpty(),
-                title = clickedTitle.orEmpty(),
-                content = clickedContent.orEmpty(),
-                imageList = clickedImageList?.toList() ?: emptyList(),
-                productTagPinList = emptyList(),
-                savedCount = clickedSavedCount,
-                commentCount = clickedCommentCount
-            )
-
-            Log.d("test909", "소셜 디테일 프래그먼트 : ${post}")
-            setUpUI(post)
-        }
+//        Fragment Manager 통신 방법 : Fragment Manager 사용
+//        setFragmentResult는 같은 FragmentManager 내에서만 동작하므로 Navigation으로 이동 시 사용 불가능
+//        setFragmentResultListener("clickedPost") { clickedPost, bundle ->
+//            val clickedId = bundle.getString("id")
+//            val clickedNickname = bundle.getString("nickname")
+//            val clickedAuthorProfilePicture = bundle.getString("authorProfilePicture")
+//            val clickedTitle = bundle.getString("title")
+//            val clickedContent = bundle.getString("content")
+//            val clickedImageList = bundle.getStringArrayList("imageList")
+//            val clickedSavedCount = bundle.getInt("savedCount")
+//            val clickedCommentCount = bundle.getInt("commentCount")
+//
+//            // Post 객체 생성
+//            val post = Post(
+//                id = clickedId.orEmpty(),
+//                nickname = clickedNickname.orEmpty(),
+//                authorProfilePicture = clickedAuthorProfilePicture.orEmpty(),
+//                title = clickedTitle.orEmpty(),
+//                content = clickedContent.orEmpty(),
+//                imageList = clickedImageList?.toList() ?: emptyList(),
+//                productTagPinList = emptyList(),
+//                savedCount = clickedSavedCount,
+//                commentCount = clickedCommentCount
+//            )
+//
+//            Log.d("test909", "소셜 디테일 프래그먼트 : ${post}")
+//            setUpUI(post)
+//        }
     }
 
     // 프래그먼트가 파괴될 때 Binding 해제
