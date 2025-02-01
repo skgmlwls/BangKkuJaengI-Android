@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialCarouselAdapter
@@ -104,18 +106,18 @@ class SocialDetailFragment : Fragment() {
 
     private fun setUpImageUI(post: Post){
         with(binding){
-
+            // 게시글 이미지 캐러셀
             val photos = post.imageList.map { imageUrl ->
                 Uri.parse(imageUrl) // String -> Uri 변환
             }
             val adapter = SocialCarouselAdapter(photos) { position, x, y ->
-                // 이미지 클릭 시 처리 로직 추가
-                Log.d("SocialDetail", "Image clicked at position $position: ($x, $y)")
             }
-
-            // ViewPager2에 어댑터 설정
             vpSocialDetailPictureCarousel.adapter = adapter
 
+            // 작성자 프로필 사진
+            Glide.with(this@SocialDetailFragment)
+                .load(post.authorProfilePicture) // URL 로드
+                .into(ivSocialDetailPostItemProfilePicture) // ImageView에 적용
         }
     }
 

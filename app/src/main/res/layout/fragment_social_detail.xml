@@ -158,8 +158,9 @@
                 android:id="@+id/iv_social_detail_post_item_profile_picture"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"
-                android:src="@drawable/background_gray_300"/>
+                android:src="@drawable/ic_default_profile"/>
 
             <TextView
                 android:id="@+id/tv_social_detail_post_item_nickname"
