@@ -244,6 +244,7 @@ class SocialWritePictureFragment : Fragment() {
                             // Post 객체 생성
                             val post = Post(
                                 id = firestore.collection("posts").document().id, // 자동 생성된 ID
+                                memberDocId = appContext.getUserId(),
                                 nickname = memberNickName ?: "익명", // 닉네임 없으면 "익명" 처리
                                 authorProfilePicture = memberProfileImage
                                     ?: "", // 프로필 이미지 없으면 빈 문자열 처리
