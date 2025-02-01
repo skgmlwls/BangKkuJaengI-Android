@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -186,17 +185,14 @@ class SocialDetailFragment : Fragment() {
                     topMargin = (y - 20).toInt()
                 }
             }
-
             // Container에 추가
             tagPinContainer.addView(tagPinImageView)
         }
-
     }
 
 
     // 리스너 설정
-    private fun setupListeners(post:Post) {
-        // val currentUserId = firestore.collection("Member").document(appContext.getUserId()) // 현재 로그인한 사용자 ID
+    private fun setupListeners(post: Post) {
         val selectedMemberId = firestore.collection("Member").document(post.memberDocId) // 게시글 작성자 참조
 
         with(binding) {
@@ -204,7 +200,6 @@ class SocialDetailFragment : Fragment() {
                 findNavController().popBackStack(R.id.navigation_social, false)
             }
             // 초기 상태 설정 (isFollowing 여부에 따라)
-
             updateButtonState(isFollowing)
 
             // 버튼 클릭 리스너
@@ -217,24 +212,33 @@ class SocialDetailFragment : Fragment() {
                     firestore.collection("Member").document(appContext.getUserId())
                         .update("followingList", FieldValue.arrayUnion(selectedMemberId))
                         .addOnSuccessListener {
-                            Log.d("Follow", "팔로우 성공")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Follow", "팔로우 실패: ${e.message}")
+                            // 팔로잉 카운트와 팔로워 카운트 증가
+                            updateFollowCounts(post.memberDocId, increment = true)
                         }
                 } else {
-                    // 팔로우 목록에 멤버 삭제
+                    // 팔로우 목록에서 멤버 삭제
                     firestore.collection("Member").document(appContext.getUserId())
                         .update("followingList", FieldValue.arrayRemove(selectedMemberId))
                         .addOnSuccessListener {
-                            Log.d("Follow", "언팔로우 성공")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Follow", "언팔로우 실패: ${e.message}")
+                            // 팔로잉 카운트와 팔로워 카운트 감소
+                            updateFollowCounts(post.memberDocId, increment = false)
                         }
                 }
             }
         }
+    }
+
+    // 팔로우/언팔로우 시 팔로잉 카운트와 팔로워 카운트를 업데이트
+    private fun updateFollowCounts(memberDocId: String, increment: Boolean) {
+        val change = if (increment) 1 else -1
+
+        // 나의 followingCount 증가/감소
+        firestore.collection("Member").document(appContext.getUserId())
+            .update("followingCount", FieldValue.increment(change.toLong()))
+
+        // 유저 A의 followerCount 증가/감소
+        firestore.collection("Member").document(memberDocId)
+            .update("followerCount", FieldValue.increment(change.toLong()))
     }
 
 
