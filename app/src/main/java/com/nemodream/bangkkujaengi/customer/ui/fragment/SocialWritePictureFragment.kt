@@ -1,10 +1,8 @@
 package com.nemodream.bangkkujaengi.customer.ui.fragment
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,9 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.utils.getUserId
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 
 
 class SocialWritePictureFragment : Fragment() {
