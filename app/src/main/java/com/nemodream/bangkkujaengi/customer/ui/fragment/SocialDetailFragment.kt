@@ -199,6 +199,16 @@ class SocialDetailFragment : Fragment() {
             toolbarSocial.setNavigationOnClickListener {
                 findNavController().popBackStack(R.id.navigation_social, false)
             }
+
+            // 로그인한 유저와 게시글 작성자가 동일한지 확인
+            if (appContext.getUserId() == post.memberDocId) {
+                // 팔로잉 버튼을 숨김
+                btnSocialDetailFollowingFollowing.visibility = View.GONE
+            } else {
+                // 팔로잉 버튼을 보이게 설정
+                btnSocialDetailFollowingFollowing.visibility = View.VISIBLE
+            }
+
             // 초기 상태 설정 (isFollowing 여부에 따라)
             updateButtonState(isFollowing)
 
