@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nemodream.bangkkujaengi.customer.data.model.Review
 import com.nemodream.bangkkujaengi.customer.data.repository.MyReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,6 +29,9 @@ class MyReviewWriteViewModel @Inject constructor(
 
     private val _reviewSubmitResult = MutableLiveData<Boolean>()  // 리뷰 저장 결과
     val reviewSubmitResult: LiveData<Boolean> get() = _reviewSubmitResult
+
+    private val _isSubmitting = MutableLiveData(false)
+    val isSubmitting: LiveData<Boolean> get() = _isSubmitting
 
     private val _productName = MutableLiveData<String>()
     val productName: LiveData<String> get() = _productName
@@ -61,9 +65,39 @@ class MyReviewWriteViewModel @Inject constructor(
         validateInput()
     }
 
-    // 입력 유효성 검사
+    // 입력 유효성 검사 함수
     private fun validateInput() {
         _isSubmitEnabled.value = (_rating.value ?: 0) > 0 && (_reviewContent.value?.length ?: 0) >= 20
+    }
+
+    fun submitReview(productId: String, documentId: String) {
+        viewModelScope.launch {
+            _isSubmitting.value = true  // 리뷰 저장 중 상태로 변경
+
+            val memberId = repository.fetchMemberId(documentId)
+            if (memberId.isNullOrEmpty()) {
+                _reviewSubmitResult.value = false
+                _isSubmitting.value = false  // 작업 완료 후 상태 변경
+                return@launch
+            }
+
+            val review = Review(
+                id = "",
+                productId = productId,
+                productTitle = _productName.value ?: "상품명 없음",
+                reviewDate = getCurrentDate(),
+                rating = _rating.value ?: 0,
+                memberId = memberId,
+                content = _reviewContent.value ?: "",
+                isDelete = false
+            )
+            val result = repository.submitReview(review)
+            _reviewSubmitResult.value = result
+
+            if (!result) {
+                _isSubmitting.value = false  // 실패 시 버튼 다시 활성화
+            }
+        }
     }
 
     // 현재 날짜를 문자열로 변환
