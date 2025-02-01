@@ -74,10 +74,11 @@ class MyReviewWriteViewModel @Inject constructor(
         viewModelScope.launch {
             _isSubmitting.value = true  // 리뷰 저장 중 상태로 변경
 
+            // 사용자 정보 가져오기
             val memberId = repository.fetchMemberId(documentId)
             if (memberId.isNullOrEmpty()) {
                 _reviewSubmitResult.value = false
-                _isSubmitting.value = false  // 작업 완료 후 상태 변경
+                _isSubmitting.value = false
                 return@launch
             }
 
@@ -85,20 +86,28 @@ class MyReviewWriteViewModel @Inject constructor(
                 id = "",
                 productId = productId,
                 productTitle = _productName.value ?: "상품명 없음",
+                productImageUrl = _productImageUrl.value ?: "",
                 reviewDate = getCurrentDate(),
                 rating = _rating.value ?: 0,
                 memberId = memberId,
                 content = _reviewContent.value ?: "",
                 isDelete = false
             )
-            val result = repository.submitReview(review)
-            _reviewSubmitResult.value = result
 
-            if (!result) {
-                _isSubmitting.value = false  // 실패 시 버튼 다시 활성화
+            // 리뷰 저장
+            val reviewResult = repository.submitReview(review)
+            if (reviewResult) {
+                // 상태 업데이트
+                val updateResult = repository.updateReviewState(productId, memberId)
+                _reviewSubmitResult.value = updateResult
+            } else {
+                _reviewSubmitResult.value = false
             }
+
+            _isSubmitting.value = false  // 작업 완료 후 상태 변경
         }
     }
+
 
     // 현재 날짜를 문자열로 변환
     private fun getCurrentDate(): String {

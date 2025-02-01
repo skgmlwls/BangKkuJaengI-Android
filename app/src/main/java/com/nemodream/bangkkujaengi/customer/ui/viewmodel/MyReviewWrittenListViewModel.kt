@@ -5,29 +5,28 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nemodream.bangkkujaengi.customer.data.model.PurchaseItem
+import com.nemodream.bangkkujaengi.customer.data.model.Review
 import com.nemodream.bangkkujaengi.customer.data.repository.MyReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyReviewWriteListViewModel @Inject constructor(
+class MyReviewWrittenListViewModel @Inject constructor(
     private val repository: MyReviewRepository
 ) : ViewModel() {
 
-    private val _purchases = MutableLiveData<List<PurchaseItem>>()
-    val purchases: LiveData<List<PurchaseItem>> = _purchases
+    private val _writtenReviews = MutableLiveData<List<Review>>()
+    val writtenReviews: LiveData<List<Review>> get() = _writtenReviews
 
-    fun loadPurchases(documentId: String) {
+    fun loadWrittenReviews(documentId: String) {
         viewModelScope.launch {
-            // Member ID 가져오기
+            // 회원 ID 가져오기
             val memberId = repository.fetchMemberId(documentId) ?: return@launch
 
-            // reviewState가 없는 상품 가져오기
-            val purchases = repository.fetchPurchasesForWrite(memberId)
-            _purchases.postValue(purchases)
+            // Firestore에서 작성된 리뷰 데이터 가져오기
+            val reviews = repository.fetchWrittenReviews(memberId)
+            _writtenReviews.postValue(reviews)
         }
     }
 }
-
-

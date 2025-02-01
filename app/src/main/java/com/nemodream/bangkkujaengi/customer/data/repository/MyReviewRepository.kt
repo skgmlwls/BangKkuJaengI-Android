@@ -107,4 +107,77 @@ class MyReviewRepository @Inject constructor(
         }
     }
 
+    suspend fun fetchPurchasesForWrite(memberId: String): List<PurchaseItem> {
+        val documents = firestore.collection("Purchase")
+            .whereEqualTo("memberId", memberId)
+            .whereEqualTo("purchaseState", "PURCHASE_CONFIRMED")
+            .get()
+            .await()
+
+        // reviewState가 없는 문서만 필터링
+        val filteredDocuments = documents.documents.filter { doc ->
+            !doc.contains("reviewState")
+        }
+
+        return filteredDocuments.map { doc ->
+            val productId = doc.getString("productId") ?: ""
+            val imagePath = doc.getString("images") ?: ""
+            val imageUrl = if (imagePath.isNotEmpty()) getImageUrl(imagePath) else ""
+            PurchaseItem(
+                productId = productId,
+                productTitle = doc.getString("productTitle") ?: "상품명 없음",
+                purchaseConfirmedDate = doc.getString("purchaseConfirmedDate") ?: "날짜 없음",
+                imageUrl = imageUrl
+            )
+        }
+    }
+
+    suspend fun updateReviewState(productId: String, memberId: String): Boolean {
+        return try {
+            val purchaseQuery = firestore.collection("Purchase")
+                .whereEqualTo("productId", productId)
+                .whereEqualTo("memberId", memberId)
+                .get()
+                .await()
+
+            if (!purchaseQuery.isEmpty) {
+                val documentId = purchaseQuery.documents[0].id
+                firestore.collection("Purchase")
+                    .document(documentId)
+                    .update("reviewState", "WRITTEN")  // 상태 변경
+                    .await()
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun fetchWrittenReviews(memberId: String): List<Review> {
+        val documents = firestore.collection("Reviews")
+            .whereEqualTo("memberId", memberId)
+            .get()
+            .await()
+
+        return documents.map { doc ->
+            Review(
+                id = doc.id,
+                productId = doc.getString("productId") ?: "",
+                productTitle = doc.getString("productTitle") ?: "상품명 없음",
+                productImageUrl = doc.getString("productImageUrl") ?: "",
+                reviewDate = doc.getString("reviewDate") ?: "",
+                rating = doc.getLong("rating")?.toInt() ?: 0,
+                memberId = doc.getString("memberId") ?: "",
+                content = doc.getString("content") ?: "",
+                isDelete = doc.getBoolean("isDelete") ?: false
+            )
+        }
+    }
+
+
+
+
 }

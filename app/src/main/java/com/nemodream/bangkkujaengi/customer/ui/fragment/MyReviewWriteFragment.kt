@@ -96,14 +96,15 @@ class MyReviewWriteFragment : Fragment() {
             binding.imgReviewProduct.loadImage(imageUrl)  // 확장 함수 사용
         }
 
-        viewModel.isSubmitEnabled.observe(viewLifecycleOwner) { isEnabled ->
-            if (!viewModel.isSubmitting.value!!) {  // 저장 중이 아닌 경우에만 버튼 상태 변경
-                binding.btnReviewSubmit.isEnabled = isEnabled
-            }
-        }
-
         viewModel.isSubmitting.observe(viewLifecycleOwner) { isSubmitting ->
             binding.btnReviewSubmit.isEnabled = !isSubmitting  // 저장 중일 때 비활성화
+        }
+
+        viewModel.isSubmitEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            // 저장 중이 아닌 경우에만 isSubmitEnabled에 따라 상태 변경
+            if (viewModel.isSubmitting.value == false) {
+                binding.btnReviewSubmit.isEnabled = isEnabled
+            }
         }
 
         viewModel.reviewSubmitResult.observe(viewLifecycleOwner) { result ->

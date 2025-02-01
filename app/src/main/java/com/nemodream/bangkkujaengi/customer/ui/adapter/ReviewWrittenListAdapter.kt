@@ -1,70 +1,66 @@
 package com.nemodream.bangkkujaengi.customer.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.R
+import com.nemodream.bangkkujaengi.customer.data.model.Review
 import com.nemodream.bangkkujaengi.databinding.RowReviewWrittenBinding
-
-data class WrittenReview(
-    val productName: String,
-    val rating: Int,
-    val writtenDate: String,
-    val content: String
-)
+import com.nemodream.bangkkujaengi.utils.loadImage
 
 class ReviewWrittenListAdapter :
-    ListAdapter<WrittenReview, ReviewWrittenListAdapter.ReviewViewHolder>(DiffCallback) {
+    ListAdapter<Review, ReviewWrittenListAdapter.ViewHolder>(WrittenReviewDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = RowReviewWrittenBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ReviewViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = RowReviewWrittenBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val reviewItem = getItem(position)
-        holder.bind(reviewItem)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    inner class ReviewViewHolder(private val binding: RowReviewWrittenBinding) :
+    inner class ViewHolder(private val binding: RowReviewWrittenBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(reviewItem: WrittenReview) {
-            binding.tvReviewWrittenProductName.text = reviewItem.productName
-            binding.tvReviewWrittenDate.text = reviewItem.writtenDate
-            binding.tvReviewWrittenContent.text = reviewItem.content
+        fun bind(item: Review) {
+            // 상품명, 리뷰 내용, 작성일 설정
+            binding.tvReviewWrittenProductName.text = item.productTitle
+            binding.tvReviewWrittenContent.text = item.content
+            binding.tvReviewWrittenDate.text = "작성일: ${item.reviewDate}"
 
-            // 별점 아이콘들 가져오기
-            val starViews = listOf(
-                binding.layoutReviewWrittenRating.findViewById<ImageView>(R.id.star_1),
-                binding.layoutReviewWrittenRating.findViewById<ImageView>(R.id.star_2),
-                binding.layoutReviewWrittenRating.findViewById<ImageView>(R.id.star_3),
-                binding.layoutReviewWrittenRating.findViewById<ImageView>(R.id.star_4),
-                binding.layoutReviewWrittenRating.findViewById<ImageView>(R.id.star_5)
+            // 적립금 상태 (필요에 따라 업데이트)
+            binding.tvReviewWrittenRewardStatus.text = if (!item.isDelete) "적립금 지급 완료" else "리뷰 삭제됨"
+
+            // 상품 이미지 로드
+            binding.imgReviewWrittenProduct.loadImage(item.productImageUrl)
+
+            // 별점 설정
+            val stars = listOf(
+                binding.star1, binding.star2, binding.star3,
+                binding.star4, binding.star5
             )
-
-            // 별점 상태 업데이트
-            starViews.forEachIndexed { index, starView ->
-                if (index < reviewItem.rating) {
-                    starView.setImageResource(R.drawable.ic_star_fill)  // 채워진 별
-                } else {
-                    starView.setImageResource(R.drawable.ic_star_outline)  // 비어 있는 별
-                }
+            stars.forEachIndexed { index, imageView ->
+                imageView.setImageResource(
+                    if (index < item.rating) R.drawable.ic_star_fill else R.drawable.ic_star_outline
+                )
             }
         }
     }
+}
 
-    companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<WrittenReview>() {
-            override fun areItemsTheSame(oldItem: WrittenReview, newItem: WrittenReview): Boolean =
-                oldItem.productName == newItem.productName
+class WrittenReviewDiffCallback : DiffUtil.ItemCallback<Review>() {
+    override fun areItemsTheSame(oldItem: Review, newItem: Review): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-            override fun areContentsTheSame(oldItem: WrittenReview, newItem: WrittenReview): Boolean =
-                oldItem == newItem
-        }
+    override fun areContentsTheSame(oldItem: Review, newItem: Review): Boolean {
+        return oldItem == newItem
     }
 }

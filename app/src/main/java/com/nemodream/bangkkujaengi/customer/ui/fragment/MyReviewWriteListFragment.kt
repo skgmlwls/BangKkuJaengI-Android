@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ReviewWriteListAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyReviewWriteListViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyReviewWriteListBinding
@@ -22,8 +24,8 @@ class MyReviewWriteListFragment : Fragment() {
     private lateinit var binding: FragmentMyReviewWriteListBinding
     private val viewModel: MyReviewWriteListViewModel by viewModels()
     private val reviewListAdapter by lazy {
-        ReviewWriteListAdapter { productTitle ->
-            navigateToWriteReviewFragment(productTitle)
+        ReviewWriteListAdapter { productId ->
+            navigateToWriteReviewFragment(productId)
         }
     }
 
@@ -61,7 +63,7 @@ class MyReviewWriteListFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.purchases.observe(viewLifecycleOwner) { purchases ->
             if (purchases.isNullOrEmpty()) {
-                showError("표시할 데이터가 없습니다.")
+                showNoReviewsScreen("작성할 리뷰가 없습니다.")
             } else {
                 // 어댑터에 데이터 전달
                 reviewListAdapter.submitList(purchases)
@@ -78,5 +80,18 @@ class MyReviewWriteListFragment : Fragment() {
 
     private fun showError(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showNoReviewsScreen(message: String) {
+        // 화면 전환: RecyclerView 숨기고 No Reviews Layout 표시
+        binding.recyclerReviewWrite.visibility = View.GONE
+
+        // No Reviews 화면 추가
+        val noReviewsView = layoutInflater.inflate(R.layout.blank, binding.root, false)
+        binding.root.addView(noReviewsView)
+
+        // 동적으로 텍스트 변경
+        val messageView = noReviewsView.findViewById<TextView>(R.id.tv_blank)
+        messageView.text = message
     }
 }
