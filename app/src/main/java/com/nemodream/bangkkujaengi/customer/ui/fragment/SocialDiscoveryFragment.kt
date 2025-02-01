@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -17,7 +17,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDiscoveryBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.ArrayList
 
 @AndroidEntryPoint
 class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
@@ -25,7 +24,7 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
     private var _binding: FragmentSocialDiscoveryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: SocialDiscoveryViewModel by viewModels()
+    private val viewModel: SocialDiscoveryViewModel by activityViewModels()
 
     private val socialDiscoveryAdapter: SocialDiscoveryAdapter by lazy {
         SocialDiscoveryAdapter(this)
@@ -96,6 +95,10 @@ class SocialDiscoveryFragment : Fragment(), OnPostItemClickListener {
 
         // Fragment간 통신방법 : Safe Args 사용
         // SocialDiscoveryFragment에서 Safe Args로 데이터 전달
+
+        // Fragment간 통신방법 : 뷰모델 공유
+        viewModel.selectedPost.value = post
+        Log.d("test909","소셜 디스커버리 프래그먼트 : ${viewModel.selectedPost.value}")
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }

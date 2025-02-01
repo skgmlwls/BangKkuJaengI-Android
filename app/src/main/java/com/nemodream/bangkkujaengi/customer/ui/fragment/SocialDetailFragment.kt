@@ -8,19 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
-import com.nemodream.bangkkujaengi.customer.data.model.Member
 import com.nemodream.bangkkujaengi.customer.data.model.Post
-import com.nemodream.bangkkujaengi.customer.data.model.Product
-import com.nemodream.bangkkujaengi.customer.data.model.Tag
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialDetailBinding
-import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.ArrayList
+import kotlin.getValue
 
 @AndroidEntryPoint
 class SocialDetailFragment : Fragment() {
@@ -30,11 +26,8 @@ class SocialDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private var isFollowing = false
 
-    // private val viewModel: SocialFollowingAllViewModel by viewModels()
-
-    // 팔로잉 프로필 RecyclerView의 어댑터
-    // private val socialFollowingAllAdapter = SocialFollowingAllAdapter()
-
+    // Fragment간 통신방법 : 뷰모델 공유
+    private val viewModel: SocialDiscoveryViewModel by activityViewModels()
 
     // 프래그먼트의 뷰를 생성하는 메서드
     override fun onCreateView(
@@ -50,6 +43,11 @@ class SocialDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        Log.d("test909","소셜 디테일 프래그먼트 실행 완료")
+        viewModel.selectedPost.observe(viewLifecycleOwner) { post ->
+            setUpTextUI(post)
+            setUpImageUI(post)
+        }
 
 //      Fragment간 통신방법 : Safe Args
 //      SocialDetailFragment에서 데이터 받기
@@ -93,9 +91,20 @@ class SocialDetailFragment : Fragment() {
         _binding = null
     }
 
-    private fun setUpUI(post: Post){
+    private fun setUpTextUI(post: Post){
         with(binding){
             tvSocialDetailContent.text = post.content
+            tvSocialDetailLikeCount.text = post.savedCount.toString()
+            tvSocialDetailCommentCount.text = post.commentCount.toString()
+            tvSocialDetailPostItemTitle.text = post.title
+            tvSocialDetailContent.text = post.content
+            tvSocialDetailPostItemNickname.text = post.nickname
+        }
+    }
+
+    private fun setUpImageUI(post: Post){
+        with(binding){
+
         }
     }
 
@@ -110,7 +119,7 @@ class SocialDetailFragment : Fragment() {
             updateButtonState(isFollowing)
 
             // 버튼 클릭 리스너
-            btnFollowingFollowing.setOnClickListener {
+            btnSocialDetailFollowingFollowing.setOnClickListener {
                 isFollowing = !isFollowing
                 updateButtonState(isFollowing)
 
@@ -127,25 +136,25 @@ class SocialDetailFragment : Fragment() {
     }
     private fun updateButtonState(isFollowing: Boolean) {
         if (isFollowing) {
-            binding.btnFollowingFollowing.text = "팔로잉"
-            binding.btnFollowingFollowing.setTextColor(Color.parseColor("#58443B")) // 글자색
-            binding.btnFollowingFollowing.setBackgroundTintList(
+            binding.btnSocialDetailFollowingFollowing.text = "팔로잉"
+            binding.btnSocialDetailFollowingFollowing.setTextColor(Color.parseColor("#58443B")) // 글자색
+            binding.btnSocialDetailFollowingFollowing.setBackgroundTintList(
                 ColorStateList.valueOf(Color.parseColor("#DFDFDF")) // 버튼 배경색
             )
-            binding.btnFollowingFollowing.strokeColor =
+            binding.btnSocialDetailFollowingFollowing.strokeColor =
                 ColorStateList.valueOf(Color.parseColor("#818080")) // 테두리 색상
-            binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께 (px 단위)
-            binding.btnFollowingFollowing.setPadding(0,0,0,0)
+            binding.btnSocialDetailFollowingFollowing.strokeWidth = 1 // 테두리 두께 (px 단위)
+            binding.btnSocialDetailFollowingFollowing.setPadding(0,0,0,0)
         } else {
-            binding.btnFollowingFollowing.text = "팔로우"
-            binding.btnFollowingFollowing.setTextColor(Color.parseColor("#FFFFFF")) // 글자색
-            binding.btnFollowingFollowing.setBackgroundTintList(
+            binding.btnSocialDetailFollowingFollowing.text = "팔로우"
+            binding.btnSocialDetailFollowingFollowing.setTextColor(Color.parseColor("#FFFFFF")) // 글자색
+            binding.btnSocialDetailFollowingFollowing.setBackgroundTintList(
                 ColorStateList.valueOf(Color.parseColor("#332828")) // 버튼 배경색
             )
-            binding.btnFollowingFollowing.strokeColor =
+            binding.btnSocialDetailFollowingFollowing.strokeColor =
                 ColorStateList.valueOf(Color.parseColor("#000000")) // 테두리 색상 (기본값, 변경 가능)
-            binding.btnFollowingFollowing.strokeWidth = 1 // 테두리 두께 (px 단위)
-            binding.btnFollowingFollowing.setPadding(0,0,0,0)
+            binding.btnSocialDetailFollowingFollowing.strokeWidth = 1 // 테두리 두께 (px 단위)
+            binding.btnSocialDetailFollowingFollowing.setPadding(0,0,0,0)
         }
     }
 }
