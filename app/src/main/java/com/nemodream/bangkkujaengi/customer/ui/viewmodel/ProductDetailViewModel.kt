@@ -86,6 +86,42 @@ class ProductDetailViewModel @Inject constructor(
     private var _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _reviews = MutableLiveData<List<Review>>()
+    val reviews: LiveData<List<Review>> = _reviews
+
+    fun loadReviews(productId: String) {
+        viewModelScope.launch {
+            val fetchedReviews = reviewRepository.fetchReviewsForProduct(productId)
+            _reviews.value = fetchedReviews.map { review ->
+                review.copy(reviewDate = getRelativeTime(review.reviewDate))
+            }
+        }
+    }
+
+    fun getRelativeTime(dateString: String): String {
+        return try {
+            // 작성 날짜 포맷 정의
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val writeDate = inputFormat.parse(dateString) ?: return dateString
+
+            // 현재 시각과의 차이를 계산
+            val now = Date()
+            val diffMillis = now.time - writeDate.time
+
+            // 차이를 기준으로 상대 시간 반환
+            when {
+                diffMillis < TimeUnit.MINUTES.toMillis(1) -> "방금 전"
+                diffMillis < TimeUnit.HOURS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toMinutes(diffMillis)}분 전"
+                diffMillis < TimeUnit.DAYS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toHours(diffMillis)}시간 전"
+                diffMillis < TimeUnit.DAYS.toMillis(2) -> "어제"
+                diffMillis < TimeUnit.DAYS.toMillis(3) -> "그제"
+                else -> SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(writeDate)  // 3일 이후는 'yyyy-MM-dd' 형식
+            }
+        } catch (e: Exception) {
+            dateString  // 파싱 실패 시 원본 반환
+        }
+    }
+
     fun loadProduct(productId: String, userId: String) = viewModelScope.launch {
         runCatching {
             _isLoading.value = true
