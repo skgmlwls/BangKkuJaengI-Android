@@ -335,16 +335,19 @@
             android:name="productId"
             app:argType="string"
             android:defaultValue="" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/photoViewFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PhotoViewFragment"
         tools:layout="@layout/fragment_photo_view"
-        android:label="PhotoViewFragment" >
+        android:label="PhotoViewFragment">
         <argument
             android:name="profileImageUrl"
             app:argType="string"
             app:nullable="true" />
     </fragment>
-  
     <fragment
         android:id="@+id/profileEditFragment"
         tools:layout="@layout/fragment_profile_edit"
