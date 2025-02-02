@@ -138,6 +138,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <!-- 팔로잉 없음 안내 텍스트 -->
+    <TextView
+        android:id="@+id/tv_no_following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="아직 팔로잉한 유저가 없습니다!"
+        android:layout_marginBottom="68dp"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!-- 팔로잉 없음 안내 텍스트 -->
+    <TextView
+        android:id="@+id/tv_no_following_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="마음에 드는 유저를 찾아 팔로잉해보세요 "
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textSize="15sp"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/tv_no_following"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <!-- 게시글 리스트 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_following_posts"
