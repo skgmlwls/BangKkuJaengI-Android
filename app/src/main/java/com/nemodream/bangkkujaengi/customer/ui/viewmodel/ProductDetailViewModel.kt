@@ -37,11 +37,25 @@ class ProductDetailViewModel @Inject constructor(
     private val _reviews = MutableLiveData<List<Review>>()
     val reviews: LiveData<List<Review>> = _reviews
 
+    private val _reviewCount = MutableLiveData<Int>()
+    val reviewCount: LiveData<Int> = _reviewCount
+
+    private val _averageRating = MutableLiveData<Double>()
+    val averageRating: LiveData<Double> = _averageRating
+
     fun loadReviews(productId: String) {
         viewModelScope.launch {
             val fetchedReviews = reviewRepository.fetchReviewsForProduct(productId)
             _reviews.value = fetchedReviews.map { review ->
                 review.copy(reviewDate = getRelativeTime(review.reviewDate))
+            }
+
+            // 리뷰 개수와 평균 별점 계산
+            _reviewCount.value = fetchedReviews.size
+            _averageRating.value = if (fetchedReviews.isNotEmpty()) {
+                fetchedReviews.map { it.rating }.average()
+            } else {
+                0.0
             }
         }
     }

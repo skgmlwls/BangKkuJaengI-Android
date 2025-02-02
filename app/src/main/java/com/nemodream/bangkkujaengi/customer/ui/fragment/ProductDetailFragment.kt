@@ -48,6 +48,8 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
     private val adapter: ProductDetailBannerAdapter by lazy { ProductDetailBannerAdapter() }
     private val imageAdapter: ProductDetailImageAdapter by lazy { ProductDetailImageAdapter() }
 
+    private val reviewAdapter: ProductReviewAdapter by lazy { ProductReviewAdapter() }
+
     // 상태바 색상 변경을 위한 window 객체 초기화
     private val window: Window by lazy {
         activity?.window ?: throw IllegalStateException("Activity is null")
@@ -78,17 +80,7 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter
-
-        // include 레이아웃을 통해 RecyclerView 접근
-        val reviewAdapter = ProductReviewAdapter()
         binding.layoutProductReviews.rvProductReviews.adapter = reviewAdapter
-
-        // ViewModel에서 리뷰 데이터 관찰
-        viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
-            reviewAdapter.submitList(reviews)
-        }
-
-        viewModel.loadReviews(productId)
     }
 
     override fun onDestroyView() {
@@ -121,8 +113,24 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
                     adapter.submitList(it.images)
                     setupUI()
                 }
+
+                // 리뷰 데이터 관찰
+                viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+                    reviewAdapter.submitList(reviews)
+                }
+
+                // 리뷰 개수 관찰
+                viewModel.reviewCount.observe(viewLifecycleOwner) { count ->
+                    binding.layoutProductReviews.tvReviewCount.text = "리뷰 ${count}건"
+                }
+
+                // 평균 별점 관찰
+                viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
+                    binding.layoutProductReviews.tvReviewRating.text = String.format("%.1f", averageRating)
+                }
             }
         }
+        viewModel.loadReviews(productId)
     }
 
     private fun setupUI() {
