@@ -17,7 +17,7 @@ data class Member(
     // 전화번호
     val memberPhoneNumber: String = "",
     // 프로필 사진
-    val memberProfileImage: String? = null,
+    val memberProfileImage: String = "https://www.studiopeople.kr/common/img/default_profile.png",
     // 적립금
     val point: Int = 3000,
     // 탈퇴 여부
