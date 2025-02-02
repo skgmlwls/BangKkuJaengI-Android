@@ -15,6 +15,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.CouponReceiveClickListene
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyCouponViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyCouponBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
+import com.nemodream.bangkkujaengi.utils.getUserType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

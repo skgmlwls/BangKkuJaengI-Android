@@ -76,6 +76,7 @@ class HomeFragment : Fragment(), OnBannerItemClickListener, ProductClickListener
         val action =
             HomeFragmentDirections.actionNavigationHomeToNavigationProductDetail(banner.productId)
         findNavController().navigate(action)
+        requireContext().getUserId()
     }
 
     override fun onProductClick(product: Product) {

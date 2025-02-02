@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Message
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,10 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.activity.addCallback
-import androidx.fragment.app.commit
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -38,7 +38,6 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.PaymentProductAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SelectCouponAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.PaymentViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentPaymentBinding
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -59,12 +58,16 @@ class PaymentFragment : Fragment() {
 
     // 유저 ID
     var user_id: String = ""
+    // 회원 or 비회원
+    var user_type: String = ""
     // 유저 이름
     var user_name: String = ""
     // 유저 전화번호
     var user_phone_number: String = ""
     // 유저 주소
     var user_address: String = ""
+
+    var order_type = ""
 
     var payment_product_user_id = ""
 
@@ -104,8 +107,8 @@ class PaymentFragment : Fragment() {
         setting_toolbar()
         // 유저 아이디 세팅
         getting_user_id()
-        // 리사이클러뷰 설정
-        setting_recycledrview_order()
+        // 주문 목록 리사이클러뷰 설정
+        // setting_recycledrview_order()
         // 버튼 설정
         setting_button()
         // textInputLayout의 값을 세팅하고 업데이트 하는 메소드 호출
@@ -252,6 +255,24 @@ class PaymentFragment : Fragment() {
     fun setting_btn_payment_make_payment() {
 
         fragmentPaymentBinding.btnPaymentMakePayment.setOnClickListener {
+
+            // 구매하기 버튼 클릭 시 필드 값 검증
+            val name = fragmentPaymentBinding.tilPaymentName.editText?.text.toString().trim()
+            val phone = fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.text.toString().trim()
+            val zip = fragmentPaymentBinding.tilPaymentZipCode.editText?.text.toString().trim()
+            val address = fragmentPaymentBinding.tilPaymentAddress.editText?.text.toString().trim()
+            val detailedAddress = fragmentPaymentBinding.tilPaymentDetailedAddress.editText?.text.toString().trim()
+            // 회원이 아닐 경우에만 비회원 배송 조회 비밀번호를 검증합니다.
+            val nonMemberPassword = fragmentPaymentBinding.tilPaymentNonMemberPassword.editText?.text.toString().trim()
+
+            // user_type이 "member"가 아니라면 비회원 비밀번호도 필수
+            if (name.isEmpty() || phone.isEmpty() || zip.isEmpty() || address.isEmpty() || detailedAddress.isEmpty() ||
+                (user_type != "member" && nonMemberPassword.isEmpty())) {
+                // 하나라도 입력되지 않았다면 오류 메시지 출력 후 진행 중단
+                showCustomToast("모든 필드를 입력해 주세요.", R.drawable.ic_symbol)
+                return@setOnClickListener
+            }
+
             viewLifecycleOwner.lifecycleScope.launch {
                 // 장바구니 항목 중 구매 항목 삭제
                 val work1 = async(Dispatchers.IO) {
@@ -270,7 +291,14 @@ class PaymentFragment : Fragment() {
                         // 할인율
                         val discountRate = paymentViewModel.payment_product_data_list.value!![position].saleRate
                         // 할인 후 가격
-                        val tot_price = ((originalPrice * (1 - (discountRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                        val tot_price = when(user_type) {
+                            "member" -> {
+                                ((originalPrice * (1 - (discountRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                            }
+                            else -> {
+                                paymentViewModel.payment_product_data_list.value!![position].price * payment_product_list.items[position].quantity
+                            }
+                        }
                         ////////////////////////////////////////////////////////////////////////////
 
                         // Timestamp를 Date로 변환 후 포맷 적용
@@ -290,7 +318,7 @@ class PaymentFragment : Fragment() {
                             saleRate = paymentViewModel.payment_product_data_list.value!![position].saleRate,
                             totPrice = tot_price,
                             purchaseDate = time_stamp,
-                            purchaseState = PurchaseState.READY_TO_SHIP.name,
+                            purchaseState = PurchaseState.PAYMENT_COMPLETED.name,
                             purchaseInvoiceNumber = 0,
                             purchaseQuantity = it.quantity,
                             Delete = false,
@@ -313,6 +341,12 @@ class PaymentFragment : Fragment() {
 
                 }.await()
 
+                val work3 = async(Dispatchers.IO) {
+                    payment_product_list.items.map {
+                        PaymentRepository.update_product_count_purchase_count(it.productId, it.quantity)
+                    }
+                }.await()
+
                 purchase_product.forEach {
                     Log.d("2233", "purchase_product : ${it}")
                 }
@@ -324,6 +358,25 @@ class PaymentFragment : Fragment() {
         }
 
     }
+
+    // 토스트 메세지 띄우는 메소드
+    private fun showCustomToast(message: String, iconResId: Int) {
+        val inflater = layoutInflater
+        val layout: View = inflater.inflate(R.layout.custom_toast_layout, null)
+
+        val toastIcon: ImageView = layout.findViewById(R.id.toast_icon)
+        val toastText: TextView = layout.findViewById(R.id.toast_text)
+
+        toastIcon.setImageResource(iconResId) // 아이콘 변경
+        toastText.text = message // 메시지 변경
+
+        val toast = Toast(requireContext())
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layout
+        toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 200)
+        toast.show()
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -359,9 +412,21 @@ class PaymentFragment : Fragment() {
     fun getting_user_id() {
         arguments?.let {
             user_id = PaymentFragmentArgs.fromBundle(it).userId
+            user_type = PaymentFragmentArgs.fromBundle(it).userType
             user_name = PaymentFragmentArgs.fromBundle(it).userName
             user_phone_number = PaymentFragmentArgs.fromBundle(it).userPhoneNumber
+            order_type = PaymentFragmentArgs.fromBundle(it).orderType
+            Log.d("sadjasjd", "getting_user_id: ${order_type}")
             // user_address = PaymentFragmentArgs.fromBundle(it).userAddress
+            when (order_type) {
+                "cart" -> {
+                    // 장바구니 아이템 정보를 가져온다
+                    setting_recycledrview_order_cart()
+                }
+                else -> {
+                    setting_recycledrview_order()
+                }
+            }
 
             viewLifecycleOwner.lifecycleScope.launch {
                 val work1 = async(Dispatchers.IO) {
@@ -369,6 +434,8 @@ class PaymentFragment : Fragment() {
                 }.await()
                 if (work1 != true) {
                     fragmentPaymentBinding.tilPaymentNonMemberPassword.visibility = View.VISIBLE
+                    fragmentPaymentBinding.tvPaymentCouponList.visibility = View.GONE
+                    fragmentPaymentBinding.btnPaymentCouponListShow.visibility = View.GONE
                 }
             }
 
@@ -388,11 +455,21 @@ class PaymentFragment : Fragment() {
         
         // 이름 옵저버
         paymentViewModel.til_payment_name_text.observe(viewLifecycleOwner) {
-            fragmentPaymentBinding.tilPaymentName.editText?.setText(it) // 값을 설정
+            if (it == "null") {
+                fragmentPaymentBinding.tilPaymentName.editText?.setText("") // 값을 설정
+            }
+            else {
+                fragmentPaymentBinding.tilPaymentName.editText?.setText(it) // 값을 설정
+            }
         }
         // 전화번호 옵저버
         paymentViewModel.til_payment_phone_number_text.observe(viewLifecycleOwner) {
-            fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.setText(it)
+            if (it == "null") {
+                fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.setText("")
+            }
+            else {
+                fragmentPaymentBinding.tilPaymentPhoneNumber.editText?.setText(it)
+            }
         }
         // 주소 옵저버
         // 초기 배송지의 주소 값을 세팅
@@ -459,7 +536,7 @@ class PaymentFragment : Fragment() {
     }
 
     /////////////////////////////////// 주문 목록 recyclerview //////////////////////////////////////
-    fun setting_recycledrview_order() {
+    fun setting_recycledrview_order_cart() {
 
         // 장바구니에서 체크된 데이터를 가져온다
         viewLifecycleOwner.lifecycleScope.launch {
@@ -468,11 +545,11 @@ class PaymentFragment : Fragment() {
             }
             val result = work1.await()
 
-            // 디버깅용 로그 추가
             result.forEach {
                 val cartData = it["checked_cart_data"] as? PaymentProduct
                 payment_product_user_id = cartData!!.userId
                 cartData.items.forEach {
+                    Log.d("1238912389", "cartData : ${it}")
                     payment_product_list = cartData
                 }
             }
@@ -498,16 +575,30 @@ class PaymentFragment : Fragment() {
                     paymentViewModel.tv_payment_tot_price_text.value?.plus(it.price * payment_product_list.items[position].quantity)
 
                 // 총 할인 가격 뷰모델 값 세팅
-                paymentViewModel.tv_payment_tot_sale_price_text.value =
-                    paymentViewModel.tv_payment_tot_sale_price_text.value?.plus(
-                        (it.price - (it.price * (1 - (it.saleRate / 100.0))).toInt() ) * payment_product_list.items[position].quantity
-                    )
+                paymentViewModel.tv_payment_tot_sale_price_text.value = when(user_type) {
+                    "member" -> {
+                        paymentViewModel.tv_payment_tot_sale_price_text.value?.plus(
+                            (it.price - (it.price * (1 - (it.saleRate / 100.0))).toInt() ) * payment_product_list.items[position].quantity
+                        )
+                    }
+                    else -> {
+                        0
+                    }
+                }
 
                 // 총 합 금액 뷰모델 값 세팅
-                paymentViewModel.tv_payment_tot_sum_price_text.value =
-                    paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
-                        ((it.price * (1 - (it.saleRate / 100.0))).toInt()* payment_product_list.items[position].quantity)
-                    )
+                paymentViewModel.tv_payment_tot_sum_price_text.value = when(user_type) {
+                    "member" -> {
+                        paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                            ((it.price * (1 - (it.saleRate / 100.0))).toInt()* payment_product_list.items[position].quantity)
+                        )
+                    }
+                    else -> {
+                        paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                            it.price * payment_product_list.items[position].quantity
+                        )
+                    }
+                }
 
 
                 position++
@@ -526,12 +617,90 @@ class PaymentFragment : Fragment() {
                     payment_product_list,
                     paymentViewModel.payment_product_data_list.value!!,
                     paymentViewModel,
-                    viewLifecycleOwner
+                    viewLifecycleOwner,
+                    user_type
                 )
                 rvPaymentOrderProductList.layoutManager = LinearLayoutManager(context)
             }
         }
     }
+
+    fun setting_recycledrview_order() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val work1 = async(Dispatchers.IO) {
+                payment_product_list = arguments?.let {PaymentFragmentArgs.fromBundle(it).paymentProduct}!!
+
+                PaymentRepository.getting_prodcut_by_product_document_id(payment_product_list.items.map { it.productId })
+            }
+            val result = work1.await()
+
+            result.forEach {
+                paymentViewModel.payment_product_data_list.value?.add(it["product_data"] as Product)
+            }
+
+            // 결제 금액 텍스트 값 세팅
+            var position = 0
+            paymentViewModel.payment_product_data_list.value?.forEach {
+
+                // 총 상품 가격 뷰모델 값 세팅
+                paymentViewModel.tv_payment_tot_price_text.value =
+                    paymentViewModel.tv_payment_tot_price_text.value?.plus(it.price * payment_product_list.items[position].quantity)
+
+                // 총 할인 가격 뷰모델 값 세팅
+                paymentViewModel.tv_payment_tot_sale_price_text.value = when (user_type) {
+                    "member" -> {
+                        paymentViewModel.tv_payment_tot_sale_price_text.value?.plus(
+                            (it.price - (it.price * (1 - (it.saleRate / 100.0))).toInt()) * payment_product_list.items[position].quantity
+                        )
+                    }
+
+                    else -> {
+                        0
+                    }
+                }
+
+                // 총 합 금액 뷰모델 값 세팅
+                paymentViewModel.tv_payment_tot_sum_price_text.value = when (user_type) {
+                    "member" -> {
+                        paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                            ((it.price * (1 - (it.saleRate / 100.0))).toInt() * payment_product_list.items[position].quantity)
+                        )
+                    }
+
+                    else -> {
+                        paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                            it.price * payment_product_list.items[position].quantity
+                        )
+                    }
+                }
+
+
+                position++
+
+            }
+
+            // 총 합 금액에 배송비 추가
+            paymentViewModel.tv_payment_tot_sum_price_text.value =
+                paymentViewModel.tv_payment_tot_sum_price_text.value?.plus(
+                    paymentViewModel.tv_payment_tot_delivery_cost_text.value!!
+                )
+
+            Log.d("test1234", "payment_product_data_list : ${paymentViewModel.tv_payment_tot_price_text.value}")
+
+            fragmentPaymentBinding.apply {
+                rvPaymentOrderProductList.adapter = PaymentProductAdapter(
+                    payment_product_list,
+                    paymentViewModel.payment_product_data_list.value!!,
+                    paymentViewModel,
+                    viewLifecycleOwner,
+                    user_type
+                )
+                rvPaymentOrderProductList.layoutManager = LinearLayoutManager(context)
+            }
+
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 

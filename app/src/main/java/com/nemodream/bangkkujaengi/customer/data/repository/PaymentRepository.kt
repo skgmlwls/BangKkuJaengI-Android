@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
@@ -229,7 +230,21 @@ class PaymentRepository {
             }
         }
 
-
+        // 구매시 수량만큼 상품 재고 감소, 구매 수 증가 메서드
+        suspend fun update_product_count_purchase_count(productDocumentId: String, productCount: Int) {
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                firestore.collection("Product")
+                    .document(productDocumentId)
+                    .update(
+                        "productCount", FieldValue.increment(-productCount.toLong()),
+                        "purchaseCount", FieldValue.increment(productCount.toLong())
+                    ).await()
+                Log.d("UpdateProduct", "Updated product $productDocumentId: decreased productCount by $productCount")
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error updating product counts: ${e.message}", e)
+            }
+        }
 
     }
 

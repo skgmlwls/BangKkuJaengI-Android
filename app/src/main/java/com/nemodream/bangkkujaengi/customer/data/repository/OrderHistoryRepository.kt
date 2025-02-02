@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.nemodream.bangkkujaengi.customer.data.model.Purchase
@@ -92,7 +93,10 @@ class OrderHistoryRepository {
             try {
                 // Firestore에서 해당 documentId의 purchaseState를 업데이트
                 collectionReference.document(document_id)
-                    .update("purchaseState", PurchaseState.PURCHASE_CONFIRMED.name)
+                    .update(
+                        "purchaseState", PurchaseState.PURCHASE_CONFIRMED.name,
+                        "purchaseConfirmedTime", Timestamp.now()
+                    )
                     .await()
 
                 Log.d("FirestoreUpdate", "Successfully updated purchaseState to PURCHASE_CONFIRMED for documentId: $document_id")
