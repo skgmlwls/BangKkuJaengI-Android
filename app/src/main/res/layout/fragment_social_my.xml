@@ -55,16 +55,16 @@
             app:layout_constraintStart_toEndOf="@id/iv_my_profile_image"
             app:layout_constraintTop_toTopOf="@id/iv_my_profile_image" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_social_my_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-            android:src="@drawable/ic_edit_24px"
-            app:layout_constraintStart_toEndOf="@id/tv_my_profile_nickname"
-            app:layout_constraintTop_toTopOf="@id/tv_my_profile_nickname"
-            app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname" />
+<!--        <com.google.android.material.imageview.ShapeableImageView-->
+<!--            android:id="@+id/iv_social_my_edit"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:layout_marginTop="3dp"-->
+<!--            android:src="@drawable/ic_edit_24px"-->
+<!--            app:layout_constraintStart_toEndOf="@id/tv_my_profile_nickname"-->
+<!--            app:layout_constraintTop_toTopOf="@id/tv_my_profile_nickname"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/tv_my_profile_nickname" />-->
 
         <!-- 수정완료 버튼 -->
         <Button
