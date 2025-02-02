@@ -140,7 +140,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/tv_product_detail_category"
-                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_category"
+                app:layout_constraintTop_toBottomOf="@id/tv_product_detail_review_count"
                 tools:text="10,000원" />
 
             <TextView
@@ -182,6 +182,37 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_product_detail_discount_rate"
                 app:layout_constraintTop_toTopOf="@id/tv_product_detail_discount_rate" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_review_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="4dp"
+                android:text="리뷰 5건"
+                android:textColor="@color/gray_500"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/tv_product_detail_rating"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_detail_category" />
+
+            <TextView
+                android:id="@+id/tv_product_detail_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="4.5"
+                app:layout_constraintStart_toEndOf="@+id/img_star"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_detail_category" />
+
+            <ImageView
+                android:id="@+id/img_star"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_detail_category"
+                app:srcCompat="@drawable/ic_star_fill" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
@@ -231,6 +262,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_product_detail_content_description"
                 tools:listitem="@layout/item_product_detail_image_list" />
+
+            <include
+                android:id="@+id/layout_product_reviews"
+                layout="@layout/product_detail_review"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="80dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_product_detail_content_image_list" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

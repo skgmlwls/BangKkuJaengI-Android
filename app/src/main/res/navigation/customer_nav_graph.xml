@@ -255,6 +255,9 @@
             android:id="@+id/action_navigation_my_page_to_myBookmarkFragment"
             app:destination="@id/navigation_my_bookmark" />
         <action
+            android:id="@+id/action_navigation_my_page_to_myReviewFragment"
+            app:destination="@+id/navigation_my_review" />
+        <action
             android:id="@+id/action_navigation_my_page_to_navigation_product_detail"
             app:destination="@id/navigation_product_detail" />
         <action
@@ -308,7 +311,30 @@
             android:id="@+id/action_navigation_my_bookmark_to_navigation_product_detail"
             app:destination="@id/navigation_product_detail" />
     </fragment>
+  
     <fragment
+        android:id="@+id/navigation_my_review"
+        tools:layout="@layout/fragment_my_review"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyReviewFragment"
+        android:label="MyReviewFragment" >
+        <action
+            android:id="@+id/action_navigation_my_review_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_myReviewWriteListFragment_to_myReviewWriteFragment"
+            app:destination="@id/myReviewWriteFragment" />
+    </fragment>
+  
+    <fragment
+        android:id="@+id/myReviewWriteFragment"
+        tools:layout="@layout/fragment_my_review_write"
+        android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.MyReviewWriteFragment"
+        android:label="MyReviewWriteFragment">
+
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="" />
         android:id="@+id/photoViewFragment"
         android:name="com.nemodream.bangkkujaengi.customer.ui.fragment.PhotoViewFragment"
         tools:layout="@layout/fragment_photo_view"
@@ -318,6 +344,7 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+  
     <fragment
         android:id="@+id/profileEditFragment"
         tools:layout="@layout/fragment_profile_edit"

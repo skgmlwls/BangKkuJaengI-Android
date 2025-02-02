@@ -13,11 +13,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailBannerAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductReviewAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentProductDetailBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
@@ -40,6 +43,8 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
 
     private val adapter: ProductDetailBannerAdapter by lazy { ProductDetailBannerAdapter() }
     private val imageAdapter: ProductDetailImageAdapter by lazy { ProductDetailImageAdapter() }
+
+    private val reviewAdapter: ProductReviewAdapter by lazy { ProductReviewAdapter() }
 
     // 상태바 색상 변경을 위한 window 객체 초기화
     private val window: Window by lazy {
@@ -71,6 +76,7 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter
+        binding.layoutProductReviews.rvProductReviews.adapter = reviewAdapter
     }
 
     override fun onDestroyView() {
@@ -123,8 +129,27 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
                         shimmerDetail.root.visibility = View.GONE
                     }
                 }
+
+                // 리뷰 데이터 관찰
+                viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+                    reviewAdapter.submitList(reviews)
+                }
+
+                // 리뷰 개수 관찰 및 두 개의 TextView에 값 갱신
+                viewModel.reviewCount.observe(viewLifecycleOwner) { count ->
+                    binding.layoutProductReviews.tvReviewCount.text = "리뷰 ${count}건"
+                    binding.tvProductDetailReviewCount.text = "리뷰 ${count}건"
+                }
+
+                // 평균 별점 관찰 및 두 개의 TextView에 값 갱신
+                viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
+                    val ratingText = String.format("%.1f", averageRating)
+                    binding.layoutProductReviews.tvReviewRating.text = ratingText
+                    binding.tvProductDetailRating.text = ratingText
+                }
             }
         }
+        viewModel.loadReviews(productId)
     }
 
     private fun setupUI() {

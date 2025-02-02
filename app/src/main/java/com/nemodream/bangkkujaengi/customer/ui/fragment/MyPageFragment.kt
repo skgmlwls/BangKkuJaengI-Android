@@ -228,6 +228,11 @@ class MyPageFragment : Fragment(), ProductClickListener {
                 }
             }
 
+            myPageReview.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToMyReviewFragment()
+                findNavController().navigate(action)
+            }
+            
             etMyProfileNickname.setOnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     textView.hideKeyboard()
@@ -237,9 +242,7 @@ class MyPageFragment : Fragment(), ProductClickListener {
                     false
                 }
             }
-
-            myPageOrder.root.setOnClickListener { }
-            myPageReview.root.setOnClickListener { }
+            
             myPageCoupon.root.setOnClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationMyCoupon("")
                 findNavController().navigate(action)
