@@ -119,14 +119,17 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
                     reviewAdapter.submitList(reviews)
                 }
 
-                // 리뷰 개수 관찰
+                // 리뷰 개수 관찰 및 두 개의 TextView에 값 갱신
                 viewModel.reviewCount.observe(viewLifecycleOwner) { count ->
                     binding.layoutProductReviews.tvReviewCount.text = "리뷰 ${count}건"
+                    binding.tvProductDetailReviewCount.text = "리뷰 ${count}건"
                 }
 
-                // 평균 별점 관찰
+                // 평균 별점 관찰 및 두 개의 TextView에 값 갱신
                 viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
-                    binding.layoutProductReviews.tvReviewRating.text = String.format("%.1f", averageRating)
+                    val ratingText = String.format("%.1f", averageRating)
+                    binding.layoutProductReviews.tvReviewRating.text = ratingText
+                    binding.tvProductDetailRating.text = ratingText
                 }
             }
         }
