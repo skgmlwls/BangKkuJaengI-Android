@@ -13,12 +13,17 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.nemodream.bangkkujaengi.databinding.ActivityCustomerBinding
+import com.nemodream.bangkkujaengi.utils.getUserType
 import com.nemodream.bangkkujaengi.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CustomerActivity : AppCompatActivity() {
-    private val binding: ActivityCustomerBinding by lazy { ActivityCustomerBinding.inflate(layoutInflater) }
+    private val binding: ActivityCustomerBinding by lazy {
+        ActivityCustomerBinding.inflate(
+            layoutInflater
+        )
+    }
     private var lastBackPress: Long = 0
 
     // 네비게이션 보여야 되는 화면은 여기 정의해주세요.
@@ -121,11 +126,21 @@ class CustomerActivity : AppCompatActivity() {
      */
     private fun setupListeners(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.customerBottomNavigation.visibility = when (destination.id) {
-                in showBottomNavDestinations -> View.VISIBLE
-                else -> View.GONE
+            // 비회원일 때 Social 화면 접근 방지
+            if (getUserType() == "guest" && destination.id == R.id.navigation_social) {
+                // 비회원은 Social 화면에 접근 못하도록 막고, 스낵바 표시
+                showSnackBar(binding.root, "비회원은 이 화면에 접근할 수 없습니다.")
+                // 현재 Social 화면으로의 이동을 막기 위해 navigateUp()
+                navController.navigateUp()
+            } else {
+                // 네비게이션 화면 표시
+                binding.customerBottomNavigation.visibility = when (destination.id) {
+                    in showBottomNavDestinations -> View.VISIBLE
+                    else -> View.GONE
+                }
             }
         }
+
 
 //        회원일 경우: 네비게이션 바텀 아이템 클릭을 정상 처리
 //        navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -144,10 +159,10 @@ class CustomerActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
-    }
+        }
 
-    companion object {
-        private const val BACK_PRESS_THRESHOLD = 2000L
-        private const val BACK_PRESS_MESSAGE = "뒤로가기 버튼을 한 번 더 누르면 종료됩니다."
+        companion object {
+            private const val BACK_PRESS_THRESHOLD = 2000L
+            private const val BACK_PRESS_MESSAGE = "뒤로가기 버튼을 한 번 더 누르면 종료됩니다."
+        }
     }
-}
