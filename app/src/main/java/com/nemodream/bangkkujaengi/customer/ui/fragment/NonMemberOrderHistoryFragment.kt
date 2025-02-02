@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Purchase
@@ -32,7 +33,17 @@ class NonMemberOrderHistoryFragment : Fragment() {
 
         setting_text()
 
+        setting_tb_non_member_inquiry()
+
         return fragmentNonMemberOrderHistoryBinding.root
+    }
+
+    fun setting_tb_non_member_inquiry() {
+        fragmentNonMemberOrderHistoryBinding.tbNonMemberOrderHistory.setNavigationOnClickListener {
+            // navigation_my_page가 MyPageFragment의 ID입니다.
+            // popBackStack으로 MyPageFragment까지의 모든 프래그먼트를 스택에서 제거합니다.
+            findNavController().popBackStack(R.id.navigation_my_page, false)
+        }
     }
 
     fun setting_non_member_purchase_list() {

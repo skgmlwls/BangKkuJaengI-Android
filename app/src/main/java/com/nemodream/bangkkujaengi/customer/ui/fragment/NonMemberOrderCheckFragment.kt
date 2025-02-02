@@ -34,7 +34,15 @@ class NonMemberOrderCheckFragment : Fragment() {
 
         setting_btn_order_inquiry()
 
+        setting_tb_non_member_inquiry()
+
         return fragmentNonMemberOrderCheckBinding.root
+    }
+
+    fun setting_tb_non_member_inquiry() {
+        fragmentNonMemberOrderCheckBinding.toolbarNonMemberInquiry.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     // 주문 조회 버튼
