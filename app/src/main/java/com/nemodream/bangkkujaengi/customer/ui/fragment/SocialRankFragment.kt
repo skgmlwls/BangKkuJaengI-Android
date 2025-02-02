@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,9 +13,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialRankViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialRankBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class SocialRankFragment : Fragment(), OnPostItemClickListener {
@@ -23,6 +26,7 @@ class SocialRankFragment : Fragment(), OnPostItemClickListener {
     private val binding get() = _binding!!
 
     private val viewModel: SocialRankViewModel by viewModels()
+    private val shareViewModel: SocialDiscoveryViewModel by activityViewModels()
 
     private val socialRankAdapter: SocialDiscoveryAdapter by lazy {
         SocialDiscoveryAdapter(this)
@@ -81,6 +85,7 @@ class SocialRankFragment : Fragment(), OnPostItemClickListener {
      * 게시글 클릭 이벤트 처리
      */
     override fun onPostItemClick(post: Post) {
+        shareViewModel.selectedPost.value = post
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }

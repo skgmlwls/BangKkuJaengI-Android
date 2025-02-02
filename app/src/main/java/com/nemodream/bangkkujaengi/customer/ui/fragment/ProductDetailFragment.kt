@@ -11,9 +11,6 @@ import android.view.Window
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +29,6 @@ import com.nemodream.bangkkujaengi.utils.loadImage
 import com.nemodream.bangkkujaengi.utils.showLoginSnackbar
 import com.nemodream.bangkkujaengi.utils.toCommaString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProductDetailFragment : Fragment(), OnCartClickListener {
@@ -105,13 +101,33 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
         }
     }
 
-    // LiveData 관찰
     private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.product.observe(viewLifecycleOwner) {
-                    adapter.submitList(it.images)
-                    setupUI()
+        viewModel.product.observe(viewLifecycleOwner) {
+            adapter.submitList(it.images)
+            setupUI()
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            with(binding) {
+                when (isLoading) {
+                    true -> {
+                        shimmerDetail.root.startShimmer()
+                        collapsingToolbar.visibility = View.GONE
+                        tvProductDetailCategory.visibility = View.GONE
+                        viewDiscountBlind.visibility = View.GONE
+                        groupProductDetail.visibility = View.GONE
+                        divider.visibility = View.GONE
+                        shimmerDetail.root.visibility = View.VISIBLE
+                    }
+
+                    false -> {
+                        shimmerDetail.root.stopShimmer()
+                        collapsingToolbar.visibility = View.VISIBLE
+                        groupProductDetail.visibility = View.VISIBLE
+                        tvProductDetailCategory.visibility = View.VISIBLE
+                        divider.visibility = View.VISIBLE
+                        shimmerDetail.root.visibility = View.GONE
+                    }
                 }
 
                 // 리뷰 데이터 관찰
@@ -213,7 +229,8 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
                 when (appContext.getUserType()) {
                     "member" -> {
                         viewModel.product.value?.productId?.let { productId ->
-                            viewModel.toggleFavorite(appContext.getUserId(),
+                            viewModel.toggleFavorite(
+                                appContext.getUserId(),
                                 productId
                             )
                         }
@@ -221,7 +238,8 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
 
                     "guest" -> {
                         appContext.showLoginSnackbar(binding.root, binding.viewBottomFixArea) {
-                            val action = ProductDetailFragmentDirections.actionNavigationProductDetailToSignInActivity()
+                            val action =
+                                ProductDetailFragmentDirections.actionNavigationProductDetailToSignInActivity()
                             findNavController().navigate(action)
                         }
                     }

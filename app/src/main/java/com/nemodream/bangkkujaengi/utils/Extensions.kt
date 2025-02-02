@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -112,6 +113,12 @@ fun Context.getUserId(): String {
     return sharedPreferences.getString("documentId", "") ?: ""
 }
 
+fun Context.clearUserInfo() {
+    // 저장된 유저 정보를 모두 지운다
+    val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+    sharedPreferences.edit { clear() }
+}
+
 /* Firestore 게시물 좋아요 토글 확장함수 */
 suspend fun FirebaseFirestore.togglePostLikeState(userId: String, postId: String) {
     try {
@@ -192,4 +199,18 @@ fun Context.showLoginSnackbar(view: View, anchorView: View? = null, action: () -
             anchorView?.let { this.anchorView = it }
         }
         .show()
+}
+
+fun Context.showKeyboard(view: View) {
+    getSystemService(InputMethodManager::class.java)?.showSoftInput(
+        view,
+        InputMethodManager.SHOW_IMPLICIT
+    )
+}
+
+fun Context.hideKeyboard(view: View) {
+    getSystemService(InputMethodManager::class.java)?.hideSoftInputFromWindow(
+        view.windowToken,
+        0
+    )
 }

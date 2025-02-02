@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,11 +19,13 @@ import com.nemodream.bangkkujaengi.customer.data.repository.SocialFollowingRepos
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialFollowingProfilesAdapter
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialFollowingViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialFollowingBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
@@ -32,6 +35,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
     private lateinit var appContext: Context
 
     private val viewModel: SocialFollowingViewModel by viewModels()
+    private val shareViewModel: SocialDiscoveryViewModel by activityViewModels()
 
     // 팔로잉 프로필 RecyclerView의 어댑터
     private val profileAdapter: SocialFollowingProfilesAdapter by lazy {
@@ -108,7 +112,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
                 binding.ivSelectedProfileImage.loadImage(selectedMember.memberProfileImage.toString())
                 binding.tvSelectedProfileNickname.text = it.memberNickName
                 binding.tvSelectedProfileFollowInfo.text =
-                    "팔로잉 ${selectedMember.followingCount}명     팔로워 ${selectedMember.followerCount}명"
+                    "팔로잉 ${selectedMember.followingList.size}명     팔로워 ${selectedMember.followerCount}명"
             } ?: run {
                 // 선택된 멤버가 없을 경우 프로필 정보를 숨김
                 binding.clSelectedProfileInfo.visibility = View.GONE
@@ -166,7 +170,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         with(binding) {
             // 팔로잉 상태 토글
             btnFollowingFollowing.setOnClickListener {
-                viewModel.toggleFollowing()
+                viewModel.toggleFollowing(appContext.getUserId())
             }
 
             tvAllProfiles.setOnClickListener {
@@ -179,6 +183,7 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
     //게시글 클릭 이벤트를 처리하는 메서드
     override fun onPostItemClick(post: Post) {
+        shareViewModel.selectedPost.value = post
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }

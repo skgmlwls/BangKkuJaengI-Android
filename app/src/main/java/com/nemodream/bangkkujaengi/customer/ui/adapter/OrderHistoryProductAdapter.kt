@@ -1,11 +1,18 @@
 package com.nemodream.bangkkujaengi.customer.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.nemodream.bangkkujaengi.customer.data.model.PurchaseState
 import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
+import com.nemodream.bangkkujaengi.customer.deliverytracking.RetrofitInstance
+import com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragment
+import com.nemodream.bangkkujaengi.customer.ui.fragment.OrderHistoryFragmentDirections
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryProductAdapterViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryProductViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryViewModel
 import com.nemodream.bangkkujaengi.databinding.RowOrderHistoryProductBinding
@@ -14,16 +21,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.text.NumberFormat
 import java.util.Locale
 
 class OrderHistoryProductAdapter(
+    val orderHistoryFragment : OrderHistoryFragment,
     val orderHistoryViewModel : OrderHistoryViewModel,
     val orderHistoryProductViewModel : OrderHistoryProductViewModel,
+    val viewLifecycleOwner : LifecycleOwner
 ) : RecyclerView.Adapter<OrderHistoryProductAdapter.OrderHistoryProductViewHolder>() {
 
     inner class OrderHistoryProductViewHolder(val rowOrderHistoryProductBinding: RowOrderHistoryProductBinding) :
-            RecyclerView.ViewHolder(rowOrderHistoryProductBinding.root)
+        RecyclerView.ViewHolder(rowOrderHistoryProductBinding.root)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -42,16 +53,47 @@ class OrderHistoryProductAdapter(
 
     override fun onBindViewHolder(holder: OrderHistoryProductViewHolder, position: Int) {
 
+        val orderHistoryProductAdapterViewModel = OrderHistoryProductAdapterViewModel()
+
+
+        // 배송 상세 내용 저장
+        fetchTrackingInfo(
+            "04",
+            orderHistoryProductViewModel.order_history_product_list.value!![position].purchaseInvoiceNumber.toString(),
+            orderHistoryProductAdapterViewModel,
+            position
+        )
+
         // 주문 상품 리스트 이미지 세팅
         setting_product_list_image(holder.rowOrderHistoryProductBinding, position)
 
         // 주문 상품 리스트 텍스트 세팅
-        setting_product_list_text(holder.rowOrderHistoryProductBinding, position)
+        setting_product_list_text(holder.rowOrderHistoryProductBinding, orderHistoryProductAdapterViewModel, position)
+
+        // 배송 현황 버튼
+        setting_btn_row_order_history_product_shipping_status_check(holder.rowOrderHistoryProductBinding, orderHistoryProductAdapterViewModel, position)
+
+    }
+
+    // 배송 현황 버튼
+    fun setting_btn_row_order_history_product_shipping_status_check(
+        rowOrderHistoryProductBinding : RowOrderHistoryProductBinding,
+        orderHistoryProductAdapterViewModel : OrderHistoryProductAdapterViewModel,
+        position: Int
+    ) {
+        rowOrderHistoryProductBinding.btnRowOrderHistoryProductShippingStatusCheck.setOnClickListener {
+            val action = OrderHistoryFragmentDirections.actionOrderHistoryFragmentToShippingStatusFragment(
+                orderHistoryProductViewModel.order_history_product_list.value!![position].documentId,
+                orderHistoryProductViewModel.order_history_product_list.value!![position].purchaseDateTime,
+                orderHistoryProductAdapterViewModel.shipping_status_list.value!!
+            )
+            orderHistoryFragment.findNavController().navigate(action)
+        }
 
     }
 
     // 주문 상품 리스트 텍스트 세팅
-    fun setting_product_list_text(holder: RowOrderHistoryProductBinding, position: Int) {
+    fun setting_product_list_text(holder: RowOrderHistoryProductBinding, orderHistoryProductAdapterViewModel: OrderHistoryProductAdapterViewModel, position: Int) {
 
         // 주문 상품 이름
         holder.tvRowOrderHistoryProductProductName.text =
@@ -77,12 +119,40 @@ class OrderHistoryProductAdapter(
         ) + "개"
         holder.tvRowOrderHistoryProductCnt.text = formattedCnt
 
-        holder.tvRowOrderHistoryProductDeliveryState.text = when(orderHistoryProductViewModel.order_history_product_list.value!![position].purchaseState) {
-            PurchaseState.READY_TO_SHIP.name -> "배송 준비 중"
-            PurchaseState.SHIPPING.name -> "배송중"
-            else -> "배송완료"
+        orderHistoryProductAdapterViewModel.shipping_status_list.observe(viewLifecycleOwner) {
+            Log.d("trackingDetails3", "${it.level}")
+            holder.tvRowOrderHistoryProductDeliveryState.text = when(it.level) {
+                1 -> "배송 준비 중"
+                2,3,4,5 -> "배송 중"
+                6 -> "배송 완료"
+                else -> "결제 완료"
+            }
         }
+    }
 
+    // api를 통해 배송 상세 내용을 저장
+    fun fetchTrackingInfo(courierCode: String, invoiceNumber: String, orderHistoryProductAdapterViewModel: OrderHistoryProductAdapterViewModel, position: Int) {
+        Log.d("orderHistoryProductAdapter3", "order_history_product_list: ${orderHistoryProductViewModel.order_history_product_list.value!![position]}")
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitInstance.api.getTrackingInfo(
+                        apiKey = "qo9jf3bIFZ4aEzIscfGPPQ",
+                        courierCode = courierCode,
+                        invoiceNumber = invoiceNumber
+                    )
+                }
+
+                orderHistoryProductAdapterViewModel.shipping_status_list.value = response
+                Log.d("trackingDetails2", "${orderHistoryProductViewModel.tracking_response.value}")
+                Log.d("trackingDetails2", "------")
+
+            } catch (e: HttpException) {
+                Log.d("HTTP 오류 발생", "HTTP 오류 발생: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.d("기타 오류 발생", "기타 오류 발생: ${e.message}")
+            }
+        }
     }
 
     // 주문 상품 리스트 이미지 세팅

@@ -25,7 +25,8 @@ class OrderHistoryRepository {
 
                 // 결과를 Purchase 객체 리스트로 변환
                 val orderHistoryList = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject(Purchase::class.java)
+                    val purchase = document.toObject(Purchase::class.java)
+                    purchase?.copy(documentId = document.id)
                 }
 
                 orderHistoryList.forEach {
@@ -68,6 +69,19 @@ class OrderHistoryRepository {
             } catch (e: Exception) {
                 Log.e("FirestoreError", "Error fetching filtered order history: ${e.message}", e)
                 emptyList()
+            }
+        }
+
+        suspend fun getting_purchase_data_by_document_id(document_id: String): Purchase? {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Purchase")
+            return try {
+                val documentSnapshot = collectionReference.document(document_id).get().await()
+                Log.d("getting_purchase_data_by_document_id", "${documentSnapshot.toObject(Purchase::class.java)}")
+                documentSnapshot.toObject(Purchase::class.java)
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error fetching purchase data: ${e.message}", e)
+                null
             }
         }
 

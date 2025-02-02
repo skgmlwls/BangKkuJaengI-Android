@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -17,11 +18,13 @@ import com.nemodream.bangkkujaengi.customer.data.model.Post
 import com.nemodream.bangkkujaengi.customer.data.model.SocialLogin
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OnPostItemClickListener
 import com.nemodream.bangkkujaengi.customer.ui.adapter.SocialDiscoveryAdapter
+import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialDiscoveryViewModel
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.SocialMyViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentSocialMyBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
 import com.nemodream.bangkkujaengi.utils.loadImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class SocialMyFragment : Fragment(), OnPostItemClickListener {
@@ -31,6 +34,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
     private lateinit var appContext: Context
 
     private val viewModel: SocialMyViewModel by viewModels()
+    private val shareViewModel: SocialDiscoveryViewModel by activityViewModels()
     private val socialMyAdapter: SocialDiscoveryAdapter by lazy { SocialDiscoveryAdapter(this) }
 
     private var isMyPostsSelected: Boolean = true
@@ -164,7 +168,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
                     ivMyProfileImage.loadImage(profile.memberProfileImage.toString())
                 } ?: ivMyProfileImage.setImageResource(R.drawable.ic_default_profile)
                 tvMyProfileNickname.text = "${profile.memberNickName}"
-                tvMyProfileFollowInfo.text = "팔로잉 ${profile.followingCount}명   팔로워 ${profile.followerCount}명"
+                tvMyProfileFollowInfo.text = "팔로잉 ${profile.followingList.size}명   팔로워 ${profile.followerCount}명"
             }
         })
 
@@ -194,6 +198,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
      * 게시글 클릭 이벤트 처리
      */
     override fun onPostItemClick(post: Post) {
+        shareViewModel.selectedPost.value = post
         val action = SocialFragmentDirections.actionSocialFragmentToSocialDetailFragment()
         findNavController().navigate(action)
     }

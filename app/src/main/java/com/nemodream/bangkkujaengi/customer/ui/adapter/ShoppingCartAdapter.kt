@@ -179,6 +179,9 @@ class ShoppingCartAdapter(
 
             // 상품의 CheckBox를 체크할 경우
             if (isChecked) {
+                // 체크 카운터 +1
+                shoppingCartViewModel.checked_cnt.value =
+                    shoppingCartViewModel.checked_cnt.value!!.plus(1)
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
                         ShoppingCartRepository.update_cart_item_checked_by_user_id(
@@ -206,12 +209,14 @@ class ShoppingCartAdapter(
                                 shoppingCartViewModel.tv_shopping_cart_tot_sale_price_text.value!! +
                                 shoppingCartViewModel.tv_shopping_cart_tot_delivery_cost_text.value!!
 
-
                 }
             }
 
             // 상품의 CheckBox의 체크를 해제할 경우
             else {
+                // 체크 카운터 -1
+                shoppingCartViewModel.checked_cnt.value =
+                    shoppingCartViewModel.checked_cnt.value!!.minus(1)
                 CoroutineScope(Dispatchers.Main).launch {
                     val work1 = async(Dispatchers.IO) {
                         ShoppingCartRepository.update_cart_item_checked_by_user_id(
@@ -331,7 +336,7 @@ class ShoppingCartAdapter(
 
         // 수량 감소 버튼 클릭 이벤트
         holder.rowShoppingCartRecyclerviewBinding.ibtnRowShoppingCartProductCntRemove.setOnClickListener {
-            if (rowShoppingCartViewModel.tv_row_shopping_cart_product_cnt.value!! > 0) {
+            if (rowShoppingCartViewModel.tv_row_shopping_cart_product_cnt.value!! > 1) {
                 // 버튼 클릭 시 ProgressBar를 표시하고 버튼 숨기기
                 holder.rowShoppingCartRecyclerviewBinding.pbRowShoppingCartLoading.visibility = View.VISIBLE
                 holder.rowShoppingCartRecyclerviewBinding.ibtnRowShoppingCartProductCntAdd.visibility = View.GONE

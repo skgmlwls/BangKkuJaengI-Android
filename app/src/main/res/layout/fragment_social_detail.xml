@@ -47,9 +47,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 이미지 -->
+    <!-- 게시글 이미지 뷰페이저 -->
     <FrameLayout
-        android:id="@+id/fl_social_write_picture_container"
+        android:id="@+id/fl_social_detail_picture_container"
         android:layout_width="360dp"
         android:layout_height="473dp"
         android:layout_marginTop="20dp"
@@ -61,7 +61,7 @@
 
         <!-- 이미지 ViewPager2 -->
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_social_write_picture_carousel"
+            android:id="@+id/vp_social_detail_picture_carousel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_social_carousel_photo"
@@ -69,7 +69,7 @@
 
         <!-- 태그 핀 FrameLayout -->
         <FrameLayout
-            android:id="@+id/fl_tag_pin_overlay"
+            android:id="@+id/fl_social_detail_tag_pin_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
@@ -77,19 +77,19 @@
 
     <!-- 좋아요와 댓글 아이콘 -->
     <LinearLayout
-        android:id="@+id/layout_like_and_comment"
+        android:id="@+id/layout__social_detail_like_and_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
         android:layout_marginStart="27dp"
-        app:layout_constraintTop_toBottomOf="@id/fl_social_write_picture_container"
+        app:layout_constraintTop_toBottomOf="@id/fl_social_detail_picture_container"
         app:layout_constraintStart_toStartOf="parent"
         >
 
         <!-- 좋아요 이미지 -->
         <ImageView
-            android:id="@+id/ic_like"
+            android:id="@+id/ic__social_detail_like"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
@@ -98,7 +98,7 @@
 
         <!-- 좋아요 -->
         <TextView
-            android:id="@+id/tv_like_count"
+            android:id="@+id/tv__social_detail_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="999"
@@ -107,7 +107,7 @@
 
         <!-- 댓글 이미지 -->
         <ImageView
-            android:id="@+id/ic_comment"
+            android:id="@+id/ic__social_detail_comment"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
@@ -118,7 +118,7 @@
 
         <!-- 댓글 -->
         <TextView
-            android:id="@+id/tv_comment_count"
+            android:id="@+id/tv_social_detail_comment_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2"
@@ -128,18 +128,18 @@
 
     <!-- 게시글 제목과 작성자 정보 -->
     <LinearLayout
-        android:id="@+id/layout_title_and_author"
+        android:id="@+id/layout_social_detail_title_and_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="10dp"
         android:layout_marginStart="25dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_like_and_comment"
+        app:layout_constraintTop_toBottomOf="@id/layout__social_detail_like_and_comment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/tv_social_post_item_title"
+            android:id="@+id/tv_social_detail_post_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -155,14 +155,15 @@
             android:layout_marginTop="8dp">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_social_post_item_profile_picture"
+                android:id="@+id/iv_social_detail_post_item_profile_picture"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/AppRoundedImage.Circle"
-                android:src="@drawable/background_gray_300"/>
+                android:src="@drawable/ic_default_profile"/>
 
             <TextView
-                android:id="@+id/tv_social_post_item_nickname"
+                android:id="@+id/tv_social_detail_post_item_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
@@ -170,7 +171,7 @@
                 android:text="닉네임닉네임닉네임"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_following_following"
+                android:id="@+id/btn_social_detail_following_following"
                 style="@style/FollowingButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
@@ -186,21 +187,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="28dp"
         android:layout_marginEnd="25dp"
+        android:layout_marginBottom="20dp"
         android:text="내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/layout_title_and_author"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/layout_social_detail_title_and_author"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/divider_social_detail_comment"/>
 
     <!-- 디바이더 -->
     <View
-        android:id="@+id/comment_divider"
+        android:id="@+id/divider_social_detail_comment"
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:background="#D0D0D0"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/tv_social_detail_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -210,22 +213,11 @@
         android:id="@+id/rv_social_detail_comment_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/comment_divider"
+        app:layout_constraintTop_toBottomOf="@+id/divider_social_detail_comment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/commentInput"
         tools:listitem="@layout/row_social_comment" />
-
-    <!-- 디바이더 -->
-    <View
-        android:id="@+id/comment_edit_text_divider"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#D0D0D0"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_social_detail_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- 댓글 입력창 -->
     <LinearLayout

@@ -3,7 +3,9 @@ package com.nemodream.bangkkujaengi.customer.data.model
 data class Post(
     // 게시글 고유 아이디
     val id: String = "",
-    // 작성자 아이디
+    // 작성자 고유 아이디
+    val memberDocId: String = "",
+    // 작성자 닉네임
     val nickname: String = "",
     // 작성자 프사
     val authorProfilePicture: String = "",
