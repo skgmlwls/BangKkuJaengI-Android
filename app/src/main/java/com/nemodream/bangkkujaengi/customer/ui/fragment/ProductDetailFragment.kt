@@ -16,11 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.CategoryType
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailBannerAdapter
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductDetailImageAdapter
+import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductReviewAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ProductDetailViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentProductDetailBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
@@ -75,6 +78,17 @@ class ProductDetailFragment : Fragment(), OnCartClickListener {
         observeViewModel()
         setupListeners()
         binding.rvProductDetailContentImageList.adapter = imageAdapter
+
+        // include 레이아웃을 통해 RecyclerView 접근
+        val reviewAdapter = ProductReviewAdapter()
+        binding.layoutProductReviews.rvProductReviews.adapter = reviewAdapter
+
+        // ViewModel에서 리뷰 데이터 관찰
+        viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+            reviewAdapter.submitList(reviews)
+        }
+
+        viewModel.loadReviews(productId)
     }
 
     override fun onDestroyView() {
