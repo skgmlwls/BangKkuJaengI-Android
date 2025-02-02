@@ -39,6 +39,12 @@ class MyReviewWriteViewModel @Inject constructor(
     private val _productImageUrl = MutableLiveData<String>()
     val productImageUrl: LiveData<String> get() = _productImageUrl
 
+    private val _memberNickname = MutableLiveData<String>()
+    val memberNickname: LiveData<String> get() = _memberNickname
+
+    private val _memberProfileImage = MutableLiveData<String>()
+    val memberProfileImage: LiveData<String> get() = _memberProfileImage
+
     // Purchase의 productId를 기반으로 Product 데이터 로드
     fun loadProductData(productId: String) {
         viewModelScope.launch {
@@ -74,14 +80,19 @@ class MyReviewWriteViewModel @Inject constructor(
         viewModelScope.launch {
             _isSubmitting.value = true  // 리뷰 저장 중 상태로 변경
 
-            // 사용자 정보 가져오기
-            val memberId = repository.fetchMemberId(documentId)
-            if (memberId.isNullOrEmpty()) {
+            // 사용자 정보 가져오기 (닉네임과 프로필 이미지 포함)
+            val memberInfoMap = repository.fetchNicknamesWithProfileImage(listOf(documentId))
+            val memberData = memberInfoMap[documentId]
+
+            if (memberData == null) {
                 _reviewSubmitResult.value = false
                 _isSubmitting.value = false
                 return@launch
             }
 
+            val (nickname, profileImage) = memberData
+
+            // 리뷰 객체 생성
             val review = Review(
                 id = "",
                 productId = productId,
@@ -89,7 +100,9 @@ class MyReviewWriteViewModel @Inject constructor(
                 productImageUrl = _productImageUrl.value ?: "",
                 reviewDate = getCurrentDate(),
                 rating = _rating.value ?: 0,
-                memberId = memberId,
+                memberId = documentId,
+                memberNickname = nickname,
+                memberProfileImage = profileImage,
                 content = _reviewContent.value ?: "",
                 isDelete = false
             )
@@ -98,7 +111,7 @@ class MyReviewWriteViewModel @Inject constructor(
             val reviewResult = repository.submitReview(review)
             if (reviewResult) {
                 // 상태 업데이트
-                val updateResult = repository.updateReviewState(productId, memberId)
+                val updateResult = repository.updateReviewState(productId, documentId)
                 _reviewSubmitResult.value = updateResult
             } else {
                 _reviewSubmitResult.value = false
@@ -107,6 +120,7 @@ class MyReviewWriteViewModel @Inject constructor(
             _isSubmitting.value = false  // 작업 완료 후 상태 변경
         }
     }
+
 
 
     // 현재 날짜를 문자열로 변환

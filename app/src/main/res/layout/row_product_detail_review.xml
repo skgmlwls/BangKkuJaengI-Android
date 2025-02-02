@@ -6,13 +6,14 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <ImageView
+    <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/img_row_profile"
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_default_profile" />
+        app:srcCompat="@drawable/ic_default_profile"
+        app:roundPercent="1.0"/>
 
     <TextView
         android:id="@+id/tv_row_nickname"
