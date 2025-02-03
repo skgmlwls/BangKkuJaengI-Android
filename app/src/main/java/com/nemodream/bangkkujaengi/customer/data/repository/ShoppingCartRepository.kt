@@ -310,7 +310,7 @@ class ShoppingCartRepository {
                     memberName = document.getString("memberName") ?: "",
                     memberNickName = document.getString("memberNickName") ?: "",
                     memberPhoneNumber = document.getString("memberPhoneNumber") ?: "", // 처리된 전화번호
-                    memberProfileImage = document.getString("memberProfileImage") ?: "",
+                    memberProfileImage = document.getString("memberProfileImage") ?: "https://www.studiopeople.kr/common/img/default_profile.png",
                     point = document.getLong("point")?.toInt() ?: 3000,
                     isActive = document.getBoolean("isActive") ?: false,
                     createAt = document.getLong("createAt") ?: 0L,
