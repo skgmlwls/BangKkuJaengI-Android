@@ -144,7 +144,9 @@ class MyReviewRepository @Inject constructor(
                 rating = doc.getLong("rating")?.toInt() ?: 0,
                 memberId = doc.getString("memberId") ?: "",
                 content = doc.getString("content") ?: "",
-                isDelete = doc.getBoolean("isDelete") ?: false
+                isDelete = doc.getBoolean("isDelete") ?: false,
+                memberNickname = doc.getString("memberNickname") ?: "",
+                memberProfileImage = doc.getString("memberProfileImage") ?: ""
             )
         }
     }
@@ -156,13 +158,24 @@ class MyReviewRepository @Inject constructor(
                 .get()
                 .await()
 
+            val memberIds = documents.mapNotNull { it.getString("memberId") }.distinct()
+
+            // 모든 memberId에 대한 닉네임과 프로필 사진 가져오기
+            val memberInfoMap = fetchNicknamesWithProfileImage(memberIds)
+
+            // 리뷰에 닉네임과 프로필 사진 매핑
             documents.map { doc ->
+                val memberId = doc.getString("memberId") ?: ""
+                val (nickname, profileImage) = memberInfoMap[memberId] ?: ("닉네임 없음" to "")
+
                 Review(
                     id = doc.id,
                     productId = doc.getString("productId") ?: "",
                     productTitle = doc.getString("productTitle") ?: "",
                     productImageUrl = doc.getString("productImageUrl") ?: "",
-                    memberId = doc.getString("memberId") ?: "",
+                    memberId = memberId,
+                    memberNickname = nickname,
+                    memberProfileImage = profileImage,
                     reviewDate = doc.getString("reviewDate") ?: "",
                     rating = doc.getLong("rating")?.toInt() ?: 0,
                     content = doc.getString("content") ?: "",
@@ -174,5 +187,26 @@ class MyReviewRepository @Inject constructor(
             emptyList()
         }
     }
+
+
+    suspend fun fetchNicknamesWithProfileImage(memberIds: List<String>): Map<String, Pair<String, String>> {
+        return try {
+            val documents = firestore.collection("Member")
+                .whereIn("memberId", memberIds)
+                .get()
+                .await()
+
+            documents.associate { doc ->
+                val memberId = doc.getString("memberId")!!
+                val nickname = doc.getString("memberNickName") ?: "닉네임 없음"
+                val profileImage = doc.getString("memberProfileImage") ?: "https://www.studiopeople.kr/common/img/default_profile.png"
+                memberId to (nickname to profileImage)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyMap()
+        }
+    }
+
 
 }

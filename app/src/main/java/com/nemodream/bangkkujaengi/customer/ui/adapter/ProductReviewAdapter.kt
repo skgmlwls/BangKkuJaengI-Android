@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Review
 import com.nemodream.bangkkujaengi.databinding.RowProductDetailReviewBinding
+import com.nemodream.bangkkujaengi.utils.loadImage
 
 class ProductReviewAdapter : RecyclerView.Adapter<ProductReviewAdapter.ReviewViewHolder>() {
 
@@ -34,9 +35,16 @@ class ProductReviewAdapter : RecyclerView.Adapter<ProductReviewAdapter.ReviewVie
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(review: Review) {
-            binding.tvRowNickname.text = review.memberId  // 임시 값, 닉네임으로 갱신 예정
+            binding.tvRowNickname.text = review.memberNickname
             binding.tvRowContent.text = review.content
             binding.textView3.text = review.reviewDate
+
+            // 프로필 사진 로드
+            if (review.memberProfileImage.isNotEmpty()) {
+                binding.imgRowProfile.loadImage(review.memberProfileImage)
+            } else {
+                binding.imgRowProfile.setImageResource(R.drawable.ic_default_profile)  // 기본 이미지 설정
+            }
 
             // 별점 설정
             val stars = listOf(

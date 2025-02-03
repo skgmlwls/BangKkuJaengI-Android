@@ -233,7 +233,6 @@ class MyPageFragment : Fragment(), ProductClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToOrderHistory()
                 findNavController().navigate(action)
             }
-            myPageReview.root.setOnClickListener {  }
             myPageReview.root.setOnClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToMyReviewFragment()
                 findNavController().navigate(action)
