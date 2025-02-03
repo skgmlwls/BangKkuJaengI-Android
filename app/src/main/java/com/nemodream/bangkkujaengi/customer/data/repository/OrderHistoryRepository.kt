@@ -1,9 +1,11 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.nemodream.bangkkujaengi.customer.data.model.Purchase
+import com.nemodream.bangkkujaengi.customer.data.model.PurchaseState
 import kotlinx.coroutines.tasks.await
 
 class OrderHistoryRepository {
@@ -84,6 +86,25 @@ class OrderHistoryRepository {
                 null
             }
         }
+
+        suspend fun update_purchase_state(document_id: String) {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Purchase")
+            try {
+                // Firestore에서 해당 documentId의 purchaseState를 업데이트
+                collectionReference.document(document_id)
+                    .update(
+                        "purchaseState", PurchaseState.PURCHASE_CONFIRMED.name,
+                        "purchaseConfirmedTime", Timestamp.now()
+                    )
+                    .await()
+
+                Log.d("FirestoreUpdate", "Successfully updated purchaseState to PURCHASE_CONFIRMED for documentId: $document_id")
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error updating purchaseState: ${e.message}", e)
+            }
+        }
+
 
 
     }

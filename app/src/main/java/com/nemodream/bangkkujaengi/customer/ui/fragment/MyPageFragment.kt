@@ -200,6 +200,7 @@ class MyPageFragment : Fragment(), ProductClickListener {
                 findNavController().navigate(action)
             }
 
+            // 메뉴 선택
             toolbarMyPage.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_cart -> {
@@ -228,6 +229,15 @@ class MyPageFragment : Fragment(), ProductClickListener {
                 }
             }
 
+            myPageOrder.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToOrderHistory()
+                findNavController().navigate(action)
+            }
+            myPageReview.root.setOnClickListener {
+                val action = MyPageFragmentDirections.actionNavigationMyPageToMyReviewFragment()
+                findNavController().navigate(action)
+            }
+
             etMyProfileNickname.setOnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     textView.hideKeyboard()
@@ -238,11 +248,6 @@ class MyPageFragment : Fragment(), ProductClickListener {
                 }
             }
 
-            myPageOrder.root.setOnClickListener {  }
-            myPageReview.root.setOnClickListener {
-                val action = MyPageFragmentDirections.actionNavigationMyPageToMyReviewFragment()
-                findNavController().navigate(action)
-            }
             myPageCoupon.root.setOnClickListener {
                 val action = MyPageFragmentDirections.actionNavigationMyPageToNavigationMyCoupon("")
                 findNavController().navigate(action)

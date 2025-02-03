@@ -12,9 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.repository.OrderHistoryRepository
+import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.OrderHistoryAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.OrderHistoryViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentOrderHistoryBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
+import com.nemodream.bangkkujaengi.utils.getUserType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -29,7 +32,8 @@ class OrderHistoryFragment : Fragment() {
     val orderHistoryViewModel : OrderHistoryViewModel by viewModels()
 
     // 유저 id
-    val user_id = "testuser2"
+    var user_type = ""
+    var user_id = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,11 +41,14 @@ class OrderHistoryFragment : Fragment() {
     ): View? {
         fragmentOrderHistoryBinding = FragmentOrderHistoryBinding.inflate(inflater, container, false)
 
+        // 유저 id 세팅
+        setting_user_id()
+
         // 툴바 세팅
         setting_toolbar()
         
         // 주문 내역 리사이클러뷰 세팅
-        setting_order_history_recyclerview()
+        // setting_order_history_recyclerview()
 
         return fragmentOrderHistoryBinding.root
     }
@@ -54,6 +61,33 @@ class OrderHistoryFragment : Fragment() {
             // 툴바 뒤로가기 버튼의 이벤트
             setNavigationOnClickListener {
                 findNavController().navigateUp()
+            }
+        }
+    }
+
+    // 유저 id 세팅
+    fun setting_user_id() {
+        user_type = requireContext().getUserType()
+        Log.d("test1213", "setting_user_id: ${user_type}")
+
+        when(user_type) {
+            "member" -> {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val work1 = async(Dispatchers.IO) {
+                        ShoppingCartRepository.getting_user_id_by_document_id(requireContext().getUserId())
+                    }
+                    user_id = work1.await()
+                    Log.d("test1213", "setting_user_id: ${user_id}")
+                    setting_order_history_recyclerview()
+                }
+            }
+            "guest" -> {
+                user_id = requireContext().getUserId()
+                Log.d("test1213", "setting_user_id: ${user_id}")
+                setting_order_history_recyclerview()
+            }
+            else -> {
+                ""
             }
         }
     }

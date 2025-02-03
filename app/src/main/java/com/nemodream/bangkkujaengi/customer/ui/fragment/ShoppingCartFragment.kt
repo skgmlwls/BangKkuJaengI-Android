@@ -14,12 +14,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nemodream.bangkkujaengi.R
 import com.nemodream.bangkkujaengi.customer.data.model.Member
+import com.nemodream.bangkkujaengi.customer.data.model.PaymentItems
+import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
 import com.nemodream.bangkkujaengi.customer.data.model.Product
 import com.nemodream.bangkkujaengi.customer.data.model.ShoppingCart
 import com.nemodream.bangkkujaengi.customer.data.repository.ShoppingCartRepository
 import com.nemodream.bangkkujaengi.customer.ui.adapter.ShoppingCartAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.ShoppingCartViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentShoppingCartBinding
+import com.nemodream.bangkkujaengi.utils.getUserId
+import com.nemodream.bangkkujaengi.utils.getUserType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -37,8 +41,9 @@ class ShoppingCartFragment : Fragment() {
     }
 
     // var cart_document_id_list = mutableListOf<String>()
-
-    var user_id = "testuser2"
+    // 회원 or 비회원
+    var user_type = ""
+    var user_id = ""
 
     // 장바구니 document id를 변수
     var cart_user_id:String = ""
@@ -56,6 +61,8 @@ class ShoppingCartFragment : Fragment() {
     ): View? {
         fragmentShoppingCartBinding  = FragmentShoppingCartBinding.inflate(inflater, container, false)
 
+        // 유저 id 세팅 메소드 호출
+        setting_user_id()
         // 툴바 세팅 메소드 호출
         setting_toolbar()
         // 초기 총 상품 가격 요약 텍스트 세팅 메소드 호출
@@ -64,14 +71,41 @@ class ShoppingCartFragment : Fragment() {
         fn_btn_shopping_cart_buy()
         // recycelrview 초기 세팅 메소드 호출
         setting_recyclerview()
-        // recycelrview 업데이트 메소드 호출
-        refresh_recyclerview_shopping_cart()
 
 
         fn_test_button()
         fn_btn_shopping_cart_order_history()
+        fn_btn_non_member_order_fragment()
 
         return fragmentShoppingCartBinding.root
+    }
+
+    // 유저 id 세팅 메소드
+    fun setting_user_id() {
+        // Log.d("test1213", "setting_user_id: ${requireContext().getUserId()}")
+        user_type = requireContext().getUserType()
+        when(user_type) {
+            "member" -> {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val work1 = async(Dispatchers.IO) {
+                        ShoppingCartRepository.getting_user_id_by_document_id(requireContext().getUserId())
+                    }
+                    user_id = work1.await()
+                    Log.d("test1213", "setting_user_id: ${user_id}")
+                    // recycelrview 업데이트 메소드 호출
+                    refresh_recyclerview_shopping_cart()
+                }
+            }
+            "guest" -> {
+                user_id = requireContext().getUserId()
+                Log.d("test1213", "setting_user_id: ${user_id}")
+                // recycelrview 업데이트 메소드 호출
+                refresh_recyclerview_shopping_cart()
+            }
+            else -> {
+                ""
+            }
+        }
     }
 
     // 툴바 세팅 메소드
@@ -161,7 +195,37 @@ class ShoppingCartFragment : Fragment() {
 
                 Log.d("user_data", "${memberData?.memberPhoneNumber}")
 
-                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(user_id, memberData?.memberName.toString(), memberData?.memberPhoneNumber.toString(), "서울시 강남구 역삼동")
+//                val productData = PaymentProduct(
+//                    items = listOf(
+//                        PaymentItems(
+//                            productId = "L0JpdVtcyvEkbHMM0Oms", // 원하는 상품 ID
+//                            color = "RED",                // 원하는 색상
+//                            quantity = 3,                 // 원하는 수량
+//                            checked = true               // 선택 여부 (예: false)
+//                        )
+//                    ),
+//                    userId = user_id // 실제 사용자 ID
+//                )
+//
+//                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(
+//                    user_id,
+//                    user_type,
+//                    memberData?.memberName.toString(),
+//                    memberData?.memberPhoneNumber.toString(),
+//                    "서울시 강남구 역삼동",
+//                    "order",
+//                    productData
+//                )
+
+                val action = ShoppingCartFragmentDirections.actionNavigationCartToPaymentFragment(
+                    user_id,
+                    user_type,
+                    memberData?.memberName.toString(),
+                    memberData?.memberPhoneNumber.toString(),
+                    "서울시 강남구 역삼동",
+                    "cart",
+                    PaymentProduct()
+                )
                 findNavController().navigate(action)
             }
         }
@@ -184,6 +248,13 @@ class ShoppingCartFragment : Fragment() {
     fun fn_btn_shopping_cart_order_history() {
         fragmentShoppingCartBinding.btnShoppingCartOrderHistory.setOnClickListener {
             val action = ShoppingCartFragmentDirections.actionNavigationCartToOrderHistoryFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    fun fn_btn_non_member_order_fragment() {
+        fragmentShoppingCartBinding.btnShoppingCartNonMemberOrderHistory.setOnClickListener {
+            val action = ShoppingCartFragmentDirections.actionNavigationCartToNonMemberOrderFragment()
             findNavController().navigate(action)
         }
     }
@@ -228,6 +299,9 @@ class ShoppingCartFragment : Fragment() {
                     }
                 }
             }
+
+            // 먼저 체크된 상품 개수를 0으로 초기화한 후에 카운트 시작
+            shoppingCartViewModel.checked_cnt.value = 0
 
             cart_data_list.items.forEach {
                 if (it.checked == true) {
@@ -279,7 +353,8 @@ class ShoppingCartFragment : Fragment() {
                 viewLifecycleOwner,
                 shoppingCartViewModel,
                 fragmentShoppingCartBinding,
-                this@ShoppingCartFragment
+                this@ShoppingCartFragment,
+                user_type
             ) { refresh_recyclerview_shopping_cart() } // Refresh callback
             layoutManager = LinearLayoutManager(context)
         }

@@ -15,6 +15,7 @@ import com.nemodream.bangkkujaengi.customer.ui.adapter.ProductGridAdapter
 import com.nemodream.bangkkujaengi.customer.ui.viewmodel.MyBookmarkViewModel
 import com.nemodream.bangkkujaengi.databinding.FragmentMyBookmarkBinding
 import com.nemodream.bangkkujaengi.utils.getUserId
+import com.nemodream.bangkkujaengi.utils.getUserType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

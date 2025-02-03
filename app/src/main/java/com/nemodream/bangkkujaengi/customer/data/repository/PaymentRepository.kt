@@ -1,6 +1,7 @@
 package com.nemodream.bangkkujaengi.customer.data.repository
 
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nemodream.bangkkujaengi.customer.data.model.Coupon
 import com.nemodream.bangkkujaengi.customer.data.model.PaymentProduct
@@ -211,6 +212,39 @@ class PaymentRepository {
             }
         }
 
+        // 유저 id로 유저 아이디 찾기
+        suspend fun found_user_id_by_user_id(user_id: String): Boolean {
+            val firestore = FirebaseFirestore.getInstance()
+            val collectionReference = firestore.collection("Member")
+
+            return try {
+                // Firestore에서 memberId가 user_id와 일치하는 문서 검색
+                val result = collectionReference.whereEqualTo("memberId", user_id).get().await()
+                Log.d("FirestoreCheck", "Found matching memberId: ${result.documents.size > 0}")
+
+                // 결과가 존재하면 true, 없으면 false 반환
+                result.documents.isNotEmpty()
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error checking user_id: ${e.message}", e)
+                false
+            }
+        }
+
+        // 구매시 수량만큼 상품 재고 감소, 구매 수 증가 메서드
+        suspend fun update_product_count_purchase_count(productDocumentId: String, productCount: Int) {
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                firestore.collection("Product")
+                    .document(productDocumentId)
+                    .update(
+                        "productCount", FieldValue.increment(-productCount.toLong()),
+                        "purchaseCount", FieldValue.increment(productCount.toLong())
+                    ).await()
+                Log.d("UpdateProduct", "Updated product $productDocumentId: decreased productCount by $productCount")
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error updating product counts: ${e.message}", e)
+            }
+        }
 
     }
 
