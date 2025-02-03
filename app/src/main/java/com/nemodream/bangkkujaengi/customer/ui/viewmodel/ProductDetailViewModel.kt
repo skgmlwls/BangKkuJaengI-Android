@@ -34,6 +34,9 @@ class ProductDetailViewModel @Inject constructor(
     private var _selectedColor = MutableLiveData<String>(null)
     val selectedColor: LiveData<String> = _selectedColor
 
+    private var _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     private val _reviews = MutableLiveData<List<Review>>()
     val reviews: LiveData<List<Review>> = _reviews
 
@@ -83,8 +86,6 @@ class ProductDetailViewModel @Inject constructor(
             dateString  // 파싱 실패 시 원본 반환
         }
     }
-    private var _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
 
     fun loadProduct(productId: String, userId: String) = viewModelScope.launch {
         runCatching {
