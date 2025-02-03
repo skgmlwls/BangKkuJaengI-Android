@@ -197,7 +197,6 @@ class MyPageFragment : Fragment(), ProductClickListener {
             tvMyPageNonMemberInquiry.setOnClickListener {
                 val action =
                     MyPageFragmentDirections.actionNavigationMyPageToNavigationNonMemberOrder()
-                val action = MyPageFragmentDirections.actionNavigationCartToNonMemberOrderFragment()
                 findNavController().navigate(action)
             }
 
