@@ -127,6 +127,9 @@
         <action
             android:id="@+id/action_nonMemberOrderCheckFragment_to_nonMemberOrderHistoryFragment"
             app:destination="@id/nonMemberOrderHistoryFragment" />
+        <action
+            android:id="@+id/action_navigation_non_member_order_to_signUpActivity"
+            app:destination="@id/signUpActivity" />
     </fragment>
 
     <fragment
@@ -283,9 +286,9 @@
         <action
             android:id="@+id/action_navigation_my_page_to_navigation_cart"
             app:destination="@id/navigation_cart" />
-        <action
-            android:id="@+id/action_navigation_my_page_to_navigation_non_member_order"
-            app:destination="@id/navigation_non_member_order" />
+<!--        <action-->
+<!--            android:id="@+id/action_navigation_my_page_to_navigation_non_member_order"-->
+<!--            app:destination="@id/navigation_non_member_order" />-->
         <action
             android:id="@+id/action_navigation_my_page_to_navigation_my_coupon"
             app:destination="@id/navigation_my_coupon" />
@@ -316,15 +319,15 @@
         android:name="com.nemodream.bangkkujaengi.SignInActivity"
         android:label="activity_sign_in"
         tools:layout="@layout/activity_sign_in" />
-    <fragment
-        android:id="@+id/navigation_non_member_order"
-        android:name="com.nemodream.bangkkujaengi.customer.ui.adapter.NonMemberOrderFragment"
-        tools:layout="@layout/fragment_non_member_order"
-        android:label="NonMemberOrderFragment" >
-        <action
-            android:id="@+id/action_navigation_non_member_order_to_signUpActivity"
-            app:destination="@id/signUpActivity" />
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/navigation_non_member_order"-->
+<!--        android:name="com.nemodream.bangkkujaengi.customer.ui.adapter.NonMemberOrderFragment"-->
+<!--        tools:layout="@layout/fragment_non_member_order"-->
+<!--        android:label="NonMemberOrderFragment" >-->
+<!--        <action-->
+<!--            android:id="@+id/action_navigation_non_member_order_to_signUpActivity"-->
+<!--            app:destination="@id/signUpActivity" />-->
+<!--    </fragment>-->
     <activity
         android:id="@+id/signUpActivity"
         android:name="com.nemodream.bangkkujaengi.SignUpActivity"
