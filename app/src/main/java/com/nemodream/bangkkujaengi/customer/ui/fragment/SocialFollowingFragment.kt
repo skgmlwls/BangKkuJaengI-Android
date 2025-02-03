@@ -121,8 +121,10 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
 
         // 선택된 멤버의 게시글 리스트 관찰
         viewModel.memberPosts.observe(viewLifecycleOwner) { posts ->
+            val selectedMember = viewModel.selectedMember.value
+
             // 게시글 유무에 따라 "게시글이 아직 없습니다" 텍스트 보여줌
-            if (posts.isNullOrEmpty()) {
+            if (selectedMember != null && posts.isNullOrEmpty()) {
                 binding.tvNoPosts.visibility = View.VISIBLE
                 binding.rvFollowingPosts.visibility = View.GONE
             } else {
@@ -135,6 +137,26 @@ class SocialFollowingFragment : Fragment(), OnPostItemClickListener {
         // 팔로잉 상태에 따라 버튼 텍스트 변경
         viewModel.isFollowing.observe(viewLifecycleOwner) { isFollowing ->
             updateFollowingButtonStyle(isFollowing)
+        }
+
+        // 팔로잉 멤버 리스트 관찰
+        viewModel.followingMembers.observe(viewLifecycleOwner) { followingMembers ->
+            // 팔로잉 멤버 유무에 따라 "아직 팔로잉한 유저가 없습니다!" 텍스트 보여줌
+            if (followingMembers.isNullOrEmpty()) {
+                binding.tvNoFollowing.visibility = View.VISIBLE
+                binding.tvNoFollowingSub.visibility = View.VISIBLE
+                binding.topScrollLayout.visibility = View.GONE
+                binding.clSelectedProfileInfo.visibility = View.GONE
+                binding.rvFollowingPosts.visibility = View.GONE
+                binding.tvNoPosts.visibility = View.GONE
+            }
+            else{
+                binding.tvNoFollowing.visibility = View.GONE
+                binding.tvNoFollowingSub.visibility = View.GONE
+                binding.topScrollLayout.visibility = View.VISIBLE
+                binding.clSelectedProfileInfo.visibility = View.VISIBLE
+                binding.rvFollowingPosts.visibility = View.VISIBLE
+            }
         }
     }
 

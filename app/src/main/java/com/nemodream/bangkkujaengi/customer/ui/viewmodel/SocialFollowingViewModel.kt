@@ -105,9 +105,10 @@ class SocialFollowingViewModel @Inject constructor(
         } else if (currentIndex > 0) {
             // 마지막 멤버를 삭제한 경우 이전 멤버 선택
             selectMember(updatedFollowingList[currentIndex - 1])
-        } else {
+        } else{
             // 모두 삭제된 경우 선택 해제
             _selectedMember.value = null
+            _memberPosts.value = emptyList()
         }
     }
 

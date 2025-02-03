@@ -80,19 +80,19 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
     private fun resetToNormalMode() {
         val nicknameEditText = binding.etMyProfileNickname
         val nicknameTextView = binding.tvMyProfileNickname
-        val editIcon = binding.ivSocialMyEdit
+        // val editIcon = binding.ivSocialMyEdit
         val saveButton = binding.btnSocialMySaveEdit
 
         nicknameEditText.visibility = View.GONE // EditText 숨기기
         nicknameTextView.visibility = View.VISIBLE // TextView 보이기
-        editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
+        // editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
         saveButton.visibility = View.GONE  // "수정완료" 버튼 숨김
     }
 
     private fun setupProfileEdit() {
         val nicknameEditText = binding.etMyProfileNickname // EditText로 변경된 닉네임 필드
         val nicknameTextView = binding.tvMyProfileNickname // 원래 TextView
-        val editIcon = binding.ivSocialMyEdit
+        // val editIcon = binding.ivSocialMyEdit
         val saveButton = binding.btnSocialMySaveEdit
 
         // 초기 상태: 닉네임 편집 불가능
@@ -100,16 +100,16 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
         nicknameTextView.visibility = View.VISIBLE // TextView 보이기
 
         // 수정 버튼 클릭
-        editIcon.setOnClickListener {
-            nicknameEditText.setText(nicknameTextView.text) // TextView의 텍스트를 EditText로 복사
-            nicknameTextView.visibility = View.GONE // TextView 숨기기
-            nicknameEditText.visibility = View.VISIBLE // EditText 보이기
-            nicknameEditText.requestFocus()  // 포커스 이동
-            editIcon.visibility = View.GONE  // 수정 아이콘 숨김
-            saveButton.visibility = View.VISIBLE // "수정완료" 버튼 표시
-            binding.btnSocialMySaveEdit.setPadding(0,0,0,0)
-            binding.etMyProfileNickname.setPadding(8,0,0,20)
-        }
+//        editIcon.setOnClickListener {
+//            nicknameEditText.setText(nicknameTextView.text) // TextView의 텍스트를 EditText로 복사
+//            nicknameTextView.visibility = View.GONE // TextView 숨기기
+//            nicknameEditText.visibility = View.VISIBLE // EditText 보이기
+//            nicknameEditText.requestFocus()  // 포커스 이동
+//            editIcon.visibility = View.GONE  // 수정 아이콘 숨김
+//            saveButton.visibility = View.VISIBLE // "수정완료" 버튼 표시
+//            binding.btnSocialMySaveEdit.setPadding(0,0,0,0)
+//            binding.etMyProfileNickname.setPadding(8,0,0,20)
+//        }
 
         // "수정완료" 버튼 클릭
         saveButton.setOnClickListener {
@@ -119,7 +119,7 @@ class SocialMyFragment : Fragment(), OnPostItemClickListener {
             nicknameTextView.text = editedNickname // TextView에 수정된 텍스트 표시
             nicknameEditText.visibility = View.GONE // EditText 숨기기
             nicknameTextView.visibility = View.VISIBLE // TextView 보이기
-            editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
+            //editIcon.visibility = View.VISIBLE // 수정 아이콘 다시 표시
             saveButton.visibility = View.GONE  // "수정완료" 버튼 숨김
         }
     }
