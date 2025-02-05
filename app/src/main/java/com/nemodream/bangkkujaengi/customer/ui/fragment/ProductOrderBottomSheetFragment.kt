@@ -167,52 +167,38 @@ class ProductOrderBottomSheetFragment : BottomSheetDialogFragment() {
 
             // 주문하기 버튼 클릭 리스너
             btnOrder.setOnClickListener {
-                var user_id = ""
-                var user_type = requireContext().getUserType()
-                when(user_type) {
-                    "member" -> {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            val work1 = async(Dispatchers.IO) {
-                                ShoppingCartRepository.getting_user_id_by_document_id(requireContext().getUserId())
-                            }
-                            user_id = work1.await()
-                            Log.d("test1213", "setting_user_id: ${user_id}")
-                        }
-                    }
-                    "guest" -> {
-                        user_id = requireContext().getUserId()
-                        Log.d("test1213", "setting_user_id: ${user_id}")
-                    }
-                    else -> {
-                        ""
-                    }
-                }
-
                 viewLifecycleOwner.lifecycleScope.launch {
-                    val work1 = async(Dispatchers.IO) {
+                    // 먼저 user_id를 가져옴
+                    val user_type = requireContext().getUserType()
+                    val user_id = when(user_type) {
+                        "member" -> withContext(Dispatchers.IO) {
+                            ShoppingCartRepository.getting_user_id_by_document_id(requireContext().getUserId())
+                        }
+                        "guest" -> requireContext().getUserId()
+                        else -> ""
+                    }
+                    Log.d("test1213", "setting_user_id: ${user_id}")
+
+                    // user_id를 이용해 Firestore에서 유저 데이터 가져오기
+                    val user_data = withContext(Dispatchers.IO) {
                         ShoppingCartRepository.getting_user_data_by_user_id(user_id)
                     }
-                    val user_data = work1.await()
-
                     val memberData = user_data?.get("member_data") as? Member
-
                     Log.d("user_data", "${memberData?.memberPhoneNumber}")
 
+                    // 이후 결제 화면으로 네비게이션 등 필요한 작업 수행
                     val productData = PaymentProduct(
                         items = listOf(
                             PaymentItems(
-                                productId = product.productId, // 원하는 상품 ID
-                                color = viewModel.selectedColor.value!!,                // 원하는 색상
-                                quantity = viewModel.quantity.value!!,                 // 원하는 수량
-                                checked = true               // 선택 여부 (예: false)
+                                productId = product.productId,
+                                color = viewModel.selectedColor.value!!,
+                                quantity = viewModel.quantity.value!!,
+                                checked = true
                             )
                         ),
-                        userId = user_id // 실제 사용자 ID
+                        userId = user_id
                     )
 
-                    Log.d("123123asdasd", memberData?.memberName.toString(),)
-
-                    // 예시: 글로벌 액션을 사용하여 PaymentFragment로 네비게이트
                     val action = ProductOrderBottomSheetFragmentDirections.actionGlobalPaymentFragment(
                         user_id,
                         user_type,
@@ -223,11 +209,9 @@ class ProductOrderBottomSheetFragment : BottomSheetDialogFragment() {
                         productData
                     )
                     findNavController().navigate(action)
-
                 }
-                // TODO: 주문 처리 로직 구현
-                // dismiss()
             }
+
 
             // 수량 증가 버튼
             btnIncrease.setOnClickListener {
